@@ -1,0 +1,50 @@
+Admin:
+	- Login (username, password, OTP, forget password - OTP) #Form
+	- Registration (Name, username, password, confirm_password, email, confirm_email - OTP) #Form
+	- Profile (user credentials change, user details change) #Form - with disabled
+	- Dashboard #Sidebar
+		- Overview (Graphs about departments and cards that take to each page)
+		- Manage Departments (credintials - Mathematics, IT. CS, ECE,...….) #Table
+		- Manage Degrees (BE, BTech, MSc [5 years/ 2 years] , MCA) #Table
+		- Manage Branches (CS, IT, CSE, ECE,...) #Table
+		- Manage Regulations (R2019, R2021,.....) #Table
+		- Manage Subjects (XC5251 Datastructures Splitup,........) #Table
+		- Manage Faculties (Fac details, login_cred, primary_department, handling_subjects) #Tables
+		- Manage Batches (2022-2027, 2022-2026,.........) #Cards
+		- Manage Students (Name-personal_info, degree, branch, dept) #Table
+		- Report & Analysis (Download PDF/XLSX) #Card
+			- Department (under each degree programme - branch) #Table
+			- Faculty (under each sub) #Table
+			- Students (individual) #Table
+		- Academic Calendar (PDF File upload)
+			- Semester starting and ending
+		- Data backup (Download as zip)
+		- Faculty query
+		- Department query
+Faculty:
+	- Login (username, password, //captcha, forgot password - OTP) #Form
+	- Profile (user credintials change) #Form
+	- Dashboard #Sidebar
+		- Overview (Graphs about batches/subjects and cards that take to each page)
+		- View Subjects assigned #Table
+		- View Allotted branches #Table
+		- Manage Internals splitup (for each subjects handling) CN-PPT 25-[File - 10,presentation -15] 
+		- Upload marks (for each subject's each splitup) -> CN-PPT 20/25-[File - 8, presentation - 12]
+		- Statistical Report Generation (each subject ,each student, each splitup)
+		- Academic Calendar (PDF download) #Card
+		- Contact admin #Form
+		- Contact department
+Department:
+	- Login (username, password, //captcha, forgot password - OTP) #Form
+	- Dashboard #Sidebar
+		- Overview (Graphs about batches/degree/branches and cards that take to each page)
+		- View degrees
+		- View Faculties (Faculty details) #Tables
+		- View branches
+		- Manage subjects 
+		- Manage faculty handling subjects
+		- Manage batches
+		- Manage students
+		- Report Generation
+		- Contact Admin
+		- Faculty Query
