@@ -56,15 +56,15 @@ interface ChildLayout {
 }
 export default function App() {
   const ProtectedRouteAdmin = ({ element }: ChildLayout) => {
-    const [isAuth] = useState(false);
+    const [isAuth] = useState(true);
     return isAuth ? element : <Navigate to="/admin/login" />;
   };
   const ProtectedRouteFac = ({ element }: ChildLayout) => {
-    const [isAuth] = useState(false);
+    const [isAuth] = useState(true);
     return isAuth ? element : <Navigate to="/faculty/login" />;
   };
   const ProtectedRouteDept = ({ element }: ChildLayout) => {
-    const [isAuth] = useState(false);
+    const [isAuth] = useState(true);
     return isAuth ? element : <Navigate to="/department/login" />;
   };
   return (
