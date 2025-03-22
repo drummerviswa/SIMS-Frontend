@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router";
 import { ScrollToTop } from "./components/common/ScrollToTop";
 import Home from "./pages/Home";
 import AdminLayout from "./layout/admin/AdminLayout";
@@ -50,15 +50,30 @@ import FacContactAdmin from "./pages/faculty/contact/FacContactAdmin";
 import FacContactDept from "./pages/faculty/contact/FacContactDept";
 import MarksSubject from "./pages/faculty/marks/MarksSubject";
 import ViewMarks from "./pages/faculty/marks/ViewMarks";
-
+import React, { useState } from "react";
+interface ChildLayout {
+  element: React.ReactNode;
+}
 export default function App() {
+  const ProtectedRouteAdmin = ({ element }: ChildLayout) => {
+    const [isAuth] = useState(true);
+    return isAuth ? element : <Navigate to="/admin/login" />;
+  };
+  const ProtectedRouteFac = ({ element }: ChildLayout) => {
+    const [isAuth] = useState(true);
+    return isAuth ? element : <Navigate to="/faculty/login" />;
+  };
+  const ProtectedRouteDept = ({ element }: ChildLayout) => {
+    const [isAuth] = useState(true);
+    return isAuth ? element : <Navigate to="/department/login" />;
+  };
   return (
     <>
       <Router>
         <ScrollToTop />
         <Routes>
           {/* Admin Dashboard */}
-          <Route element={<AdminLayout />}>
+          <Route element={<ProtectedRouteAdmin element={<AdminLayout />} />}>
             <Route path="/admin" element={<AdminHome />} />
             <Route
               path="/admin/manage/department"
@@ -93,26 +108,43 @@ export default function App() {
           <Route path="/admin/register" element={<AdminRegister />} />
 
           {/* Faculty Dashboard */}
-          <Route element={<FacultyLayout />}>
+          <Route element={<ProtectedRouteFac element={<FacultyLayout />} />}>
             <Route path="/faculty" element={<FacultyHome />} />
             <Route path="/faculty/report" element={<FacReport />} />
             <Route path="/faculty/view/subject" element={<FacViewSubjects />} />
             <Route path="/faculty/view/batch" element={<FacViewBatches />} />
             <Route path="/faculty/marks/all" element={<MarksSubject />} />
-            <Route path="/faculty/marks/splitup/:subject/:batch" element={<ManageSplitup />} />
+            <Route
+              path="/faculty/marks/splitup/:subject/:batch"
+              element={<ManageSplitup />}
+            />
             <Route path="/faculty/marks/viewall" element={<ViewMarks />} />
-            <Route path="/faculty/marks/view/:subject/:batch" element={<ViewMarksSubject />} />
-            <Route path="/faculty/marks/upload/:subject/:batch/:splitup" element={<UploadMarks />} />
+            <Route
+              path="/faculty/marks/view/:subject/:batch"
+              element={<ViewMarksSubject />}
+            />
+            <Route
+              path="/faculty/marks/upload/:subject/:batch/:splitup"
+              element={<UploadMarks />}
+            />
             <Route path="/faculty/view/report" element={<FacReport />} />
             <Route path="/faculty/academic" element={<FacAcademicCal />} />
-            <Route path="/faculty/contact/admin" element={<FacContactAdmin />} />
-            <Route path="/faculty/contact/department" element={<FacContactDept />} />
+            <Route
+              path="/faculty/contact/admin"
+              element={<FacContactAdmin />}
+            />
+            <Route
+              path="/faculty/contact/department"
+              element={<FacContactDept />}
+            />
             {/* <Route */}
           </Route>
           <Route path="/faculty/login" element={<FacLogin />} />
 
           {/* Department Dashboard */}
-          <Route element={<DepartmentLayout />}>
+          <Route
+            element={<ProtectedRouteDept element={<DepartmentLayout />} />}
+          >
             <Route path="/department" element={<DepartmentHome />} />
             <Route path="/department/calendar" element={<DeptAcademic />} />
             <Route
