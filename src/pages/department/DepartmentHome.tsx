@@ -1,7 +1,7 @@
 
 import PageMeta from "../../components/common/PageMeta";
 import DemographicCard from "../../components/ecommerce/DemographicCard";
-import EcommerceMetrics from "../../components/ecommerce/EcommerceMetrics";
+import EcommerceMetrics from "../../components/ecommerce/ShowcaseCard";
 import MonthlySalesChart from "../../components/ecommerce/MonthlySalesChart";
 import MonthlyTarget from "../../components/ecommerce/MonthlyTarget";
 import RecentOrders from "../../components/ecommerce/RecentOrders";
