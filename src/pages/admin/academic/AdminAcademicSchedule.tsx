@@ -2,6 +2,6 @@ import React from 'react'
 
 export default function AdminAcademicSchedule() {
   return (
-    <div>AdminAcademicSchedule</div>
+    <div>Here will be Schedules for Academic</div>
   )
 }
