@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Modal } from "../../../components/ui/modal";
 
 // Interface for Degree
 interface Degree {
@@ -15,7 +16,14 @@ const departments = ["Mathematics", "Computer Science", "Physics", "Chemistry"];
 
 export default function ManageDegrees() {
   const [degrees, setDegrees] = useState<Degree[]>([
-    { id: 1, degreeId: "CS101", degreeName: "BSc Computer Science", duration: "3 Years", graduation: "UG", department: "Computer Science" },
+    {
+      id: 1,
+      degreeId: "CS101",
+      degreeName: "BSc Computer Science",
+      duration: "3 Years",
+      graduation: "UG",
+      department: "Computer Science",
+    },
   ]);
 
   const [formData, setFormData] = useState<Degree>({
@@ -32,13 +40,22 @@ export default function ManageDegrees() {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   // Handle Input Change
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   // Open Modal for Adding
   const handleAddClick = () => {
-    setFormData({ id: 0, degreeId: "", degreeName: "", duration: "", graduation: "", department: "" });
+    setFormData({
+      id: 0,
+      degreeId: "",
+      degreeName: "",
+      duration: "",
+      graduation: "",
+      department: "",
+    });
     setIsEditing(false);
     setIsModalOpen(true);
   };
@@ -58,7 +75,9 @@ export default function ManageDegrees() {
   // Add or Update Degree
   const handleSave = () => {
     if (isEditing) {
-      setDegrees(degrees.map((deg) => (deg.id === formData.id ? formData : deg)));
+      setDegrees(
+        degrees.map((deg) => (deg.id === formData.id ? formData : deg))
+      );
     } else {
       setDegrees([...degrees, { ...formData, id: degrees.length + 1 }]);
     }
@@ -113,9 +132,19 @@ export default function ManageDegrees() {
                 <th className="px-6 py-3">Action</th>
               </tr>
             </thead>
+            {filteredDegrees.length === 0 && (
+              <tr>
+                <td colSpan={7} className="text-center p-4">
+                  No degree found
+                </td>
+              </tr>
+            )}
             <tbody>
               {filteredDegrees.map((deg, index) => (
-                <tr key={deg.id} className="bg-white border-b dark:bg-gray-800 hover:bg-gray-50">
+                <tr
+                  key={deg.id}
+                  className="bg-white border-b dark:bg-gray-800 hover:bg-gray-50"
+                >
                   <td className="px-6 py-4">{index + 1}</td>
                   <td className="px-6 py-4">{deg.degreeId}</td>
                   <td className="px-6 py-4">{deg.degreeName}</td>
@@ -143,71 +172,80 @@ export default function ManageDegrees() {
         </div>
 
         {/* Modal - Only shows when isModalOpen is true */}
-        {isModalOpen && (
-          <div className="fixed inset-0 flex items-center justify-center bg-white bg-opacity-50">
-            <div className="bg-white p-6 rounded-lg shadow-lg w-1/3">
-              <h2 className="text-lg font-bold mb-4">{isEditing ? "Edit Degree" : "Add Degree"}</h2>
-              <p className="mb-2">Degree ID</p>
-              <input
-                type="text"
-                name="degreeId"
-                // placeholder="Degree ID"
-                className="block w-full p-2 border rounded mb-2"
-                value={formData.degreeId}
-                onChange={handleChange}
-              />
-    <p className="mb-2">Degree Name</p>
-              <input
-                type="text"
-                name="degreeName"
-                // placeholder="Degree Name"
-                className="block w-full p-2 border rounded mb-2"
-                value={formData.degreeName}
-                onChange={handleChange}
-              />
-              <p className="mb-2">Degree Name</p>
-              <input
-                type="text"
-                name="duration"
-                // placeholder="Duration"
-                className="block w-full p-2 border rounded mb-2"
-                value={formData.duration}
-                onChange={handleChange}
-              />
-              <p className="mb-2">Degree Name</p>
-              <input
-                type="text"
-                name="graduation"
-                // placeholder="Graduation (UG/PG)"
-                className="block w-full p-2 border rounded mb-2"
-                value={formData.graduation}
-                onChange={handleChange}
-              />
-              <select
-                name="department"
-                className="block w-full p-2 border rounded mb-2"
-                value={formData.department}
-                onChange={handleChange}
+        <Modal
+          isOpen={isModalOpen}
+          onClose={handleCloseModal}
+          className="max-w-[500px] m-4"
+        >
+          <div className="relative w-full p-4 overflow-y-auto bg-white no-scrollbar rounded-3xl dark:bg-gray-900 lg:p-8">
+            <h2 className="text-lg font-bold mb-4">
+              {isEditing ? "Edit Degree" : "Add Degree"}
+            </h2>
+            <p className="mb-2">Degree ID</p>
+            <input
+              type="text"
+              name="degreeId"
+              // placeholder="Degree ID"
+              className="block w-full p-2 border rounded mb-2"
+              value={formData.degreeId}
+              onChange={handleChange}
+            />
+            <p className="mb-2">Degree Name</p>
+            <input
+              type="text"
+              name="degreeName"
+              // placeholder="Degree Name"
+              className="block w-full p-2 border rounded mb-2"
+              value={formData.degreeName}
+              onChange={handleChange}
+            />
+            <p className="mb-2">Degree Name</p>
+            <input
+              type="text"
+              name="duration"
+              // placeholder="Duration"
+              className="block w-full p-2 border rounded mb-2"
+              value={formData.duration}
+              onChange={handleChange}
+            />
+            <p className="mb-2">Degree Name</p>
+            <input
+              type="text"
+              name="graduation"
+              // placeholder="Graduation (UG/PG)"
+              className="block w-full p-2 border rounded mb-2"
+              value={formData.graduation}
+              onChange={handleChange}
+            />
+            <select
+              name="department"
+              className="block w-full p-2 border rounded mb-2"
+              value={formData.department}
+              onChange={handleChange}
+            >
+              <option value="">Select Department</option>
+              {departments.map((dept) => (
+                <option key={dept} value={dept}>
+                  {dept}
+                </option>
+              ))}
+            </select>
+            <div className="flex justify-end gap-2">
+              <button
+                onClick={handleCloseModal}
+                className="bg-gray-400 text-white px-4 py-2 rounded"
               >
-                <option value="">Select Department</option>
-                {departments.map((dept) => (
-                  <option key={dept} value={dept}>
-                    {dept}
-                  </option>
-                ))}
-              </select>
-              <div className="flex justify-end gap-2">
-                <button onClick={handleCloseModal} className="bg-gray-400 text-white px-4 py-2 rounded">
-                  Cancel
-                </button>
-                <button onClick={handleSave} className="bg-blue-600 text-white px-4 py-2 rounded">
-                  {isEditing ? "Update" : "Add"}
-                </button>
-              </div>
+                Cancel
+              </button>
+              <button
+                onClick={handleSave}
+                className="bg-blue-600 text-white px-4 py-2 rounded"
+              >
+                {isEditing ? "Update" : "Add"}
+              </button>
             </div>
           </div>
-        )}
-
+        </Modal>
       </div>
     </div>
   );

@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { useModal } from "../../../hooks/useModal";
+// import { useModal } from "../../../hooks/useModal";
+import { Modal } from "../../../components/ui/modal";
 
 // Interface for Department
 interface Department {
@@ -10,11 +11,21 @@ interface Department {
 }
 
 export default function ManageDepartment() {
-  const { openModal, closeModal } = useModal();
+  // const { openModal, closeModal } = useModal();
   const [departments, setDepartments] = useState<Department[]>([
-    { id: 1, name: "Department of Mathematics", username: "dom", password: "domlab.local" },
+    {
+      id: 1,
+      name: "Department of Mathematics",
+      username: "dom",
+      password: "domlab.local",
+    },
   ]);
-  const [formData, setFormData] = useState<Department>({ id: 0, name: "", username: "", password: "" });
+  const [formData, setFormData] = useState<Department>({
+    id: 0,
+    name: "",
+    username: "",
+    password: "",
+  });
   const [isEditing, setIsEditing] = useState(false);
   const [search, setSearch] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false); // New state to control modal visibility
@@ -46,9 +57,14 @@ export default function ManageDepartment() {
   // Add or Update Department
   const handleSave = () => {
     if (isEditing) {
-      setDepartments(departments.map((dept) => (dept.id === formData.id ? formData : dept)));
+      setDepartments(
+        departments.map((dept) => (dept.id === formData.id ? formData : dept))
+      );
     } else {
-      setDepartments([...departments, { ...formData, id: departments.length + 1 }]);
+      setDepartments([
+        ...departments,
+        { ...formData, id: departments.length + 1 },
+      ]);
     }
     setIsModalOpen(false); // Close modal after saving
   };
@@ -60,7 +76,9 @@ export default function ManageDepartment() {
 
   // Filtered Data
   const filteredDepartments = departments.filter(
-    (dept) => dept.name.toLowerCase().includes(search.toLowerCase()) || dept.username.toLowerCase().includes(search.toLowerCase())
+    (dept) =>
+      dept.name.toLowerCase().includes(search.toLowerCase()) ||
+      dept.username.toLowerCase().includes(search.toLowerCase())
   );
 
   return (
@@ -96,9 +114,19 @@ export default function ManageDepartment() {
                 <th className="px-6 py-3">Action</th>
               </tr>
             </thead>
+            {filteredDepartments.length === 0 && (
+              <tr>
+                <td colSpan={5} className="text-center p-4">
+                  No department found
+                </td>
+              </tr>
+            )}
             <tbody>
               {filteredDepartments.map((dept, index) => (
-                <tr key={dept.id} className="bg-white border-b dark:bg-gray-800 hover:bg-gray-50">
+                <tr
+                  key={dept.id}
+                  className="bg-white border-b dark:bg-gray-800 hover:bg-gray-50"
+                >
                   <td className="px-6 py-4">{index + 1}</td>
                   <td className="px-6 py-4">{dept.name}</td>
                   <td className="px-6 py-4">{dept.username}</td>
@@ -122,59 +150,67 @@ export default function ManageDepartment() {
             </tbody>
           </table>
         </div>
+        <Modal
+          isOpen={isModalOpen}
+          onClose={handleCloseModal}
+          className="max-w-[500px] m-4"
+        >
+          <div className="relative w-full p-4 overflow-y-auto bg-white no-scrollbar rounded-3xl dark:bg-gray-900 lg:p-8">
+            <h2 className="text-lg font-bold mb-4 p-4 text-gray-800 dark:text-white">
+              {isEditing ? "Edit Department" : "Add Department"}
+            </h2>
 
-        {/* Modal - Only shows when isModalOpen is true */}
-        {isModalOpen && (
-          <div className="fixed inset-0 flex items-center justify-center bg-white bg-opacity-50">
-            <div className="bg-white p-6 rounded-lg shadow-lg w-1/3">
-              <h2 className="text-lg font-bold mb-4">{isEditing ? "Edit Department" : "Add Department"}</h2>
-              <p className="mb-2">Department Name</p>
+            <div className="px-4">
+              <p className="mb-2 text-sm text-gray-600 dark:text-gray-400">
+                Department Name
+              </p>
               <input
-        
                 type="text"
                 name="name"
-                // placeholder="Department Name"
-                className="block w-full p-2 border rounded mb-2"
+                className="block w-full p-2 border rounded mb-3"
                 value={formData.name}
                 onChange={handleChange}
               />
-              <p className="mb-2">Username</p>
 
+              <p className="mb-2 text-sm text-gray-600 dark:text-gray-400">
+                Username
+              </p>
               <input
                 type="text"
                 name="username"
-                // placeholder="Username"
-                className="block w-full p-2 border rounded mb-2"
+                className="block w-full p-2 border rounded mb-3"
                 value={formData.username}
                 onChange={handleChange}
               />
-              <p className="mb-2">Password</p>
+
+              <p className="mb-2 text-sm text-gray-600 dark:text-gray-400">
+                Password
+              </p>
               <input
                 type="text"
                 name="password"
-                // placeholder="Password"
-                className="block w-full p-2 border rounded mb-2"
+                className="block w-full p-2 border rounded mb-4"
                 value={formData.password}
                 onChange={handleChange}
               />
-              <div className="flex justify-end gap-2">
-                <button
-                  onClick={handleCloseModal}
-                  className="bg-blue-400 text-white px-4 py-2 rounded"
-                >
-                  Cancel
-                </button>
-                <button
-                  onClick={handleSave}
-                  className="bg-blue-600 text-white px-4 py-2 rounded"
-                >
-                  {isEditing ? "Update" : "Add"}
-                </button>
-              </div>
+            </div>
+
+            <div className="flex justify-end gap-2 px-4 pb-4">
+              <button
+                onClick={handleCloseModal}
+                className="bg-gray-400 text-white px-4 py-2 rounded"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleSave}
+                className="bg-blue-600 text-white px-4 py-2 rounded"
+              >
+                {isEditing ? "Update" : "Add"}
+              </button>
             </div>
           </div>
-        )}
-
+        </Modal>
       </div>
     </div>
   );
