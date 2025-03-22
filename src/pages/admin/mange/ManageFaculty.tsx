@@ -1,18 +1,9 @@
 import { useState, useRef, useEffect } from 'react'
-// import FullCalendar from '@fullcalendar/react'
-// import dayGridPlugin from '@fullcalendar/daygrid'
-// import timeGridPlugin from '@fullcalendar/timegrid'
-// import interactionPlugin from '@fullcalendar/interaction'
-// import { EventInput, DateSelectArg, EventClickArg } from '@fullcalendar/core'
 import { Modal } from '../../../components/ui/modal'
 import { useModal } from '../../../hooks/useModal'
 import PageMeta from '../../../components/common/PageMeta'
 
-// interface CalendarEvent extends EventInput {
-//   extendedProps: {
-//     calendar: string
-//   }
-// }
+
 
 const Calendar: React.FC = () => {
   const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(null)
@@ -21,59 +12,41 @@ const Calendar: React.FC = () => {
   const [eventEndDate, setEventEndDate] = useState('')
   const [eventLevel, setEventLevel] = useState('')
   const [events, setEvents] = useState([])
-  // const calendarRef = useRef<FullCalendar>(null)
   const { isOpen, openModal, closeModal } = useModal()
 
   const calendarsEvents = {
     Fifteen: '2015',
     Nineteen: '2019',
-    'Twenty three': '2023',
+    "Twenty three": '2023',
+    
   }
 
   useEffect(() => {
+    
     setEvents([
-      {
-        id: '1',
-        title: 'Event Conf.',
-        start: new Date().toISOString().split('T')[0],
-        extendedProps: { calendar: 'Danger' },
-      },
-      {
-        id: '2',
-        title: 'Meeting',
-        start: new Date(Date.now() + 86400000).toISOString().split('T')[0],
-        extendedProps: { calendar: 'Success' },
-      },
-      {
-        id: '3',
-        title: 'Workshop',
-        start: new Date(Date.now() + 172800000).toISOString().split('T')[0],
-        end: new Date(Date.now() + 259200000).toISOString().split('T')[0],
-        extendedProps: { calendar: 'Primary' },
-      },
+      
     ])
   }, [])
 
-  const handleDateSelect = (selectInfo: DateSelectArg) => {
-    resetModalFields()
-    setEventStartDate(selectInfo.startStr)
-    setEventEndDate(selectInfo.endStr || selectInfo.startStr)
-    openModal()
-  }
+  // const handleDateSelect = (selectInfo: DateSelectArg) => {
+  //   resetModalFields()
+  //   setEventStartDate(selectInfo.startStr)
+  //   setEventEndDate(selectInfo.endStr || selectInfo.startStr)
+  //   openModal()
+  // }
 
-  const handleEventClick = (clickInfo: EventClickArg) => {
-    const event = clickInfo.event
-    setSelectedEvent(event as unknown as CalendarEvent)
-    setEventTitle(event.title)
-    setEventStartDate(event.start?.toISOString().split('T')[0] || '')
-    setEventEndDate(event.end?.toISOString().split('T')[0] || '')
-    setEventLevel(event.extendedProps.calendar)
-    openModal()
-  }
+  // const handleEventClick = (clickInfo: EventClickArg) => {
+  //   const event = clickInfo.event
+  //   setSelectedEvent(event as unknown as CalendarEvent)
+  //   setEventTitle(event.title)
+  //   setEventStartDate(event.start?.toISOString().split('T')[0] || '')
+  //   setEventEndDate(event.end?.toISOString().split('T')[0] || '')
+  //   setEventLevel(event.extendedProps.calendar)
+  //   openModal()
+  // }
 
   const handleAddOrUpdateEvent = () => {
     if (selectedEvent) {
-      // Update existing event
       setEvents((prevEvents) =>
         prevEvents.map((event) =>
           event.id === selectedEvent.id
@@ -88,7 +61,6 @@ const Calendar: React.FC = () => {
         )
       )
     } else {
-      // Add new event
       const newEvent: CalendarEvent = {
         id: Date.now().toString(),
         title: eventTitle,
@@ -103,13 +75,13 @@ const Calendar: React.FC = () => {
     resetModalFields()
   }
 
-  const resetModalFields = () => {
-    setEventTitle('')
-    setEventStartDate('')
-    setEventEndDate('')
-    setEventLevel('')
-    setSelectedEvent(null)
-  }
+  // const resetModalFields = () => {
+  //   setEventTitle('')
+  //   setEventStartDate('')
+  //   setEventEndDate('')
+  //   setEventLevel('')
+  //   setSelectedEvent(null)
+  // }
 
   return (
     <>
@@ -119,6 +91,8 @@ const Calendar: React.FC = () => {
       />
       <div className='rounded-2xl border  border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]'>
         {/* tables  */}
+
+        
         <div className='dark:bg-gray-dark bg-white px-4 py-2 rounded-xl'>
           {/* Controls */}
           <div className='flex justify-between items-center mb-4'>
@@ -127,7 +101,7 @@ const Calendar: React.FC = () => {
               onClick={openModal}
               className='text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800'
             >
-              Add Faculty
+              Add Regulation
             </button>
           </div>
 
@@ -185,9 +159,11 @@ const Calendar: React.FC = () => {
                   <th
                     scope='row'
                     className='px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white'
-                  ></th>
+                  >
+                    
+                  </th>
                   <th className='px-6 py-4 whitespace-nowrap dark:text-white'>
-                    Department of Ma
+                      Department of Ma
                   </th>
                   <td className='px-6 py-4'>21/02/24</td>
                   <td className='px-6 py-4'>21/03/25</td>
@@ -221,6 +197,7 @@ const Calendar: React.FC = () => {
               <h5 className='mb-2 font-semibold text-gray-800 modal-title text-theme-xl dark:text-white/90 lg:text-2xl'>
                 {selectedEvent ? 'Edit Event' : 'Add Regulation'}
               </h5>
+             
             </div>
             <div className='mt-8'>
               <div>
