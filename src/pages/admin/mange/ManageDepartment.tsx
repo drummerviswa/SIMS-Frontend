@@ -125,29 +125,34 @@ export default function ManageDepartment() {
 
         {/* Modal - Only shows when isModalOpen is true */}
         {isModalOpen && (
-          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="fixed inset-0 flex items-center justify-center bg-white bg-opacity-50">
             <div className="bg-white p-6 rounded-lg shadow-lg w-1/3">
               <h2 className="text-lg font-bold mb-4">{isEditing ? "Edit Department" : "Add Department"}</h2>
+              <p className="mb-2">Department Name</p>
               <input
+        
                 type="text"
                 name="name"
-                placeholder="Department Name"
+                // placeholder="Department Name"
                 className="block w-full p-2 border rounded mb-2"
                 value={formData.name}
                 onChange={handleChange}
               />
+              <p className="mb-2">Username</p>
+
               <input
                 type="text"
                 name="username"
-                placeholder="Username"
+                // placeholder="Username"
                 className="block w-full p-2 border rounded mb-2"
                 value={formData.username}
                 onChange={handleChange}
               />
+              <p className="mb-2">Password</p>
               <input
                 type="text"
                 name="password"
-                placeholder="Password"
+                // placeholder="Password"
                 className="block w-full p-2 border rounded mb-2"
                 value={formData.password}
                 onChange={handleChange}
@@ -155,7 +160,7 @@ export default function ManageDepartment() {
               <div className="flex justify-end gap-2">
                 <button
                   onClick={handleCloseModal}
-                  className="bg-gray-400 text-white px-4 py-2 rounded"
+                  className="bg-blue-400 text-white px-4 py-2 rounded"
                 >
                   Cancel
                 </button>
