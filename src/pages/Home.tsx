@@ -1,12 +1,14 @@
 import { Link, useLocation } from "react-router";
 import PageMeta from "../components/common/PageMeta";
 import styled from "styled-components";
-import { MdAdminPanelSettings } from "react-icons/md";
+import { MdAdminPanelSettings, MdDarkMode } from "react-icons/md";
 import { FaSchoolFlag } from "react-icons/fa6";
 import { GiTeacher } from "react-icons/gi";
+import { CiLight } from "react-icons/ci";
+import { useTheme } from "../context/ThemeContext";
 export default function Home() {
   const params = useLocation();
-  console.log(params);
+  const themeData = useTheme();
 
   return (
     <>
@@ -44,6 +46,23 @@ export default function Home() {
                     {link.label}
                   </Link>
                 ))}
+              </div>
+              <div className="ml-4 mt-1">
+                {themeData.theme === "light" ? (
+                  <button
+                    className="rounded-2xl"
+                    onClick={() => themeData.toggleTheme((prev) => !prev)}
+                  >
+                    <CiLight size={28} />
+                  </button>
+                ) : (
+                  <button
+                    className=" rounded-2xl"
+                    onClick={() => themeData.toggleTheme((prev) => !prev)}
+                  >
+                    <MdDarkMode size={28} />
+                  </button>
+                )}
               </div>
             </div>
           </nav>
