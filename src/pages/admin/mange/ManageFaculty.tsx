@@ -3,6 +3,11 @@ import { Modal } from '../../../components/ui/modal'
 import { useModal } from '../../../hooks/useModal'
 import PageMeta from '../../../components/common/PageMeta'
 
+interface CalendarEvent extends EventInput {
+  extendedProps: {
+    calendar: string;
+  };
+}
 
 
 const Calendar: React.FC = () => {

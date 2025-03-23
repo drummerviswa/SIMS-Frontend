@@ -4,9 +4,9 @@
     { "path": "./tsconfig.app.json" },
     { "path": "./tsconfig.node.json" }
   ],
-  "@typescript-eslint/no-unused-vars" : "off",
   "compilerOptions": {
-    "noUnusedLocals": false,
-    "noUnusedParameters": false
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "jsx": "react-jsx"
   }
 }
