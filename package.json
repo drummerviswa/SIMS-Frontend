@@ -8,7 +8,7 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "netdev":"vite --host"
+    "netdev": "vite --host"
   },
   "dependencies": {
     "@fullcalendar/core": "^6.1.15",
@@ -59,9 +59,9 @@
     "vite-plugin-svgr": "^4.3.0"
   },
   "eslintConfig": {
-    "extends": "react-app",
     "rules": {
-      "@typescript-eslint/no-unused-vars": "off"
+      "no-unused-vars": 0,
+      "@typescript-eslint/no-unused-vars": 0
     }
   }
 }
