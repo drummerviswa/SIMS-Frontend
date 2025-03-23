@@ -1,327 +1,205 @@
-import { useState, useRef, useEffect } from 'react'
+import { useState } from 'react'
 import { Modal } from '../../../components/ui/modal'
-import { useModal } from '../../../hooks/useModal'
-import PageMeta from '../../../components/common/PageMeta'
 
-const Calendar: React.FC = () => {
+interface Subject {
+  id: number
+  name: string
+  credits: number
+  code: number
+  reg: number
+  internal: number
+}
 
-  // to create state
-  // to store data
+export default function ManageDepartment() {
+  const [sub, setsub] = useState<Subject[]>([
+    {
+      id: 1,
+      name: 'Department of Mathematics',
+      credits: 21,
+      code: 1,
+      reg: 1,
+      internal: 1,
+    },
+  ])
 
-  // 1 step handle the input and put the details in the array
-
-  const [user,setusers] = useState([]);
-
-  // to handle input
-
-  const [subinfo,setsubinfo] = useState({
-    // to put in the input field
-
-
-    name:"",
-    code:"",
-    credit:""
+  const [formData, setFormData] = useState<Subject>({
+    id: 0,
+    name: '',
+    credits: 0,
+    code: 0,
+    reg: 0,
+    internal: 0,
   })
 
+  const [isEditing, setIsEditing] = useState(false)
+  const [search, setSearch] = useState('')
+  const [isModalOpen, setIsModalOpen] = useState(false)
 
-  const handleInput = (e) =>{
-
-    const {name , value} = e.target;
-
-    setsubinfo((currentinfo)=>{
-      return{
-        ...currentinfo,
-        [name]:value
-      }
-    })
-
-
-
+  // Handle Input Change
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value })
   }
-  
 
+  // Open Modal for Adding
+  const handleAddClick = () => {
+    setFormData({ id: 0, name: '', credits: 0, code: 0, reg: 0, internal: 0 })
+    setIsEditing(false)
+    setIsModalOpen(true)
+  }
 
+  // Open Modal for Editing
+  const handleEditClick = (subject: Subject) => {
+    setFormData(subject)
+    setIsEditing(true)
+    setIsModalOpen(true)
+  }
 
+  // Close Modal
+  const handleCloseModal = () => {
+    setIsModalOpen(false)
+  }
 
+  // Add or Update Subject
+  const handleSave = () => {
+    if (isEditing) {
+      setsub(sub.map((s) => (s.id === formData.id ? formData : s)))
+    } else {
+      setsub([...sub, { ...formData, id: sub.length + 1 }])
+    }
+    setIsModalOpen(false)
+  }
 
-  const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(null)
-  // const [eventTitle, setEventTitle] = useState('')
-  // const [eventStartDate, setEventStartDate] = useState('')
-  // const [eventEndDate, setEventEndDate] = useState('')
-  // const [eventLevel, setEventLevel] = useState('')
-  // const [events, setEvents] = useState([])
+  // Delete Subject
+  const handleDelete = (id: number) => {
+    setsub(sub.filter((s) => s.id !== id))
+  }
 
-
-  const { isOpen, openModal, closeModal } = useModal()
-
-  // const calendarsEvents = {
-  //   Fifteen: '2015',
-  //   Nineteen: '2019',
-  //   'Twenty three': '2023',
-  // }
-
-  // useEffect(() => {
-  //   setEvents([])
-  // }, [])
-
-  // const handleDateSelect = (selectInfo: DateSelectArg) => {
-  //   resetModalFields()
-  //   setEventStartDate(selectInfo.startStr)
-  //   setEventEndDate(selectInfo.endStr || selectInfo.startStr)
-  //   openModal()
-  // }
-
-  // const handleEventClick = (clickInfo: EventClickArg) => {
-  //   const event = clickInfo.event
-  //   setSelectedEvent(event as unknown as CalendarEvent)
-  //   setEventTitle(event.title)
-  //   setEventStartDate(event.start?.toISOString().split('T')[0] || '')
-  //   setEventEndDate(event.end?.toISOString().split('T')[0] || '')
-  //   setEventLevel(event.extendedProps.calendar)
-  //   openModal()
-  // }
-
-  // const handleAddOrUpdateEvent = () => {
-  //   if (selectedEvent) {
-  //     setEvents((prevEvents) =>
-  //       prevEvents.map((event) =>
-  //         event.id === selectedEvent.id
-  //           ? {
-  //               ...event,
-  //               title: eventTitle,
-  //               start: eventStartDate,
-  //               end: eventEndDate,
-  //               extendedProps: { calendar: eventLevel },
-  //             }
-  //           : event
-  //       )
-  //     )
-  //   } else {
-  //     const newEvent: CalendarEvent = {
-  //       id: Date.now().toString(),
-  //       title: eventTitle,
-  //       start: eventStartDate,
-  //       end: eventEndDate,
-  //       allDay: true,
-  //       extendedProps: { calendar: eventLevel },
-  //     }
-  //     setEvents((prevEvents) => [...prevEvents, newEvent])
-  //   }
-  //   closeModal()
-  //   resetModalFields()
-  // }
-
-  // const resetModalFields = () => {
-  //   setEventTitle('')
-  //   setEventStartDate('')
-  //   setEventEndDate('')
-  //   setEventLevel('')
-  //   setSelectedEvent(null)
-  // }
+  // Filtered Data
+  const filteredSubjects = sub.filter(
+    (s) =>
+      s.name.toLowerCase().includes(search.toLowerCase()) ||
+      s.credits.toString().toLowerCase().includes(search.toLowerCase())
+  )
 
   return (
-    <>
-      <PageMeta
-        title='React.js Calendar Dashboard | TailAdmin - Next.js Admin Dashboard Template'
-        description='This is React.js Calendar Dashboard page for TailAdmin - React.js Tailwind CSS Admin Dashboard Template'
-      />
+    <div>
+      <div className='dark:bg-gray-dark bg-white px-4 py-2 rounded-xl'>
+        {/* Controls */}
+        <div className='flex justify-between items-center mb-4'>
+          <input
+            type='text'
+            placeholder='Search Subject...'
+            className='border p-2 rounded'
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+          <button
+            type='button'
+            onClick={handleAddClick}
+            className='text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-5 py-2.5'
+          >
+            Add Subject
+          </button>
+        </div>
 
-      <div className='rounded-2xl border  border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]'>
-        {/* tables  */}
-
-        <div className='dark:bg-gray-dark bg-white px-4 py-2 rounded-xl'>
-          {/* Controls */}
-          <div className='flex justify-between items-center mb-4'>
-            <button
-              type='button'
-              onClick={openModal}
-              className='text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800'
-            >
-              Add Subject
-            </button>
-          </div>
-
-          {/* Tables */}
-          <div className='relative overflow-x-auto shadow-md sm:rounded-lg'>
-            <table className='w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400'>
-              <thead className='text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400'>
-                <tr>
-                  <th scope='col' className='p-4'>
-                    <div className='flex items-center'>
-                      <input
-                        id='checkbox-all-search'
-                        type='checkbox'
-                        className='w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600'
-                      />
-                      <label htmlFor='checkbox-all-search' className='sr-only'>
-                        checkbox
-                      </label>
-                    </div>
-                  </th>
-                  <th scope='col' className='px-6 py-3'>
-                    S.No
-                  </th>
-                  <th scope='col' className='px-6 py-3'>
-                    Subject name
-                  </th>
-                  <th scope='col' className='px-6 py-3'>
-                    Credits
-                  </th>
-                  <th scope='col' className='px-6 py-3'>
-                    Subject Code
-                  </th>
-
-                  <th scope='col' className='px-6 py-3'>
-                    <span>Action</span>
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr className='bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600'>
-                  <td className='w-4 p-4'>
-                    <div className='flex items-center'>
-                      <input
-                        id='checkbox-table-search-1'
-                        type='checkbox'
-                        className='w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600'
-                      />
-                      <label
-                        htmlFor='checkbox-table-search-1'
-                        className='sr-only'
-                      >
-                        checkbox
-                      </label>
-                    </div>
-                  </td>
-                  <th
-                    scope='row'
-                    className='px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white'
-                  ></th>
-                  <th className='px-6 py-4 whitespace-nowrap dark:text-white'>
-                    Department of Ma
-                  </th>
-                  <td className='px-6 py-4'>21/02/24</td>
-                  <td className='px-6 py-4'>21/03/25</td>
-                  <td className='px-6 py-4 flex items-center justify-around gap-x-2'>
+        {/* Table */}
+        <div className='relative overflow-x-auto shadow-md sm:rounded-lg'>
+          <table className='w-full text-sm text-left text-gray-500 dark:text-gray-400'>
+            <thead className='text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700'>
+              <tr>
+                <th className='px-6 py-3'>S.No</th>
+                <th className='px-6 py-3'>Subject Name</th>
+                <th className='px-6 py-3'>Credits</th>
+                <th className='px-6 py-3'>Subject Code</th>
+                <th className='px-6 py-3'>Regulation</th>
+                <th className='px-6 py-3'>Internals</th>
+                <th className='px-6 py-3 '>Action</th>
+              </tr>
+            </thead>
+            {filteredSubjects.length === 0 && (
+              <tr>
+                <td colSpan={7} className='text-center p-4'>
+                  No subject found
+                </td>
+              </tr>
+            )}
+            <tbody>
+              {filteredSubjects.map((s, index) => (
+                <tr
+                  key={s.id}
+                  className='bg-white border-b dark:bg-gray-800 hover:bg-gray-50'
+                >
+                  <td className='px-6 py-4'>{index + 1}</td>
+                  <td className='px-6 py-4'>{s.name}</td>
+                  <td className='px-6 py-4'>{s.credits}</td>
+                  <td className='px-6 py-4'>{s.code}</td>
+                  <td className='px-6 py-4'>{s.reg}</td>
+                  <td className='px-6 py-4'>{s.internal}</td>
+                  <td className='px-6 py-4 flex gap-x-2'>
                     <button
-                      onClick={openModal}
-                      className='font-medium text-blue-600 dark:text-blue-500 hover:underline'
+                      onClick={() => handleEditClick(s)}
+                      className='text-blue-600 hover:underline'
                     >
                       Edit
                     </button>
-                    <a
-                      href='#'
-                      className='font-medium text-red-600 dark:text-red-500 hover:underline'
+                    <button
+                      onClick={() => handleDelete(s.id)}
+                      className='text-red-600 hover:underline'
                     >
                       Delete
-                    </a>
+                    </button>
                   </td>
                 </tr>
-              </tbody>
-            </table>
-          </div>
+              ))}
+            </tbody>
+          </table>
         </div>
 
+        {/* Modal */}
         <Modal
-          isOpen={isOpen}
-          onClose={closeModal}
-          className='max-w-[700px] p-6 lg:p-10'
+          isOpen={isModalOpen}
+          onClose={handleCloseModal}
+          className='max-w-[500px] m-4'
         >
-          <div className='flex flex-col px-2 overflow-y-auto custom-scrollbar'>
-            <div>
-              <h5 className='mb-2 font-semibold text-gray-800 modal-title text-theme-xl dark:text-white/90 lg:text-2xl'>
-                {selectedEvent ? 'Edit Subject' : 'Add Subject'}
-              </h5>
+          <div className='relative w-full p-4 overflow-y-auto bg-white no-scrollbar rounded-3xl dark:bg-gray-900 lg:p-8'>
+            <h2 className='text-lg font-bold mb-4 p-4 text-gray-800 dark:text-white'>
+              {isEditing ? 'Edit Subject' : 'Add Subject'}
+            </h2>
+
+            <div className='px-4'>
+              {['name', 'credits', 'code', 'reg', 'internal'].map((field) => (
+                <div key={field}>
+                  <p className='mb-2 text-sm text-gray-600 dark:text-gray-400'>
+                    {field.charAt(0).toUpperCase() + field.slice(1)}
+                  </p>
+                  <input
+                    type={field === 'name' ? 'text' : 'number'}
+                    name={field}
+                    className='block w-full p-2 border rounded mb-3'
+                    value={formData[field as keyof Subject]}
+                    onChange={handleChange}
+                  />
+                </div>
+              ))}
             </div>
-            <div className='mt-8'>
-              <div>
-                <div>
-                  <label className='mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400'>
-                    Subject Name
-                  </label>
 
-                  {/* first input */}
-                  <input
-                    id='event-title'
-                    type='text'
-                    value={subinfo.name}
-                    onChange={handleInput}
-                    name='name'
-                    className='dark:bg-dark-900 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800'
-                  />
-                </div>
-              </div>
-
-              <div className='mt-6'>
-                <label className='block mb-4 text-sm font-medium text-gray-700 dark:text-gray-400'>
-                  Subject Code
-                </label>
-                <div className='flex flex-wrap items-center gap-4 sm:gap-5'>
-                  {/* second input */}
-                  <input
-                    id='event-title'
-                    type='text'
-                    value={subinfo.code}
-                    onChange={handleInput}
-                    name='code'
-                    // onChange={(e) => setEventTitle(e.target.value)}
-                    className='dark:bg-dark-900 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800'
-                  />
-                </div>
-              </div>
-
-              <div className='mt-6'>
-                <label className='mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400'>
-                  Credits
-                </label>
-                <div className='relative'>
-                  {/* third input */}
-                  <input
-                    id='event-start-date'
-                    type='number'
-                    onChange={handleInput}
-                    value={subinfo.credit}
-                    name='credit'
-                    // onChange={(e) => setEventStartDate(e.target.value)}
-                    className='dark:bg-dark-900 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-2.5 pl-4 pr-11 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800'
-                  />
-                </div>
-              </div>
-            </div>
-            <div className='flex items-center gap-3 mt-6 modal-footer sm:justify-end'>
+            <div className='flex justify-end gap-2 px-4 pb-4'>
               <button
-                onClick={closeModal}
-                type='button'
-                className='flex w-full justify-center rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] sm:w-auto'
+                onClick={handleCloseModal}
+                className='bg-gray-400 text-white px-4 py-2 rounded'
               >
-                Close
+                Cancel
               </button>
               <button
-                // onClick={handleAddOrUpdateEvent}
-                type='button'
-                className='btn btn-success btn-update-event flex w-full justify-center rounded-lg bg-brand-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-600 sm:w-auto'
+                onClick={handleSave}
+                className='bg-blue-600 text-white px-4 py-2 rounded'
               >
-                {selectedEvent ? 'Update Changes' : 'Add Event'}
+                {isEditing ? 'Update' : 'Add'}
               </button>
             </div>
           </div>
         </Modal>
       </div>
-    </>
+    </div>
   )
 }
-
-// const renderEventContent = (eventInfo: any) => {
-//   const colorClass = `fc-bg-${eventInfo.event.extendedProps.calendar.toLowerCase()}`
-//   return (
-//     <div
-//       className={`event-fc-color flex fc-event-main ${colorClass} p-1 rounded-sm`}
-//     >
-//       <div className='fc-daygrid-event-dot'></div>
-//       <div className='fc-event-time'>{eventInfo.timeText}</div>
-//       <div className='fc-event-title'>{eventInfo.event.title}</div>
-//     </div>
-//   )
-// }
-
-export default Calendar
