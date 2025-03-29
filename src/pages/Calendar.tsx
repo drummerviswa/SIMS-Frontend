@@ -268,6 +268,7 @@ const Calendar: React.FC = () => {
   );
 };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const renderEventContent = (eventInfo: any) => {
   const colorClass = `fc-bg-${eventInfo.event.extendedProps.calendar.toLowerCase()}`;
   return (

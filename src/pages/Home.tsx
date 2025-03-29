@@ -51,14 +51,14 @@ export default function Home() {
                 {themeData.theme === "light" ? (
                   <button
                     className="rounded-2xl"
-                    onClick={() => themeData.toggleTheme((prev) => !prev)}
+                    onClick={() => themeData.toggleTheme()}
                   >
                     <CiLight size={28} />
                   </button>
                 ) : (
                   <button
                     className=" rounded-2xl"
-                    onClick={() => themeData.toggleTheme((prev) => !prev)}
+                    onClick={() => themeData.toggleTheme()}
                   >
                     <MdDarkMode size={28} />
                   </button>

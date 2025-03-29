@@ -1,256 +1,210 @@
-import { useState } from 'react'
-import { Modal } from '../../../components/ui/modal'
+import { useState } from "react";
+import { Modal } from "../../../components/ui/modal";
+import { useModal } from "../../../hooks/useModal";
+import PageMeta from "../../../components/common/PageMeta";
 
-// Interface for Faculty
-interface Faculty {
-  id: number
-  primaryDept: number
-  username: string
-  password: string
-  name: string
-  designation: string
+interface CalendarEvent {
+  id: string;
+  title: string;
+  start: string;
+  end: string;
+  allDay: boolean;
+  extendedProps: { calendar: string };
 }
 
-export default function ManageDepartment() {
-  const [faculty, setFaculty] = useState<Faculty[]>([
-    {
-      id: 1,
-      primaryDept: 2,
-      username: 'dom',
-      password: 'domlab.local',
-      name: 'Ksb',
-      designation: 'HOD',
-    },
-  ])
+const ManageFaculty: React.FC = () => {
+  const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(
+    null
+  );
+  const [eventTitle, setEventTitle] = useState("");
+  const [eventStartDate, setEventStartDate] = useState("");
+  const [eventEndDate, setEventEndDate] = useState("");
+  const [eventLevel, setEventLevel] = useState("");
+  const [events, setEvents] = useState<CalendarEvent[]>([]);
+  const { isOpen, openModal, closeModal } = useModal();
 
-  const [formData, setFormData] = useState<Faculty>({
-    id: 0,
-    primaryDept: 0, // Changed from "" to 0 to match type
-    username: '',
-    password: '',
-    name: '',
-    designation: '',
-  })
+  const calendarsEvents = {
+    Fifteen: "2015",
+    Nineteen: "2019",
+    "Twenty three": "2023",
+  };
 
-  const [isEditing, setIsEditing] = useState(false)
-  const [search, setSearch] = useState('')
-  const [isModalOpen, setIsModalOpen] = useState(false)
-
-  // Handle Input Change
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value })
-  }
-
-  // Open Modal for Adding
-  const handleAddClick = () => {
-    setFormData({
-      id: 0,
-      primaryDept: 0, // Changed from "" to 0
-      username: '',
-      password: '',
-      name: '',
-      designation: '',
-    })
-    setIsEditing(false)
-    setIsModalOpen(true)
-  }
-
-  // Open Modal for Editing
-  const handleEditClick = (facultyMember: Faculty) => {
-    setFormData(facultyMember)
-    setIsEditing(true)
-    setIsModalOpen(true)
-  }
-
-  // Close Modal
-  const handleCloseModal = () => {
-    setIsModalOpen(false)
-  }
-
-  // Add or Update Faculty
-  const handleSave = () => {
-    if (isEditing) {
-      setFaculty(
-        faculty.map((member) => (member.id === formData.id ? formData : member))
-      )
+  const handleAddOrUpdateEvent = () => {
+    if (selectedEvent) {
+      setEvents((prevEvents) =>
+        prevEvents.map((event) =>
+          event.id === selectedEvent.id
+            ? {
+                ...event,
+                title: eventTitle,
+                start: eventStartDate,
+                end: eventEndDate,
+                extendedProps: { calendar: eventLevel },
+              }
+            : event
+        )
+      );
     } else {
-      setFaculty([...faculty, { ...formData, id: Date.now() }])
+      const newEvent: CalendarEvent = {
+        id: Date.now().toString(),
+        title: eventTitle,
+        start: eventStartDate,
+        end: eventEndDate,
+        allDay: true,
+        extendedProps: { calendar: eventLevel },
+      };
+      setEvents((prevEvents) => [...prevEvents, newEvent]);
     }
-    setIsModalOpen(false)
-  }
+    closeModal();
+    resetModalFields();
+  };
 
-  // Delete Faculty
-  const handleDelete = (id: number) => {
-    setFaculty(faculty.filter((member) => member.id !== id))
-  }
-
-  // Filtered Data
-  const filteredFaculty = faculty.filter(
-    (member) =>
-      member.name.toLowerCase().includes(search.toLowerCase()) ||
-      member.username.toLowerCase().includes(search.toLowerCase())
-  )
+  const resetModalFields = () => {
+    setEventTitle("");
+    setEventStartDate("");
+    setEventEndDate("");
+    setEventLevel("");
+    setSelectedEvent(null);
+  };
 
   return (
-    <div>
-      <div className='dark:bg-gray-dark bg-white px-4 py-2 rounded-xl'>
-        {/* Controls */}
-        <div className='flex justify-between items-center mb-4'>
-          <input
-            type='text'
-            placeholder='Search faculty...'
-            className='border p-2 rounded'
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
-          <button
-            type='button'
-            onClick={handleAddClick}
-            className='text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-5 py-2.5'
-          >
-            Add Faculty
-          </button>
-        </div>
+    <>
+      <PageMeta
+        title="React.js Calendar Dashboard | TailAdmin"
+        description="This is React.js Calendar Dashboard page for TailAdmin."
+      />
+      <div className="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
+        <div className="dark:bg-gray-dark bg-white px-4 py-2 rounded-xl">
+          <div className="flex justify-between items-center mb-4">
+            <button
+              type="button"
+              onClick={openModal}
+              className="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-5 py-2.5"
+            >
+              Add Regulation
+            </button>
+          </div>
 
-        {/* Table */}
-        <div className='relative overflow-x-auto shadow-md sm:rounded-lg'>
-          <table className='w-full text-sm text-left text-gray-500 dark:text-gray-400'>
-            <thead className='text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700'>
-              <tr>
-                <th className='px-6 py-3'>S.No</th>
-                <th className='px-6 py-3'>Primary Dept</th>
-                <th className='px-6 py-3'>Username</th>
-                <th className='px-6 py-3'>Password</th>
-                <th className='px-6 py-3'>Faculty Name</th>
-                <th className='px-6 py-3'>Designation</th>
-                <th className='px-6 py-3'>Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredFaculty.length === 0 ? (
+          {/* Regulation List Table */}
+          <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
+            <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+              <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                 <tr>
-                  <td colSpan={7} className='text-center p-4'>
-                    No faculty found
-                  </td>
+                  <th className="px-6 py-3">S.No</th>
+                  <th className="px-6 py-3">Regulation Name</th>
+                  <th className="px-6 py-3">Start Date</th>
+                  <th className="px-6 py-3">End Date</th>
+                  <th className="px-6 py-3">Action</th>
                 </tr>
-              ) : (
-                filteredFaculty.map((member, index) => (
+              </thead>
+              <tbody>
+                {events.map((event, index) => (
                   <tr
-                    key={member.id}
-                    className='bg-white border-b dark:bg-gray-800 hover:bg-gray-50'
+                    key={event.id}
+                    className="bg-white border-b dark:bg-gray-800 hover:bg-gray-50"
                   >
-                    <td className='px-6 py-4'>{index + 1}</td>
-                    <td className='px-6 py-4'>{member.primaryDept}</td>
-                    <td className='px-6 py-4'>{member.username}</td>
-                    <td className='px-6 py-4'>{member.password}</td>
-                    <td className='px-6 py-4'>{member.name}</td>
-                    <td className='px-6 py-4'>{member.designation}</td>
-                    <td className='px-6 py-4 flex gap-x-2'>
+                    <td className="px-6 py-4">{index + 1}</td>
+                    <td className="px-6 py-4">{event.title}</td>
+                    <td className="px-6 py-4">{event.start}</td>
+                    <td className="px-6 py-4">{event.end}</td>
+                    <td className="px-6 py-4 flex gap-x-2">
                       <button
-                        onClick={() => handleEditClick(member)}
-                        className='text-blue-600 hover:underline'
+                        onClick={() => {
+                          setSelectedEvent(event);
+                          setEventTitle(event.title);
+                          setEventStartDate(event.start);
+                          setEventEndDate(event.end);
+                          setEventLevel(event.extendedProps.calendar);
+                          openModal();
+                        }}
+                        className="text-blue-600 hover:underline"
                       >
                         Edit
                       </button>
                       <button
-                        onClick={() => handleDelete(member.id)}
-                        className='text-red-600 hover:underline'
+                        onClick={() =>
+                          setEvents((prev) =>
+                            prev.filter((e) => e.id !== event.id)
+                          )
+                        }
+                        className="text-red-600 hover:underline"
                       >
                         Delete
                       </button>
                     </td>
                   </tr>
-                ))
-              )}
-            </tbody>
-          </table>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
 
         {/* Modal */}
         <Modal
-          isOpen={isModalOpen}
-          onClose={handleCloseModal}
-          className='max-w-[500px] m-4'
+          isOpen={isOpen}
+          onClose={closeModal}
+          className="max-w-[700px] p-6"
         >
-          <div className='relative w-full p-4 overflow-y-auto bg-white no-scrollbar rounded-3xl dark:bg-gray-900 lg:p-8'>
-            <h2 className='text-lg font-bold mb-4 p-4 text-gray-800 dark:text-white'>
-              {isEditing ? 'Edit Faculty' : 'Add Faculty'}
-            </h2>
-
-            <div className='px-4'>
-              <label className='mb-2 text-sm text-gray-600 dark:text-gray-400'>
-                Primary Dept
+          <div className="flex flex-col px-2">
+            <h5 className="mb-2 font-semibold text-gray-800 text-xl dark:text-white">
+              {selectedEvent ? "Edit Regulation" : "Add Regulation"}
+            </h5>
+            <div className="mt-6">
+              <label className="mb-1.5 block text-sm font-medium text-gray-700">
+                Regulation Title
               </label>
               <input
-                type='number'
-                name='primaryDept'
-                className='block w-full p-2 border rounded mb-3'
-                value={formData.primaryDept}
-                onChange={handleChange}
-              />
-
-              <label className='mb-2 text-sm text-gray-600 dark:text-gray-400'>
-                Username
-              </label>
-              <input
-                type='text'
-                name='username'
-                className='block w-full p-2 border rounded mb-3'
-                value={formData.username}
-                onChange={handleChange}
-              />
-
-              <label className='mb-2 text-sm text-gray-600 dark:text-gray-400'>
-                Password
-              </label>
-              <input
-                type='text'
-                name='password'
-                className='block w-full p-2 border rounded mb-4'
-                value={formData.password}
-                onChange={handleChange}
-              />
-
-              <label className='mb-2 text-sm text-gray-600 dark:text-gray-400'>
-                Faculty Name
-              </label>
-              <input
-                type='text'
-                name='name'
-                className='block w-full p-2 border rounded mb-4'
-                value={formData.name}
-                onChange={handleChange}
-              />
-
-              <label className='mb-2 text-sm text-gray-600 dark:text-gray-400'>
-                Designation
-              </label>
-              <input
-                type='text'
-                name='designation'
-                className='block w-full p-2 border rounded mb-4'
-                value={formData.designation}
-                onChange={handleChange}
+                type="text"
+                value={eventTitle}
+                onChange={(e) => setEventTitle(e.target.value)}
+                className="h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-blue-300"
               />
             </div>
-
-            <div className='flex justify-end gap-2 px-4 pb-4'>
+            <div className="mt-6">
+              <label className="block mb-4 text-sm font-medium text-gray-700">
+                Regulation Year
+              </label>
+              <div className="flex flex-wrap items-center gap-4">
+                {Object.entries(calendarsEvents).map(([key, value]) => (
+                  <div key={key} className="flex items-center">
+                    <input
+                      type="radio"
+                      name="event-level"
+                      value={key}
+                      id={`modal${key}`}
+                      checked={eventLevel === key}
+                      onChange={() => setEventLevel(key)}
+                      className="mr-2"
+                    />
+                    <label
+                      htmlFor={`modal${key}`}
+                      className="text-sm text-gray-700"
+                    >
+                      {value}
+                    </label>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="mt-6 flex gap-x-4">
               <button
-                onClick={handleCloseModal}
-                className='bg-gray-400 text-white px-4 py-2 rounded'
+                onClick={handleAddOrUpdateEvent}
+                className="bg-blue-700 text-white px-4 py-2 rounded-lg"
               >
-                Cancel
+                Save
               </button>
               <button
-                onClick={handleSave}
-                className='bg-blue-600 text-white px-4 py-2 rounded'
+                onClick={closeModal}
+                className="text-gray-500 hover:text-gray-700"
               >
-                {isEditing ? 'Update' : 'Add'}
+                Cancel
               </button>
             </div>
           </div>
         </Modal>
       </div>
-    </div>
-  )
-}
+    </>
+  );
+};
+
+export default ManageFaculty;
