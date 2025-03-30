@@ -70,7 +70,7 @@ export default function Home() {
             {/* Text */}
             <div className="flex text-gray-900 flex-col justify-center items-center lg:items-start col-span-1 lg:mt-0 mt-20">
               <h1 className="lg:text-9xl text-6xl font-bold">SIMS</h1>
-              <p className="text-3xl text-gray-600 dark:text-gray-25 text-center">
+              <p className="text-3xl text-gray-600 text-center">
                 Student Internals Management System
               </p>
               <div className="hidden lg:block">
@@ -94,7 +94,7 @@ export default function Home() {
         {/* Portals */}
         <section className="p-10 h-screen snap-always snap-center">
           {/* Title */}
-          <h1 className="text-4xl underline text-center font-bold m-10">
+          <h1 className="text-4xl underline text-center font-bold m-10 text-gray-900 dark:text-gray-25">
             Portals that we offer
           </h1>
           {/* Cards */}
@@ -155,7 +155,7 @@ export default function Home() {
         {/* Footer */}
         <footer className="text-center backdrop:backdrop-blur-2xl text-base-content p-4">
           <aside>
-            <p>
+            <p className="text-gray-900 dark:text-gray-25">
               Copyright © {new Date().getFullYear()} - All right reserved by
               SIMS
             </p>
