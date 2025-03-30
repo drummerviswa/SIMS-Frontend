@@ -122,7 +122,7 @@ export default function AdminRegister() {
               Register new account
             </button>
 
-            <p>Already have an Account Login</p>
+            <p>Already have an Account ?  Login</p>
           </div>
         </form>
       </div>
