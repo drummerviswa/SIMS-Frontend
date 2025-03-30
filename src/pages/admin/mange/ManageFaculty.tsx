@@ -6,7 +6,7 @@ const ManageFaculty = () => {
       apiEndpoint="faculties"
       entityName="Faculty"
       columns={[
-        { key: "id", label: "ID" },
+        { key: "fid", label: "FID" },
         { key: "name", label: "Name" },
         { key: "email", label: "Email" },
         { key: "password", label: "Password" },
@@ -14,7 +14,7 @@ const ManageFaculty = () => {
         { key: "department", label: "Department" },
       ]}
       initialState={{
-        id: 0,
+        fid: 0,
         name: "Kamala Kannan",
         email: "kingpinkamal@gmail.com",
         password: "kamal@123",
@@ -51,6 +51,7 @@ const ManageFaculty = () => {
           fetchKey: "deptId",
         },
       ]}
+      uniqueKey="fid"
     />
   );
 };

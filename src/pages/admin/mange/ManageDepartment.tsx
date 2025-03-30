@@ -6,12 +6,13 @@ export default function ManageDepartment() {
       entityName="Department"
       apiEndpoint="/departments"
       columns={[
+        { key: "deptid", label: "Department ID" },
         { key: "name", label: "Department Name" },
         { key: "username", label: "Username" },
         { key: "password", label: "Password" },
       ]}
       initialState={{
-        id: 0,
+        deptid: 0,
         name: "Department of Mathematics",
         username: "dom",
         password: "DOMLAB.local",
@@ -21,6 +22,7 @@ export default function ManageDepartment() {
         { key: "username", label: "Username", type: "text" },
         { key: "password", label: "Password", type: "text" },
       ]}
+      uniqueKey="deptid"
     />
   );
 }
