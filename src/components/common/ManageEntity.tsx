@@ -1,24 +1,21 @@
-import { useState, useEffect } from "react";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { useEffect, useState } from "react";
 import { Modal } from "../ui/modal";
 import API from "../../utils/API";
 
-// Define types
 interface Column {
   key: string;
   label: string;
 }
-
+interface Entity {
+  [key: string]: any;
+}
 interface InputOption {
   key: string;
   label: string;
-  type: "text" | "select" | "date" | "email"; // Define the types of inputs
-  fetchEndpoint?: string; // Optional endpoint to fetch foreign key values
-  fetchKey?: string; // Key to extract values from fetched data
-}
-
-interface Entity {
-  id: number;
-  [key: string]: any;
+  type: "text" | "select" | "date" | "email";
+  fetchEndpoint?: string;
+  fetchKey?: string;
 }
 
 interface ManageEntityProps {
@@ -27,6 +24,7 @@ interface ManageEntityProps {
   columns: Column[];
   initialState: Entity;
   inputOptions: InputOption[];
+  uniqueKey: string;
 }
 
 export default function ManageEntity({
@@ -35,6 +33,7 @@ export default function ManageEntity({
   columns,
   initialState,
   inputOptions,
+  uniqueKey, // Destructure uniqueKey
 }: ManageEntityProps) {
   const [entities, setEntities] = useState<Entity[]>([initialState]);
   const [formData, setFormData] = useState<Entity>(initialState);
@@ -62,15 +61,15 @@ export default function ManageEntity({
 
   // Fetch dropdown options for select fields
   const fetchDropdownOptions = async () => {
-    const newOptions: { [key: string]: { value: any; label: any }[] } = {};
+    const newOptions: { [key: string]: { value: any; label: string }[] } = {};
 
     for (const input of inputOptions) {
       if (input.type === "select" && input.fetchEndpoint) {
         try {
           const response = await API.get(input.fetchEndpoint);
           newOptions[input.key] = response.data.map((item: any) => ({
-            value: item[input.fetchKey || "id"],
-            label: item.name || item.label || item[input.fetchKey || "id"],
+            value: item[input.fetchKey || uniqueKey], // Use uniqueKey here
+            label: item.name || item.label || item[input.fetchKey || uniqueKey],
           }));
         } catch (error) {
           console.error(`Error fetching options for ${input.label}:`, error);
@@ -118,7 +117,6 @@ export default function ManageEntity({
           <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
             <thead className="text-xs text-gray-700 dark:text-gray-25 uppercase bg-gray-50 dark:bg-gray-700">
               <tr>
-                <th className="px-6 py-3">S.No</th>
                 {columns.map((col) => (
                   <th key={col.key} className="px-6 py-3">
                     {col.label}
@@ -130,10 +128,9 @@ export default function ManageEntity({
             <tbody>
               {entities.map((ent, index) => (
                 <tr
-                  key={ent.id}
+                  key={ent[uniqueKey]} // Use uniqueKey here
                   className="bg-white border-b dark:border-b-0 dark:bg-gray-800 hover:bg-gray-50"
                 >
-                  <td className="px-6 py-4">{index + 1}</td>
                   {columns.map((col) => (
                     <td key={col.key} className="px-6 py-4">
                       {ent[col.key]}
@@ -152,7 +149,11 @@ export default function ManageEntity({
                     </button>
                     <button
                       onClick={() =>
-                        setEntities(entities.filter((e) => e.id !== ent.id))
+                        setEntities(
+                          entities.filter(
+                            (e) => e[uniqueKey] !== ent[uniqueKey]
+                          ) // Use uniqueKey here
+                        )
                       }
                       className="text-red-600 hover:underline"
                     >

@@ -3,30 +3,44 @@ import ManageEntity from "../../../components/common/ManageEntity";
 export default function ManageDegrees() {
   return (
     <ManageEntity
-      entityName="Branches"
-      apiEndpoint="/branches"
+      entityName="Degree"
+      apiEndpoint="/degrees"
       columns={[
-        { key: "branchId", label: "Branch ID" },
-        { key: "branchName", label: "Branch Name" },
+        { key: "degid", label: "Degree ID" },
+        { key: "degName", label: "Degree Name" },
         { key: "degree", label: "Degree" },
+        { key: "duration", label: "Duration" },
+        { key: "graduation", label: "Graduation" },
         { key: "department", label: "Department" },
       ]}
       initialState={{
-        id: 0,
-        branchId: "1",
-        branchName: "Information Technology",
-        degree: "Msc Integrated 5 Years",
-        department: "Mathematics",
+        degid: 0,
+        degName: "Bachelor of Engineering",
+        degree: "B.E.",
+        duration: "4 years",
+        graduation: "2027",
+        department: "Computer Science",
       }}
       inputOptions={[
-        { key: "branchId", label: "Branch ID", type: "text" },
-        { key: "branchName", label: "Branch Name", type: "text" },
+        {
+          key: "degName",
+          label: "Degree Name",
+          type: "text",
+        },
         {
           key: "degree",
           label: "Degree",
-          type: "select",
-          fetchEndpoint: "/degrees",
-          fetchKey: "degreeId",
+          type: "text",
+        },
+        {
+          key: "duration",
+          label: "Duration",
+          type: "text",
+        },
+        {
+          key: "graduation",
+          label: "Graduation Year",
+          type: "text",
         },
         {
           key: "department",
@@ -36,6 +50,7 @@ export default function ManageDegrees() {
           fetchKey: "deptId",
         },
       ]}
+      uniqueKey="degid"
     />
   );
 }

@@ -11,7 +11,6 @@ export default function ManageRegulation() {
         { key: "endDate", label: "End Date" },
       ]}
       initialState={{
-        id: 0,
         rid: 4,
         regName: "R2019",
         startDate: "11-11-2023",
@@ -34,6 +33,7 @@ export default function ManageRegulation() {
           type: "date",
         },
       ]}
+      uniqueKey="rid"
     />
   );
 }

@@ -6,15 +6,13 @@ export default function ManageBatch() {
       entityName="Batchs"
       apiEndpoint="/batch"
       columns={[
+        { key: "bid", label: "Batch ID" },
         { key: "batchName", label: "Batch Name" },
       ]}
       initialState={{
-        id: 0,
+        bid: 0,
         batchName: "2023-2024",
       }}
-      inputOptions={[
-        { key: "batchName", label: "Batch Name", type: "text" },
-      ]}
-    />
+      inputOptions={[{ key: "batchName", label: "Batch Name", type: "text" }]} uniqueKey={"bid"}    />
   );
 }

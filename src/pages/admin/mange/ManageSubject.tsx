@@ -90,6 +90,7 @@ export default function ManageSubject() {
               "/semesters?degree=Msc Integrated 5 Years&branch=Information Technology&regulation=R2019&department=Mathematics",
           },
         ]}
+        uniqueKey="subId"
       />
     </div>
   );
