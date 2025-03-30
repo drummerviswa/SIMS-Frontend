@@ -4,7 +4,7 @@ export default function ManageDegrees() {
   return (
     <ManageEntity
       entityName="Degree"
-      apiEndpoint="/degrees"
+      apiEndpoint="/admin/manage/degree"
       columns={[
         { key: "degid", label: "Degree ID" },
         { key: "degName", label: "Degree Name" },
@@ -13,14 +13,7 @@ export default function ManageDegrees() {
         { key: "graduation", label: "Graduation" },
         { key: "department", label: "Department" },
       ]}
-      initialState={{
-        degid: 0,
-        degName: "Bachelor of Engineering",
-        degree: "B.E.",
-        duration: "4 years",
-        graduation: "2027",
-        department: "Computer Science",
-      }}
+      initialState={{}}
       inputOptions={[
         {
           key: "degName",
@@ -43,10 +36,12 @@ export default function ManageDegrees() {
           type: "text",
         },
         {
-          key: "department",
+          key: "deptid",
           label: "Department",
           type: "select",
-          fetchEndpoint: "/departments",
+          fetchEndpoint: "/admin/manage/department",
+          selectMultiple: true,
+          selectLabel: ["deptid", "deptName"],
           fetchKey: "deptId",
         },
       ]}

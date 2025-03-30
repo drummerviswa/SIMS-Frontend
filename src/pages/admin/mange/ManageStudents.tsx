@@ -6,26 +6,17 @@ export default function ManageStudents() {
       entityName="Students"
       apiEndpoint="students"
       columns={[
-        { key: "sid", label: "SID" },
-        { key: "registerNo", label: "Register No" },
+        { key: "regNo", label: "Register No" },
+        { key: "name", label: "Name" },
         { key: "email", label: "Email" },
         { key: "department", label: "Department" },
-        { key: "name", label: "Name" },
-        { key: "phone", label: "Phone" },
-        { key: "dob", label: "Date of Birth" },
+        { key: "degree", label: "Degree" },
+        { key: "branch", label: "Branch" },
       ]}
-      initialState={{
-        sid: 125, 
-        registerNo: "2022242001",
-        email: "drummerviswa@gmail.com",
-        department: "Mathematics",
-        name: "Viswanathan P",
-        phone: "9003136720",
-        dob: "30-10-2004",
-      }}
+      initialState={{}}
       inputOptions={[
         { key: "name", label: "Name", type: "text" },
-        { key: "registerNo", label: "Register No", type: "text" },
+        { key: "regNo", label: "Register No", type: "text" },
         {
           key: "department",
           label: "Department",
@@ -37,7 +28,7 @@ export default function ManageStudents() {
         { key: "phone", label: "Phone", type: "text" },
         { key: "dob", label: "Date of Birth", type: "date" },
       ]}
-      uniqueKey="sid"
+      uniqueKey="regNo"
     />
   );
 }
