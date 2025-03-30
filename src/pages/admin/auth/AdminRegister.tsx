@@ -15,7 +15,7 @@ export default function AdminRegister() {
         <h1 className='text-3xl text-center mt-10 mb-15'>Admin Register</h1>
         <form
           className='max-w-sm mx-auto flex flex-col justify-center  '
-          onClick={handleSubmit}
+          
         >
           {/* for username */}
           <div className='mb-5'>
@@ -117,6 +117,7 @@ export default function AdminRegister() {
             <button
               type='submit'
               className='text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800'
+              onClick={handleSubmit}
             >
               Register new account
             </button>
