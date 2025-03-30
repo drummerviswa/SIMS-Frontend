@@ -1,4 +1,5 @@
 import Chart from "react-apexcharts";
+import { ApexOptions } from "apexcharts"; // Import ApexOptions type
 
 interface ChartdataProps {
   chartdata?: {
@@ -8,7 +9,7 @@ interface ChartdataProps {
 }
 
 const PieChart = ({ chartdata }: ChartdataProps) => {
-  const options = {
+  const options: ApexOptions = {
     labels: ["Team A", "Team B", "Team C", "Team D", "Team E"],
     colors: ["#FF4560", "#008FFB", "#00E396", "#775DD0", "#FFE3B3"],
     dataLabels: {
@@ -26,7 +27,6 @@ const PieChart = ({ chartdata }: ChartdataProps) => {
       },
       x: {
         show: true,
-        formatter: undefined,
       },
       y: {
         formatter: (val: number) => val.toString(),
@@ -34,19 +34,14 @@ const PieChart = ({ chartdata }: ChartdataProps) => {
     },
     chart: {
       fontFamily: "Outfit, sans-serif",
-      type: "pie",
       width: "100%",
-      fontSize: "10px",
-      borderColor: "#00000F",
     },
     legend: {
       show: true,
-      position: "right",
-      offsetY: 0,
+      position: "right", // Ensure it's a valid string literal type
       fontSize: "14px",
       labels: {
-        colors: "#1D2939",
-        useSeriesColors: false,
+        colors: ["#1D2939"],
       },
     },
     responsive: [
@@ -125,7 +120,7 @@ const PieChart = ({ chartdata }: ChartdataProps) => {
     ],
   };
 
-  const series = [44, 55, 13, 43, 22]; // Data values
+  const series = [44, 55, 13, 43, 22];
 
   return (
     <div className="lg:col-span-6 col-span-1">

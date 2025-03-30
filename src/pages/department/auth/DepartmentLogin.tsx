@@ -11,8 +11,8 @@ export default function DepartmentLogin() {
         <form className='max-w-sm mx-auto flex flex-col justify-center mt-40 '>
           <div className='mb-5'>
             <label
-              for='email'
-              class='block mb-2 text-sm font-medium text-gray-900 dark:text-white'
+              htmlFor='email'
+              className='block mb-2 text-sm font-medium text-gray-900 dark:text-white'
             >
               Your email
             </label>
@@ -24,9 +24,9 @@ export default function DepartmentLogin() {
               required
             />
           </div>
-          <div class='mb-5'>
+          <div className='mb-5'>
             <label
-              for='password'
+              htmlFor='password'
               className='block mb-2 text-sm font-medium text-gray-900 dark:text-white'
             >
               Your password
@@ -38,9 +38,9 @@ export default function DepartmentLogin() {
               required
             />
           </div>
-          <div class='mb-5'>
+          <div className='mb-5'>
             <label
-              for='repeat-password'
+              htmlFor='repeat-password'
               className='block mb-2 text-sm font-medium text-gray-900 dark:text-white'
             >
               Repeat password
@@ -63,7 +63,7 @@ export default function DepartmentLogin() {
               />
             </div>
             <label
-              for='terms'
+              htmlFor='terms'
               className='ms-2 text-sm font-medium text-gray-900 dark:text-gray-300'
             >
               I agree with the{' '}
