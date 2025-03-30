@@ -3,22 +3,17 @@ import ManageEntity from "../../../components/common/ManageEntity";
 export default function ManageDepartment() {
   return (
     <ManageEntity
+      initialState={[]}
       entityName="Department"
-      apiEndpoint="/departments"
+      apiEndpoint="/admin/manage/department"
       columns={[
         { key: "deptid", label: "Department ID" },
-        { key: "name", label: "Department Name" },
+        { key: "deptName", label: "Department Name" },
         { key: "username", label: "Username" },
         { key: "password", label: "Password" },
       ]}
-      initialState={{
-        deptid: 0,
-        name: "Department of Mathematics",
-        username: "dom",
-        password: "DOMLAB.local",
-      }}
       inputOptions={[
-        { key: "name", label: "Department Name", type: "text" },
+        { key: "deptName", label: "Department Name", type: "text" },
         { key: "username", label: "Username", type: "text" },
         { key: "password", label: "Password", type: "text" },
       ]}

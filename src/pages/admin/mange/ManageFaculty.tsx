@@ -13,15 +13,7 @@ const ManageFaculty = () => {
         { key: "phone", label: "Phone" },
         { key: "department", label: "Department" },
       ]}
-      initialState={{
-        fid: 0,
-        name: "Kamala Kannan",
-        email: "kingpinkamal@gmail.com",
-        password: "kamal@123",
-        phone: "1234567890",
-        department: "Mathematics",
-
-      }}
+      initialState={{}}
       inputOptions={[
         {
           key: "name",

@@ -10,12 +10,7 @@ export default function ManageBranches() {
         { key: "branchName", label: "Branch Name" },
         { key: "degree", label: "Degree" },
       ]}
-      initialState={{
-        id: 0,
-        bid: "42",
-        branchName: "Information Technology",
-        degree: "Msc Integrated",
-      }}
+      initialState={{}}
       inputOptions={[
         { key: "bid", label: "Branch ID", type: "text" },
         { key: "branchName", label: "Branch Name", type: "text" },

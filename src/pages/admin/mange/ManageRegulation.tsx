@@ -10,12 +10,7 @@ export default function ManageRegulation() {
         { key: "startDate", label: "Start Date" },
         { key: "endDate", label: "End Date" },
       ]}
-      initialState={{
-        rid: 4,
-        regName: "R2019",
-        startDate: "11-11-2023",
-        endDate: "22-11-2025",
-      }}
+      initialState={{}}
       inputOptions={[
         {
           key: "regName",
