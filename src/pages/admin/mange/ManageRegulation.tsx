@@ -2,13 +2,13 @@ import ManageEntity from "../../../components/common/ManageEntity";
 export default function ManageRegulation() {
   return (
     <ManageEntity
-      apiEndpoint="regulations"
+      apiEndpoint="/admin/manage/regulation"
       entityName="Regulation"
       columns={[
         { key: "rid", label: "RID" },
         { key: "regName", label: "Regulation Name" },
-        { key: "startDate", label: "Start Date" },
-        { key: "endDate", label: "End Date" },
+        { key: "start", label: "Start Date" },
+        { key: "end", label: "End Date" },
       ]}
       initialState={{}}
       inputOptions={[
@@ -18,12 +18,12 @@ export default function ManageRegulation() {
           type: "text",
         },
         {
-          key: "startDate",
+          key: "start",
           label: "Start Date",
           type: "date",
         },
         {
-          key: "endDate",
+          key: "end",
           label: "End Date",
           type: "date",
         },

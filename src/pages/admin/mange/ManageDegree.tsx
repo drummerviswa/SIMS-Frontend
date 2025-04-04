@@ -1,6 +1,9 @@
 import ManageEntity from "../../../components/common/ManageEntity";
 
 export default function ManageDegrees() {
+  //manage foriegn key
+  //branch is saved as branchid in db
+  //fetch branchName
   return (
     <ManageEntity
       entityName="Degree"
@@ -8,10 +11,9 @@ export default function ManageDegrees() {
       columns={[
         { key: "degid", label: "Degree ID" },
         { key: "degName", label: "Degree Name" },
-        { key: "degree", label: "Degree" },
         { key: "duration", label: "Duration" },
         { key: "graduation", label: "Graduation" },
-        { key: "department", label: "Department" },
+        { key: "department", label: "Department", fetchKey: "deptName" },
       ]}
       initialState={{}}
       inputOptions={[
@@ -21,28 +23,30 @@ export default function ManageDegrees() {
           type: "text",
         },
         {
-          key: "degree",
-          label: "Degree",
-          type: "text",
-        },
-        {
           key: "duration",
           label: "Duration",
-          type: "text",
+          type: "number",
         },
         {
           key: "graduation",
           label: "Graduation Year",
-          type: "text",
+          type: "select",
+          static: true,
+          options: [
+            { key: "", label: "Select Graduation type" },
+            { key: "UG", label: "UG" },
+            { key: "PG", label: "PG" },
+            { key: "PhD", label: "PhD" },
+          ],
         },
         {
-          key: "deptid",
+          key: "department",
           label: "Department",
           type: "select",
           fetchEndpoint: "/admin/manage/department",
           selectMultiple: true,
           selectLabel: ["deptid", "deptName"],
-          fetchKey: "deptId",
+          fetchKey: "deptid",
         },
       ]}
       uniqueKey="degid"
