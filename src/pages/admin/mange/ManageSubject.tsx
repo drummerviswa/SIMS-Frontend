@@ -4,74 +4,46 @@ export default function ManageSubject() {
   return (
     <div className="max-w-[74rem] no-scrollbar">
       <ManageEntity
-        apiEndpoint="subjects"
+        apiEndpoint="/admin/manage/subject"
         entityName="Subject"
         columns={[
-          { key: "subId", label: "Subject ID" },
+          { key: "subid", label: "Subject ID" },
           { key: "subName", label: "Subject Name" },
-          { key: "lectures", label: "Letures" },
-          { key: "tutorials", label: "Tutorials" },
-          { key: "practicals", label: "Practicals" },
+          { key: "subCode", label: "Subject Code" },
+          { key: "lecture", label: "Letures" },
+          { key: "tutorial", label: "Tutorials" },
+          { key: "practical", label: "Practicals" },
           { key: "credits", label: "Credits" },
+          { key: "category", label: "Category" },
           { key: "totalHours", label: "Total Hours" },
           { key: "totalMarks", label: "Total Marks" },
-          { key: "internalMarks", label: "Internal Marks" },
-          { key: "externalMarks", label: "External Marks" },
-          { key: "department", label: "Department" },
-          { key: "degree", label: "Degree" },
-          { key: "branch", label: "Branch" },
-          { key: "regulation", label: "Regulation" },
-          { key: "semester", label: "Semester" },
+          { key: "internal", label: "Internal Marks" },
+          { key: "external", label: "External Marks" },
         ]}
         initialState={{}}
         inputOptions={[
-          { key: "subId", label: "Subject ID", type: "text" },
           { key: "subName", label: "Subject Name", type: "text" },
-          { key: "lectures", label: "Lectures", type: "text" },
-          { key: "tutorials", label: "Tutorials", type: "text" },
-          { key: "practicals", label: "Practicals", type: "text" },
+          { key: "subCode", label: "Subject Code", type: "text" },
+          {
+            key: "category",
+            label: "Category",
+            type: "select",
+            static: true,
+            options: [
+              { key: "", label: "Select Category" },
+              { key: "Theory", label: "Theory" },
+              { key: "Lab", label: "Lab" },
+              { key: "Theory and Lab", label: "Theory and Lab" },
+            ],
+          },
+          { key: "lecture", label: "Lectures", type: "text" },
+          { key: "tutorial", label: "Tutorials", type: "text" },
+          { key: "practical", label: "Practicals", type: "text" },
           { key: "credits", label: "Credits", type: "text" },
           { key: "totalHours", label: "Total Hours", type: "text" },
           { key: "totalMarks", label: "Total Marks", type: "text" },
-          { key: "internalMarks", label: "Internal Marks", type: "text" },
-          { key: "externalMarks", label: "External Marks", type: "text" },
-          {
-            key: "department",
-            label: "Department",
-            type: "select",
-            fetchEndpoint: "/departments",
-            fetchKey: "deptId",
-          },
-          {
-            key: "degree",
-            label: "Degree",
-            type: "select",
-            fetchEndpoint: "/degrees",
-            fetchKey: "degreeId",
-          },
-          {
-            key: "branch",
-            label: "Branch",
-            type: "select",
-            fetchEndpoint: "/branches",
-            fetchKey: "branchId",
-          },
-          {
-            key: "regulation",
-            label: "Regulation",
-            type: "select",
-            fetchEndpoint: "/regulations",
-            fetchKey: "rid",
-          },
-          {
-            key: "semester",
-            label: "Semester",
-            type: "select",
-            fetchEndpoint:
-              "/semesters?degree=Msc Integrated 5 Years&branch=Information Technology&regulation=R2019&department=Mathematics",
-            fetchKey:
-              "/semesters?degree=Msc Integrated 5 Years&branch=Information Technology&regulation=R2019&department=Mathematics",
-          },
+          { key: "internal", label: "Internal Marks", type: "text" },
+          { key: "external", label: "External Marks", type: "text" },
         ]}
         uniqueKey="subId"
       />

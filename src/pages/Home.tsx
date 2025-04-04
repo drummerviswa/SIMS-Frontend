@@ -6,10 +6,13 @@ import { FaSchoolFlag } from "react-icons/fa6";
 import { GiTeacher } from "react-icons/gi";
 import { CiLight } from "react-icons/ci";
 import { useTheme } from "../context/ThemeContext";
+import { useRef } from "react";
 export default function Home() {
   const params = useLocation();
   const themeData = useTheme();
 
+  //How to reference
+  const howToRef = useRef(null);
   return (
     <>
       <PageMeta
@@ -34,16 +37,21 @@ export default function Home() {
                   { to: "/admin", label: "Admin" },
                   { to: "/department", label: "Department" },
                   { to: "/faculty", label: "Faculty" },
-                  { to: "#Howto", label: "How to" },
+                  { to: "", label: "How to" },
                 ].map((link) => (
                   <Link
-                    key={link.to}
-                    to={link.to}
-                    className={`text-gray-600 dark:text-gray-25 text-xl hover:text-gray-900 dark:hover:text-gray-100 ${
-                      link.to === params.pathname ? "font-bold underline" : ""
-                    }`}
+                  key={link.to}
+                  to={link.to}
+                  className={`text-gray-600 dark:text-gray-25 text-xl hover:text-gray-900 dark:hover:text-gray-100 ${
+                    link.to === params.pathname ? "font-bold underline" : ""
+                  }`}
+                  onClick={() => {
+                    if (link.to === "" && howToRef.current) {
+                    howToRef.current.scrollIntoView({ behavior: "smooth" });
+                    }
+                  }}
                   >
-                    {link.label}
+                  {link.label}
                   </Link>
                 ))}
               </div>
@@ -66,7 +74,7 @@ export default function Home() {
               </div>
             </div>
           </nav>
-          <div className="h-screen grid lg:grid-cols-2 grid-cols-1 lg:gap-8 px-12 mx-auto bg-blue-200">
+          <div className="h-screen grid lg:grid-cols-2 grid-cols-1 lg:gap-8 px-12 mx-auto bg-blue-200 dark:bg-blue-300">
             {/* Text */}
             <div className="flex text-gray-900 flex-col justify-center items-center lg:items-start col-span-1 lg:mt-0 mt-20">
               <h1 className="lg:text-9xl text-6xl font-bold">SIMS</h1>
@@ -140,7 +148,7 @@ export default function Home() {
         </section>
         {/* Highlights Section */}
         <section
-          id="#Howto"
+          ref={howToRef}
           className="p-10 h-3/4 snap-always snap-start bg-blue-200"
         >
           {/* Title */}
@@ -198,6 +206,7 @@ const StyledWrapper = styled.div`
     width: 340px;
     height: 321px;
     background: #fff;
+    border-radius: 10px;
     border-top-right-radius: 10px;
     overflow: hidden;
     display: flex;

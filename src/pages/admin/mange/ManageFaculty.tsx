@@ -3,26 +3,26 @@ import ManageEntity from "../../../components/common/ManageEntity";
 const ManageFaculty = () => {
   return (
     <ManageEntity
-      apiEndpoint="faculties"
+      apiEndpoint="/admin/manage/faculty"
       entityName="Faculty"
       columns={[
-        { key: "fid", label: "FID" },
-        { key: "name", label: "Name" },
-        { key: "email", label: "Email" },
+        { key: "facid", label: "FID" },
+        { key: "facName", label: "Name" },
+        { key: "username", label: "Username" },
         { key: "password", label: "Password" },
-        { key: "phone", label: "Phone" },
-        { key: "department", label: "Department" },
+        { key: "primaryDept", label: "Department", fetchKey: "deptName" },
+        { key: "designation", label: "Designation" },
       ]}
       initialState={{}}
       inputOptions={[
         {
-          key: "name",
+          key: "facName",
           label: "Name",
           type: "text",
         },
         {
-          key: "email",
-          label: "Email",
+          key: "username",
+          label: "username",
           type: "email",
         },
         {
@@ -31,19 +31,29 @@ const ManageFaculty = () => {
           type: "text",
         },
         {
-          key: "phone",
-          label: "Phone",
-          type: "text",
+          key: "designation",
+          label: "Designation",
+          type: "select",
+          static: true,
+          options: [
+            { key: "", label: "Select" },
+            { key: "Professor", label: "Professor" },
+            { key: "Assistant Professor", label: "Assistant Professor" },
+            { key: "Associate Professor", label: "Associate Professor" },
+            { key: "Teaching Fellow", label: "Teaching Fellow" },
+          ],
         },
         {
-          key: "department",
+          key: "primaryDept",
           label: "Department",
           type: "select",
-          fetchEndpoint: "/departments",
-          fetchKey: "deptId",
+          fetchEndpoint: "/admin/manage/department",
+          selectMultiple: true,
+          selectLabel: ["deptid", "deptName"],
+          fetchKey: "deptid",
         },
       ]}
-      uniqueKey="fid"
+      uniqueKey="facid"
     />
   );
 };
