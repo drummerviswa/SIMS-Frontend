@@ -17,7 +17,7 @@ interface Entity {
 interface InputOption {
   key: string;
   label: string;
-  type: "text" | "select" | "date" | "email" | "number";
+  type: "text" | "select" | "date" | "email" | "number" | "textarea";
   fetchEndpoint?: string;
   fetchKey?: string;
   selectLabel?: string[];
@@ -94,7 +94,9 @@ export default function ManageEntity({
   }, [apiEndpoint, entityName, inputOptions, uniqueKey, isEditing]);
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+    >
   ) => {
     const { name, value, type } = e.target;
     setFormData({
@@ -316,6 +318,13 @@ export default function ManageEntity({
                     onChange={handleChange}
                     className="block w-full p-2 rounded mb-3 dark:bg-gray-800 dark:text-white"
                   />
+                ) : input.type === "textarea" ? (
+                  <textarea
+                    name={input.key}
+                    value={formData?.[input?.key] ?? ""}
+                    onChange={handleChange}
+                    className="block w-full p-2 rounded mb-3 dark:bg-gray-800 dark:text-white"
+                  ></textarea>
                 ) : (
                   <input
                     type={input.type}

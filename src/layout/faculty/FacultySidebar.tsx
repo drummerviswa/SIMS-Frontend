@@ -67,14 +67,14 @@ const navItems: NavItem[] = [
   },
   {
     icon: <MailIcon />,
-    name: "Contact Admin",
+    name: "Contact",
     subItems: [
       {
         name: "Contact Admin",
         path: "/faculty/contact/admin",
       },
       {
-        name: "Contact Faculty",
+        name: "Contact Department",
         path: "/faculty/contact/department",
       },
     ],
