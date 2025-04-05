@@ -7,7 +7,7 @@ export default function AdminLogin() {
   return (
     <div>
       <div>
-        <h1 className='text-3xl text-center mt-30 mb-15'>Faculty Login</h1>
+        <h1 className='text-3xl text-center mt-30 mb-15'>Admin Login</h1>
         <form className='max-w-sm mx-auto flex flex-col justify-center  '>
           {/* for username */}
 

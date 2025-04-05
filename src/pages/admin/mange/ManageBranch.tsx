@@ -6,18 +6,13 @@ export default function ManageBranches() {
       entityName="Branches"
       apiEndpoint="/branches"
       columns={[
-        { key: "branchId", label: "Branch ID" },
+        { key: "bid", label: "Branch ID" },
         { key: "branchName", label: "Branch Name" },
         { key: "degree", label: "Degree" },
       ]}
-      initialState={{
-        id: 0,
-        branchId: "42",
-        branchName: "Information Technology",
-        degree: "Msc Integrated",
-      }}
+      initialState={{}}
       inputOptions={[
-        { key: "branchId", label: "Branch ID", type: "text" },
+        { key: "bid", label: "Branch ID", type: "text" },
         { key: "branchName", label: "Branch Name", type: "text" },
         {
           key: "degree",
@@ -27,6 +22,7 @@ export default function ManageBranches() {
           fetchKey: "degreeId",
         },
       ]}
+      uniqueKey="bid" 
     />
   );
 }

@@ -10,8 +10,8 @@ export default function ManageSubject() {
           { key: "subId", label: "Subject ID" },
           { key: "subName", label: "Subject Name" },
           { key: "lectures", label: "Letures" },
-          { key: "practicals", label: "Practicals" },
           { key: "tutorials", label: "Tutorials" },
+          { key: "practicals", label: "Practicals" },
           { key: "credits", label: "Credits" },
           { key: "totalHours", label: "Total Hours" },
           { key: "totalMarks", label: "Total Marks" },
@@ -23,30 +23,13 @@ export default function ManageSubject() {
           { key: "regulation", label: "Regulation" },
           { key: "semester", label: "Semester" },
         ]}
-        initialState={{
-          id: 0,
-          subId: 0,
-          subName: "Mathematics",
-          lectures: 2,
-          practicals: 2,
-          tutorials: 2,
-          credits: 4,
-          totalHours: 4,
-          totalMarks: 100,
-          internalMarks: 20,
-          externalMarks: 80,
-          department: "Mathematics",
-          degree: "Msc Integrated 5 Years",
-          branch: "Information Technology",
-          regulation: "R2019",
-          semester: "1",
-        }}
+        initialState={{}}
         inputOptions={[
           { key: "subId", label: "Subject ID", type: "text" },
           { key: "subName", label: "Subject Name", type: "text" },
           { key: "lectures", label: "Lectures", type: "text" },
-          { key: "practicals", label: "Practicals", type: "text" },
           { key: "tutorials", label: "Tutorials", type: "text" },
+          { key: "practicals", label: "Practicals", type: "text" },
           { key: "credits", label: "Credits", type: "text" },
           { key: "totalHours", label: "Total Hours", type: "text" },
           { key: "totalMarks", label: "Total Marks", type: "text" },
@@ -90,6 +73,7 @@ export default function ManageSubject() {
               "/semesters?degree=Msc Integrated 5 Years&branch=Information Technology&regulation=R2019&department=Mathematics",
           },
         ]}
+        uniqueKey="subId"
       />
     </div>
   );
