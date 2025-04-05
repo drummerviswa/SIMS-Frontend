@@ -23,7 +23,7 @@ interface InputOption {
   selectLabel?: string[];
   selectMultiple?: boolean;
   static?: boolean;
-  options?: { key: string; label: string }[];
+  options?: { key: string | number; label: string | number }[];
 }
 
 interface ManageEntityProps {

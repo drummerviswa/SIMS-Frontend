@@ -306,12 +306,12 @@ const DepartmentSidebar: React.FC = () => {
           !isExpanded && !isHovered ? "lg:justify-center" : "justify-start"
         }`}
       >
-        <Link to="/department" className="flex items-center gap-2">
-          {isExpanded || isHovered || isMobileOpen ? (
+        <Link to="/department" className="flex flex-col items-center gap-2">
+        {isExpanded || isHovered || isMobileOpen ? (
             <>
               <img
                 className="dark:hidden"
-                src="/images/logo/logo.svg"
+                src="/images/logo/logo-icon.svg"
                 alt="Logo"
                 width={150}
                 height={40}
@@ -326,11 +326,16 @@ const DepartmentSidebar: React.FC = () => {
             </>
           ) : (
             <img
-              src="/images/logo/logo-icon.svg"
+              src="/images/logo/logo.svg"
               alt="Logo"
-              width={32}
-              height={32}
+              width={128}
+              height={128}
             />
+          )}
+          {(isExpanded || isHovered || isMobileOpen) && (
+            <span className="text-xl font-semibold text-gray-800 dark:text-white">
+              Department Dashboard
+            </span>
           )}
         </Link>
       </div>

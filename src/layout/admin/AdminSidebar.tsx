@@ -316,12 +316,12 @@ const AdminSidebar: React.FC = () => {
           !isExpanded && !isHovered ? "lg:justify-center" : "justify-start"
         }`}
       >
-        <Link to="/admin" className="flex items-center gap-2">
+        <Link to="/admin" className="flex flex-col items-center gap-2">
           {isExpanded || isHovered || isMobileOpen ? (
             <>
               <img
                 className="dark:hidden"
-                src="/images/logo/logo.svg"
+                src="/images/logo/logo-icon.svg"
                 alt="Logo"
                 width={150}
                 height={40}
@@ -336,11 +336,16 @@ const AdminSidebar: React.FC = () => {
             </>
           ) : (
             <img
-              src="/images/logo/logo-icon.svg"
+              src="/images/logo/logo.svg"
               alt="Logo"
-              width={32}
-              height={32}
+              width={128}
+              height={128}
             />
+          )}
+          {(isExpanded || isHovered || isMobileOpen) && (
+            <span className="text-2xl font-semibold text-gray-800 dark:text-white">
+              Admin Dashboard
+            </span>
           )}
         </Link>
       </div>
