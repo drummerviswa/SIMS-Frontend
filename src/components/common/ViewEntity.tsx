@@ -29,9 +29,9 @@ export default function ViewEntity({
   const [search, setSearch] = useState("");
 
   useEffect(() => {
-    // fetchEntities();
+    fetchEntities();
     // fetchDropdownOptions();
-  }, []);
+  }, [apiEndpoint]);
 
   // Fetch entities from backend
   const fetchEntities = async () => {

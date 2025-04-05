@@ -206,11 +206,11 @@ export default function ManageEntity({
           <thead className="text-xs text-gray-700 dark:text-gray-25 uppercase bg-gray-50 dark:bg-gray-700">
             <tr>
               {columns?.map((col) => (
-                <th key={col?.key} className="px-6 py-3">
+                <th key={col?.key} className="px-6 py-3 text-nowrap">
                   {col?.label}
                 </th>
               ))}
-              <th className="px-6 py-3">Action</th>
+              <th className="px-6 py-3 text-nowrap">Action</th>
             </tr>
           </thead>
           <tbody>
@@ -221,7 +221,7 @@ export default function ManageEntity({
                   className="bg-white border-b dark:border-b-0 dark:bg-gray-800 hover:bg-gray-50"
                 >
                   {columns?.map((col) => (
-                    <td key={col?.key} className="px-6 py-4">
+                    <td key={col?.key} className="px-6 py-4 text-nowrap">
                       {col?.label.includes("date") ||
                       col?.label.includes("Date")
                         ? moment(
@@ -277,7 +277,7 @@ export default function ManageEntity({
                     <select
                       name={input?.key}
                       className="block w-full p-2 rounded mb-3 dark:bg-gray-800 dark:text-white"
-                      value={formData?.[input?.key] || ""}
+                      value={formData?.[input?.key] ?? ""}
                       onChange={handleChange}
                     >
                       <option key={""} value="">
@@ -293,7 +293,7 @@ export default function ManageEntity({
                     <select
                       name={input?.key}
                       className="block w-full p-2 rounded mb-3 dark:bg-gray-800 dark:text-white"
-                      value={formData?.[input?.key] || ""}
+                      value={formData?.[input?.key] ?? ""}
                       onChange={handleChange}
                       multiple={input?.selectMultiple}
                     >
@@ -320,7 +320,7 @@ export default function ManageEntity({
                   <input
                     type={input.type}
                     name={input.key}
-                    value={formData?.[input?.key] || ""}
+                    value={formData?.[input?.key] ?? ""}
                     onChange={handleChange}
                     className="block w-full p-2 rounded mb-3 dark:bg-gray-800 dark:text-white"
                   />
