@@ -4,29 +4,45 @@ export default function DeptManageStudents() {
   return (
     <ManageEntity
       entityName="Students"
-      apiEndpoint="students"
+      apiEndpoint={`/department/manage/student/department/${1}`}
       columns={[
         { key: "regNo", label: "Register No" },
-        { key: "name", label: "Name" },
-        { key: "email", label: "Email" },
-        // { key: "department", label: "Department" },
-        { key: "degree", label: "Degree" },
-        { key: "branch", label: "Branch" },
+        { key: "sName", label: "Name" },
+        { key: "degree", label: "Degree", fetchKey: "degName" },
+        { key: "branch", label: "Branch", fetchKey: "branchName" },
+        { key: "batch", label: "batch", fetchKey: "batchName" },
       ]}
       initialState={{}}
       inputOptions={[
-        { key: "name", label: "Name", type: "text" },
-        { key: "regNo", label: "Register No", type: "text" },
+        { key: "regNo", label: "Register No", type: "number" },
+        { key: "sName", label: "Name", type: "text" },
         {
-          key: "department",
-          label: "Department",
+          key: "degree",
+          label: "Degree",
           type: "select",
-          fetchEndpoint: "departments",
-          fetchKey: "id",
+          fetchEndpoint: "/admin/manage/degree",
+          selectMultiple: false,
+          selectLabel: ["degid", "degName"],
+          fetchKey: "degid",
         },
-        { key: "email", label: "Email", type: "email" },
-        { key: "phone", label: "Phone", type: "text" },
-        { key: "dob", label: "Date of Birth", type: "date" },
+        {
+          key: "branch",
+          label: "Branch",
+          type: "select",
+          fetchEndpoint: "/admin/manage/branch",
+          selectMultiple: false,
+          selectLabel: ["bid", "branchName"],
+          fetchKey: "bid",
+        },
+        {
+          key: "batch",
+          label: "Batch",
+          type: "select",
+          fetchEndpoint: "/admin/manage/batch",
+          selectMultiple: false,
+          selectLabel: ["batchid", "batchName"],
+          fetchKey: "batchid",
+        },
       ]}
       uniqueKey="regNo"
     />

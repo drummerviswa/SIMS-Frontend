@@ -31,21 +31,22 @@ export default function ManageSubject() {
             static: true,
             options: [
               { key: "", label: "Select Category" },
-              { key: "Theory", label: "Theory" },
-              { key: "Lab", label: "Lab" },
-              { key: "Theory and Lab", label: "Theory and Lab" },
+              { key: "theory", label: "Theory" },
+              { key: "lab", label: "Lab" },
+              { key: "TheoryCumLab", label: "Theory and Lab" },
+              { key: "internal", label: "Internal Only" },
             ],
           },
-          { key: "lecture", label: "Lectures", type: "text" },
-          { key: "tutorial", label: "Tutorials", type: "text" },
-          { key: "practical", label: "Practicals", type: "text" },
-          { key: "credits", label: "Credits", type: "text" },
-          { key: "totalHours", label: "Total Hours", type: "text" },
-          { key: "totalMarks", label: "Total Marks", type: "text" },
-          { key: "internal", label: "Internal Marks", type: "text" },
-          { key: "external", label: "External Marks", type: "text" },
+          { key: "lecture", label: "Lectures", type: "number" },
+          { key: "tutorial", label: "Tutorials", type: "number" },
+          { key: "practical", label: "Practicals", type: "number" },
+          { key: "credits", label: "Credits", type: "number" },
+          { key: "totalHours", label: "Total Hours", type: "number" },
+          { key: "totalMarks", label: "Total Marks", type: "number" },
+          { key: "internal", label: "Internal Marks", type: "number" },
+          { key: "external", label: "External Marks", type: "number" },
         ]}
-        uniqueKey="subId"
+        uniqueKey="subid"
       />
     </div>
   );
