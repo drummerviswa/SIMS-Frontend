@@ -23,6 +23,7 @@ import AdminAcademicSchedule from "./pages/admin/academic/AdminAcademicSchedule"
 import DepartmentLayout from "./layout/department/DepartmentLayout";
 import DepartmentHome from "./pages/department/DepartmentHome";
 import AdminProfile from "./pages/admin/auth/AdminProfile";
+import DepartmentProfile from "./pages/department/auth/DepartmentProfile";
 import DepartmentLogin from "./pages/department/auth/DepartmentLogin";
 import ViewFaculties from "./pages/department/view/ViewFaculties";
 import ViewBranches from "./pages/department/view/ViewBranches";
@@ -40,6 +41,7 @@ import FacultyLayout from "./layout/faculty/FacultyLayout";
 import FacultyHome from "./pages/faculty/FacultyHome";
 import FacReport from "./pages/faculty/FacReport";
 import FacLogin from "./pages/faculty/auth/FacLogin";
+import FacProfile from "./pages/faculty/auth/FacProfile";
 import FacViewSubjects from "./pages/faculty/view/FacViewSubjects";
 import FacViewBatches from "./pages/faculty/view/FacViewBatches";
 import ManageSplitup from "./pages/faculty/marks/ManageSplitup";
@@ -140,6 +142,7 @@ export default function App() {
             {/* <Route */}
           </Route>
           <Route path="/faculty/login" element={<FacLogin />} />
+          <Route path="/faculty/profile" element={<FacProfile />} />
 
           {/* Department Dashboard */}
           <Route
@@ -176,6 +179,7 @@ export default function App() {
             <Route path="/department/report" element={<DeptReport />} />
             <Route path="/department/contactadmin" element={<ContactAdmin />} />
           </Route>
+          <Route path="/department/profile" element={<DepartmentProfile />} />
           <Route path="/department/login" element={<DepartmentLogin />} />
 
           {/* Main App Layout */}
