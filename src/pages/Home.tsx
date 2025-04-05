@@ -26,7 +26,7 @@ export default function Home() {
             <div className="lg:p-2.5 my-1 p-4 lg:flex justify-center items-center lg:mx-8">
               {/* Logo */}
               <img
-                src="https://upload.wikimedia.org/wikipedia/commons/9/92/Sims_diamond_logo.png"
+                src={"/images/logo/logo-icon.svg"}
                 alt="SIMS"
                 className="h-12"
               />
@@ -40,18 +40,18 @@ export default function Home() {
                   { to: "", label: "How to" },
                 ].map((link) => (
                   <Link
-                  key={link.to}
-                  to={link.to}
-                  className={`text-gray-600 dark:text-gray-25 text-xl hover:text-gray-900 dark:hover:text-gray-100 ${
-                    link.to === params.pathname ? "font-bold underline" : ""
-                  }`}
-                  onClick={() => {
-                    if (link.to === "" && howToRef.current) {
-                    howToRef.current.scrollIntoView({ behavior: "smooth" });
-                    }
-                  }}
+                    key={link.to}
+                    to={link.to}
+                    className={`text-gray-600 dark:text-gray-25 text-xl hover:text-gray-900 dark:hover:text-gray-100 ${
+                      link.to === params.pathname ? "font-bold underline" : ""
+                    }`}
+                    onClick={() => {
+                      if (link.to === "" && howToRef.current) {
+                        howToRef.current.scrollIntoView({ behavior: "smooth" });
+                      }
+                    }}
                   >
-                  {link.label}
+                    {link.label}
                   </Link>
                 ))}
               </div>
