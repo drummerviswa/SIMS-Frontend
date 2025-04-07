@@ -117,7 +117,7 @@ export default function App() {
             <Route path="/faculty/view/batch" element={<FacViewBatches />} />
             <Route path="/faculty/marks/all" element={<MarksSubject />} />
             <Route
-              path="/faculty/marks/splitup/:subject/:batch"
+              path="/faculty/marks/splitup/:subCode/:batchName"
               element={<ManageSplitup />}
             />
             <Route path="/faculty/marks/viewall" element={<ViewMarks />} />
