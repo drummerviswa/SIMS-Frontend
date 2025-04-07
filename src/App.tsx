@@ -1,56 +1,58 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router'
-import { ScrollToTop } from './components/common/ScrollToTop'
-import Home from './pages/Home'
-import AdminLayout from './layout/admin/AdminLayout'
-import AdminHome from './pages/admin/AdminHome'
-import ManageDepartment from './pages/admin/mange/ManageDepartment'
-import ManageFaculty from './pages/admin/mange/ManageFaculty'
-import ManageStudents from './pages/admin/mange/ManageStudents'
-import ManageRegulation from './pages/admin/mange/ManageRegulation'
-import ManageBranch from './pages/admin/mange/ManageBranch'
-import ManageBatch from './pages/admin/mange/ManageBatch'
-import ManageDegree from './pages/admin/mange/ManageDegree'
-import ManageSubject from './pages/admin/mange/ManageSubject'
-import AdminLogin from './pages/admin/auth/AdminLogin'
-import AdminRegister from './pages/admin/auth/AdminRegister'
-import AdminReports from './pages/admin/misc/AdminReports'
-import AdminAcademics from './pages/admin/academic/AdminAcademicCalendar'
-import AdminBackup from './pages/admin/misc/AdminBackup'
-import AdminDeptQuery from './pages/admin/query/AdminDeptQuery'
-import AdminFacQuery from './pages/admin/query/AdminFacQuery'
-import AdminAcademicCalendar from './pages/admin/academic/AdminAcademicCalendar'
-import AdminAcademicSchedule from './pages/admin/academic/AdminAcademicSchedule'
-import DepartmentLayout from './layout/department/DepartmentLayout'
-import DepartmentHome from './pages/department/DepartmentHome'
-import AdminProfile from './pages/admin/auth/AdminProfile'
-import DepartmentLogin from './pages/department/auth/DepartmentLogin'
-import ViewFaculties from './pages/department/view/ViewFaculties'
-import ViewBranches from './pages/department/view/ViewBranches'
-import DeptManageSubjects from './pages/department/manage/DeptManageSubjects'
-import DeptFacQuery from './pages/department/query/DeptFacQuery'
-import DeptManageBatches from './pages/department/manage/DeptManageBatches'
-import ManageFacSubjects from './pages/department/manage/ManageFacSubjects'
-import DeptManageStudents from './pages/department/manage/DeptManageStudents'
-import DeptReport from './pages/department/misc/DeptReport'
-import ContactAdmin from './pages/department/contact/ContactAdmin'
-import ViewDegrees from './pages/department/view/ViewDegrees'
-import DeptAcademic from './pages/department/academic/DeptAcademic'
-import NotFound from './pages/OtherPage/NotFound'
-import FacultyLayout from './layout/faculty/FacultyLayout'
-import FacultyHome from './pages/faculty/FacultyHome'
-import FacReport from './pages/faculty/FacReport'
-import FacLogin from './pages/faculty/auth/FacLogin'
-import FacViewSubjects from './pages/faculty/view/FacViewSubjects'
-import FacViewBatches from './pages/faculty/view/FacViewBatches'
-import ManageSplitup from './pages/faculty/marks/ManageSplitup'
-import ViewMarksSubject from './pages/faculty/marks/ViewMarksSubject'
-import UploadMarks from './pages/faculty/marks/UploadMarks'
-import FacAcademicCal from './pages/faculty/academics/FacAcademicCal'
-import FacContactAdmin from './pages/faculty/contact/FacContactAdmin'
-import FacContactDept from './pages/faculty/contact/FacContactDept'
-import MarksSubject from './pages/faculty/marks/MarksSubject'
-import ViewMarks from './pages/faculty/marks/ViewMarks'
-import React, { useState } from 'react'
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router";
+import { ScrollToTop } from "./components/common/ScrollToTop";
+import Home from "./pages/Home";
+import AdminLayout from "./layout/admin/AdminLayout";
+import AdminHome from "./pages/admin/AdminHome";
+import ManageDepartment from "./pages/admin/mange/ManageDepartment";
+import ManageFaculty from "./pages/admin/mange/ManageFaculty";
+import ManageStudents from "./pages/admin/mange/ManageStudents";
+import ManageRegulation from "./pages/admin/mange/ManageRegulation";
+import ManageBranch from "./pages/admin/mange/ManageBranch";
+import ManageBatch from "./pages/admin/mange/ManageBatch";
+import ManageDegree from "./pages/admin/mange/ManageDegree";
+import ManageSubject from "./pages/admin/mange/ManageSubject";
+import AdminLogin from "./pages/admin/auth/AdminLogin";
+import AdminRegister from "./pages/admin/auth/AdminRegister";
+import AdminReports from "./pages/admin/misc/AdminReports";
+import AdminAcademics from "./pages/admin/academic/AdminAcademicCalendar";
+import AdminBackup from "./pages/admin/misc/AdminBackup";
+import AdminDeptQuery from "./pages/admin/query/AdminDeptQuery";
+import AdminFacQuery from "./pages/admin/query/AdminFacQuery";
+import AdminAcademicCalendar from "./pages/admin/academic/AdminAcademicCalendar";
+import AdminAcademicSchedule from "./pages/admin/academic/AdminAcademicSchedule";
+import DepartmentLayout from "./layout/department/DepartmentLayout";
+import DepartmentHome from "./pages/department/DepartmentHome";
+import AdminProfile from "./pages/admin/auth/AdminProfile";
+import DepartmentProfile from "./pages/department/auth/DepartmentProfile";
+import DepartmentLogin from "./pages/department/auth/DepartmentLogin";
+import ViewFaculties from "./pages/department/view/ViewFaculties";
+import ViewBranches from "./pages/department/view/ViewBranches";
+import DeptManageSubjects from "./pages/department/manage/DeptManageSubjects";
+import DeptFacQuery from "./pages/department/query/DeptFacQuery";
+import DeptManageBatches from "./pages/department/manage/DeptManageBatches";
+import ManageFacSubjects from "./pages/department/manage/ManageFacSubjects";
+import DeptManageStudents from "./pages/department/manage/DeptManageStudents";
+import DeptReport from "./pages/department/misc/DeptReport";
+import ContactAdmin from "./pages/department/contact/ContactAdmin";
+import ViewDegrees from "./pages/department/view/ViewDegrees";
+import DeptAcademic from "./pages/department/academic/DeptAcademic";
+import NotFound from "./pages/OtherPage/NotFound";
+import FacultyLayout from "./layout/faculty/FacultyLayout";
+import FacultyHome from "./pages/faculty/FacultyHome";
+import FacReport from "./pages/faculty/FacReport";
+import FacLogin from "./pages/faculty/auth/FacLogin";
+import FacProfile from "./pages/faculty/auth/FacProfile";
+import FacViewSubjects from "./pages/faculty/view/FacViewSubjects";
+import FacViewBatches from "./pages/faculty/view/FacViewBatches";
+import ManageSplitup from "./pages/faculty/marks/ManageSplitup";
+import ViewMarksSubject from "./pages/faculty/marks/ViewMarksSubject";
+import UploadMarks from "./pages/faculty/marks/UploadMarks";
+import FacAcademicCal from "./pages/faculty/academics/FacAcademicCal";
+import FacContactAdmin from "./pages/faculty/contact/FacContactAdmin";
+import FacContactDept from "./pages/faculty/contact/FacContactDept";
+import MarksSubject from "./pages/faculty/marks/MarksSubject";
+import ViewMarks from "./pages/faculty/marks/ViewMarks";
+import React, { useState } from "react";
 interface ChildLayout {
   element: React.ReactNode
 }
@@ -60,7 +62,7 @@ export default function App() {
     return isAuth ? element : <Navigate to='/admin/login' />
   }
   const ProtectedRouteFac = ({ element }: ChildLayout) => {
-    const [isAuth] = useState(false)
+    const [isAuth] = useState(true)
     return isAuth ? element : <Navigate to='/faculty/login' />
   }
   const ProtectedRouteDept = ({ element }: ChildLayout) => {
@@ -139,7 +141,8 @@ export default function App() {
             />
             {/* <Route */}
           </Route>
-          <Route path='/faculty/login' element={<FacLogin />} />
+          <Route path="/faculty/login" element={<FacLogin />} />
+          <Route path="/faculty/profile" element={<FacProfile />} />
 
           {/* Department Dashboard */}
           <Route
@@ -176,7 +179,8 @@ export default function App() {
             <Route path='/department/report' element={<DeptReport />} />
             <Route path='/department/contactadmin' element={<ContactAdmin />} />
           </Route>
-          <Route path='/department/login' element={<DepartmentLogin />} />
+          <Route path="/department/profile" element={<DepartmentProfile />} />
+          <Route path="/department/login" element={<DepartmentLogin />} />
 
           {/* Main App Layout */}
           <Route index path='/' element={<Home />} />

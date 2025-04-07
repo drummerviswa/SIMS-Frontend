@@ -4,14 +4,14 @@ export default function DeptManageBatches() {
   return (
     <ManageEntity
       entityName="Batchs"
-      apiEndpoint="/batch"
+      apiEndpoint="/department/manage/batch"
       columns={[
-        { key: "bid", label: "Batch ID" },
+        { key: "batchid", label: "Batch ID" },
         { key: "batchName", label: "Batch Name" },
       ]}
       initialState={{}}
       inputOptions={[{ key: "batchName", label: "Batch Name", type: "text" }]}
-      uniqueKey={"bid"}
+      uniqueKey={"batchid"}
     />
   );
 }

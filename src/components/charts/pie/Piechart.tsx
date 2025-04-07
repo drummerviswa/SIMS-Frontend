@@ -16,7 +16,7 @@ const PieChart = ({ chartdata }: ChartdataProps) => {
       enabled: true,
       style: {
         fontSize: "14px",
-        colors: ["#1D2939"],
+        colors: ["#000000"],
       },
     },
     tooltip: {
@@ -41,7 +41,7 @@ const PieChart = ({ chartdata }: ChartdataProps) => {
       position: "right", // Ensure it's a valid string literal type
       fontSize: "14px",
       labels: {
-        colors: ["#1D2939"],
+        colors: ["#000000"],
       },
     },
     responsive: [

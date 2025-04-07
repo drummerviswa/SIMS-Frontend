@@ -6,14 +6,14 @@ export default function ViewFaculties() {
     <div>
       <ViewEntity
         entityName="View Faculties"
-        apiEndpoint="/faculty"
+        apiEndpoint={`/department/view/${1}/faculty`}
         columns={[
-          { key: "fid", label: "FID" },
-          { key: "facultyName", label: "Faculty Name" },
+          { key: "facid", label: "FID" },
+          { key: "facName", label: "Name" },
           { key: "username", label: "Username" },
           { key: "password", label: "Password" },
+          { key: "deptName", label: "Department" },
           { key: "designation", label: "Designation" },
-          { key: "department", label: "Department" },
         ]}
         initialState={{}}
         uniqueKey="fid"

@@ -6,13 +6,14 @@ export default function ViewDegrees() {
     <div>
       <ViewEntity
         entityName="View Degrees"
-        apiEndpoint="/degree"
-        uniqueKey="degreeId"
+        apiEndpoint={`/department/view/${1}/degree`}
+        uniqueKey="degid"
         columns={[
-          { key: "degreeId", label: "Degree ID" },
-          { key: "degreeName", label: "Degree Name" },
-          { key: "degreeCode", label: "Degree Code" },
+          { key: "degid", label: "Degree ID" },
+          { key: "degName", label: "Degree Name" },
           { key: "duration", label: "Duration" },
+          { key: "graduation", label: "Graduation" },
+          { key: "deptName", label: "Department" },
         ]}
         initialState={{}}
       />

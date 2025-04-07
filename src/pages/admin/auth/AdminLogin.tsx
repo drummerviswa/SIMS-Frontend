@@ -1,99 +1,103 @@
-import useForm from "../../admin/auth/useForm"
-import Validate from "../../admin/auth/Validate"
+import useForm from '../../admin/auth/useForm'
+import Validate from '../../admin/auth/Validate'
 
 export default function AdminLogin() {
-
   const { handleChange, value, handleSubmit, Errors } = useForm(Validate)
-  return (
-    <div>
-      <div>
-        <h1 className='text-3xl text-center mt-30 mb-15'>Admin Login</h1>
-        <form className='max-w-sm mx-auto flex flex-col justify-center  '>
-          {/* for username */}
 
-          {/* for mail */}
+  return (
+    <div className='relative min-h-screen flex items-center justify-center overflow-hidden'>
+      <div className='absolute top-0 left-0 w-full h-1/2 bg-blue-700 z-0' />
+      <div className='absolute bottom-0 left-0 w-full h-1/2 bg-white z-0' />
+
+      {/* Main login container */}
+      <div className='bg-white rounded-2xl shadow-lg flex w-[900px] max-w-full overflow-hidden z-10'>
+        <div className='w-1/2 p-10'>
+          <h1 className='text-3xl font-semibold mb-8 text-center'>Login</h1>
+
+          {/* Email Field */}
           <div className='mb-5'>
             <label
               htmlFor='email'
-              className='block mb-2 text-sm font-medium text-gray-900 dark:text-white'
+              className='block mb-1 text-sm font-medium text-gray-700'
             >
-              Your email
+              email
             </label>
             {Errors.email && (
-              <p className='block mb-2 text-sm font-medium text-red-500 dark:text-white'>
-                {Errors.email}
-              </p>
+              <p className='text-red-500 text-xs mb-1'>{Errors.email}</p>
             )}
             <input
               type='email'
               id='email'
-              className='shadow-xs bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-xs-light'
-              placeholder='email@gmail.com'
               name='email'
-              onChange={handleChange}
               value={value.email}
+              onChange={handleChange}
+              placeholder='Enter email'
+              className='w-full p-2 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-blue-500'
             />
           </div>
 
-          {/* for password */}
-          <div className='mb-5'>
+          {/* Password Field */}
+          <div className='mb-5 '>
             <label
               htmlFor='password'
-              className='block mb-2 text-sm font-medium text-gray-900 dark:text-white'
+              className='block mb-1 text-sm font-medium text-gray-700'
             >
-              Your password
+              Password
             </label>
             {Errors.password && (
-              <p className='block mb-2 text-sm font-medium text-red-500 dark:text-white'>
-                {Errors.password}
-              </p>
+              <p className='text-red-500 text-xs mb-1'>{Errors.password}</p>
             )}
             <input
               type='password'
               id='password'
-              className='shadow-xs bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-xs-light'
               name='password'
               value={value.password}
               onChange={handleChange}
+              placeholder='Enter password'
+              className='w-full p-2 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-blue-500'
             />
+            {/* <a
+              href='#'
+              className='text-xs text-blue-500 absolute right-2 top-8 hover:underline'
+            >
+              Forgot password?
+            </a> */}
           </div>
 
-          {/* for confirm password */}
-          <div className='mb-5'>
-            <label
-              htmlFor='repeat-password'
-              className='block mb-2 text-sm font-medium text-gray-900 dark:text-white'
-            >
-              Repeat password
+          {/* Remember Me */}
+          <div className='mb-5 flex items-center gap-2'>
+            <input type='checkbox' id='remember' className='w-4 h-4' />
+            <label htmlFor='remember' className='text-sm text-gray-600'>
+              Remember me
             </label>
-            {Errors.confirmpassword && (
-              <p className='block mb-2 text-sm font-medium text-red-500 dark:text-white'>
-                {Errors.confirmpassword}
-              </p>
-            )}
-            <input
-              type='password'
-              id='repeat-password'
-              className='shadow-xs bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-xs-light'
-              name='confirmPassword'
-              value={value.confirmpassword}
-              onChange={handleChange}
-            />
           </div>
 
-          {/* for button */}
-          <div className='flex items-center mb-5 justify-center gap-4 '>
-            <button
-              type='submit'
-              className='text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800'
-              onClick={handleSubmit}
-            >
-              Register new account
-            </button>
+          {/* Submit Button */}
+          <button
+            type='submit'
+            onClick={handleSubmit}
+            className='w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-md transition'
+          >
+            Login
+          </button>
 
-            <p>If you don't have an account  ? Signup</p>
-          </div>
-        </form>
+          {/* Sign Up Text */}
+          <p className='text-sm text-center mt-4 text-gray-600'>
+            Don't have an account?{' '}
+            <a href='#' className='text-blue-500 hover:underline'>
+              Sign up
+            </a>
+          </p>
+        </div>
+
+        {/* Right Side - Illustration and Info */}
+        <div className='w-1/2 bg-gray-50 p-10 flex flex-col justify-center items-center text-center'>
+          <img
+            src='../../../../public/SIMS_hero.svg'
+            alt='Illustration'
+            className='w-64 h-auto mb-6'
+          />
+        </div>
       </div>
     </div>
   )
