@@ -6,7 +6,7 @@ import { FaSchoolFlag } from "react-icons/fa6";
 import { GiTeacher } from "react-icons/gi";
 import { CiLight } from "react-icons/ci";
 import { useTheme } from "../context/ThemeContext";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export default function Home() {
   const params = useLocation();
@@ -26,6 +26,8 @@ export default function Home() {
     { to: "", label: "How to" },
   ];
 
+  useEffect(() => setMobileMenuOpen(false), [params.pathname]);
+
   return (
     <>
       <PageMeta
@@ -43,7 +45,7 @@ export default function Home() {
                 alt="SIMS"
                 className="h-10 lg:h-12"
               />
-              
+
               {/* Mobile Menu Button */}
               <div className="lg:hidden flex items-center">
                 <button
@@ -64,7 +66,7 @@ export default function Home() {
                   )}
                 </div>
               </div>
-              
+
               {/* Desktop Links */}
               <div className="hidden lg:flex lg:flex-row items-center space-x-8 ml-auto">
                 {navLinks.map((link) => (
@@ -96,7 +98,7 @@ export default function Home() {
                 </div>
               </div>
             </div>
-            
+
             {/* Mobile Menu */}
             {mobileMenuOpen && (
               <div className="lg:hidden bg-white dark:bg-gray-800 shadow-lg rounded-lg mx-4 mt-2 p-4">
@@ -110,7 +112,9 @@ export default function Home() {
                       }`}
                       onClick={() => {
                         if (link.to === "" && howToRef.current) {
-                          howToRef.current.scrollIntoView({ behavior: "smooth" });
+                          howToRef.current.scrollIntoView({
+                            behavior: "smooth",
+                          });
                         }
                         setMobileMenuOpen(false);
                       }}
@@ -122,11 +126,13 @@ export default function Home() {
               </div>
             )}
           </nav>
-          
+
           <div className="h-screen grid lg:grid-cols-2 grid-cols-1 lg:gap-8 px-4 lg:px-12 mx-auto bg-blue-200 dark:bg-blue-300">
             {/* Text */}
             <div className="flex text-gray-900 flex-col justify-center items-center lg:items-start col-span-1 lg:mt-0 mt-24 px-4">
-              <h1 className="lg:text-9xl text-5xl md:text-6xl font-bold">SIMS</h1>
+              <h1 className="lg:text-9xl text-5xl md:text-6xl font-bold">
+                SIMS
+              </h1>
               <p className="lg:text-3xl text-xl md:text-2xl text-gray-600 text-center lg:text-left">
                 Student Internals Management System
               </p>
@@ -144,15 +150,15 @@ export default function Home() {
             </div>
             {/* Image */}
             <div className="col-span-1 flex justify-center items-center lg:mt-0 mt-4">
-              <img 
-                src="/SIMS_hero.svg" 
-                alt="" 
-                className="w-full max-w-md lg:max-w-full lg:size-4/5" 
+              <img
+                src="/SIMS_hero.svg"
+                alt=""
+                className="w-full max-w-md lg:max-w-full lg:size-4/5"
               />
             </div>
           </div>
         </section>
-        
+
         {/* Portals */}
         <section className="p-4 lg:p-10 h-auto lg:h-screen snap-always snap-center">
           {/* Title */}
@@ -199,7 +205,7 @@ export default function Home() {
             </Link>
           </div>
         </section>
-        
+
         {/* Highlights Section */}
         <section
           ref={howToRef}
@@ -214,12 +220,13 @@ export default function Home() {
             <div className="container mx-auto p-4 lg:p-10"></div>
           </StyledCardWrapper>
         </section>
-        
+
         {/* Footer */}
         <footer className="text-center backdrop:backdrop-blur-2xl text-base-content p-4 bg-white dark:bg-gray-800">
           <aside>
             <p className="text-gray-900 dark:text-gray-25 text-sm lg:text-base">
-              Copyright © {new Date().getFullYear()} - All right reserved by SIMS
+              Copyright © {new Date().getFullYear()} - All right reserved by
+              SIMS
             </p>
           </aside>
         </footer>
@@ -275,13 +282,13 @@ const StyledWrapper = styled.div`
   }
 
   .card:hover {
-    transform: translateY(-5px) scale(1.005) translateZ(0);
+    transform: translateY(-5px) scale(1.05) translateZ(0);
     box-shadow: 0 24px 36px rgba(0, 0, 0, 0.11),
       0 24px 46px var(--box-shadow-color);
   }
 
   .card:hover .overlay {
-    transform: scale(5) translateZ(0);
+    transform: scale(6) translateZ(0);
   }
 
   .card:hover .cardIcon {
@@ -358,17 +365,17 @@ const StyledWrapper = styled.div`
     .card {
       height: 250px;
     }
-    
+
     .circle {
       width: 90px;
       height: 90px;
     }
-    
+
     .circle:after {
       width: 80px;
       height: 80px;
     }
-    
+
     .overlay {
       width: 80px;
       height: 80px;

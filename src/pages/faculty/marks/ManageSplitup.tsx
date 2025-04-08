@@ -8,15 +8,6 @@ export default function ManageSplitup() {
   }>();
   return (
     <div>
-      {/* Title infos - Degree & Branch
-        Subject Name
-        Subject Code 
-        Subject Type
-        Subject Hours
-        Internal Marks
-        External Marks
-        LTPC of the subject
-      */}
       <div className="grid grid-cols-12 m-4">
         <div className="col-span-6 flex flex-col">
           <h1 className="text-xl font-medium">
@@ -26,33 +17,37 @@ export default function ManageSplitup() {
           <h1 className="text-xl font-bold">XC5251</h1>
           <h1 className="text-md font-semibold">R2019</h1>
         </div>
-        <motion.div className="col-span-6 overflow-x-auto rounded-lg border border-gray-200 shadow-md">
-          <h1 className="text-center text-2xl font-semibold text-gray-900">
+        <motion.div className="col-span-6 overflow-x-auto rounded-lg border border-gray-200 shadow-md p-4">
+          <h1 className="text-center text-2xl font-semibold text-gray-900 mb-4">
             R2019
           </h1>
-          <table className="w-full table-auto text-left text-sm text-gray-500">
-            <thead className="bg-gray-50 text-xs uppercase text-gray-700">
+          <table className="table-auto w-full text-center border-collapse border border-gray-300">
+            <thead>
               <tr>
-                <th scope="col" className="px-6 py-3">
-                  Component Name
-                </th>
-                <th scope="col" className="px-6 py-3">
-                  Component Weightage
-                </th>
+          <th className="border border-gray-300 px-4 py-2">Assessment</th>
+          <th className="border border-gray-300 px-4 py-2">Assignments</th>
+          <th className="border border-gray-300 px-4 py-2">Written Test</th>
+          <th className="border border-gray-300 px-4 py-2">Total</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-200 bg-white">
-              <tr className="hover:bg-gray-50">
-                <td className="whitespace-nowrap px-6 py-4 font-medium text-gray-900">
-                  Assessment 1
-                </td>
-                <td className="whitespace-nowrap px-6 py-4">50%</td>
+            <tbody>
+              <tr>
+          <td className="border border-gray-300 px-4 py-2">Assessment 1</td>
+          <td className="border border-gray-300 px-4 py-2">40</td>
+          <td className="border border-gray-300 px-4 py-2">60</td>
+          <td className="border border-gray-300 px-4 py-2">100</td>
               </tr>
-              <tr className="hover:bg-gray-50">
-                <td className="whitespace-nowrap px-6 py-4 font-medium text-gray-900">
-                  Assessment 2
-                </td>
-                <td className="whitespace-nowrap px-6 py-4">50%</td>
+              <tr>
+          <td className="border border-gray-300 px-4 py-2">Assessment 2</td>
+          <td className="border border-gray-300 px-4 py-2">40</td>
+          <td className="border border-gray-300 px-4 py-2">60</td>
+          <td className="border border-gray-300 px-4 py-2">100</td>
+              </tr>
+              <tr>
+          <td className="border border-gray-300 px-4 py-2 font-bold" colSpan={3}>
+            Total Internal Assessment
+          </td>
+          <td className="border border-gray-300 px-4 py-2 font-bold">200</td>
               </tr>
             </tbody>
           </table>

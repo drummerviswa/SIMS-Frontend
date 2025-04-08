@@ -66,7 +66,7 @@ export default function App() {
     return isAuth ? element : <Navigate to='/faculty/login' />
   }
   const ProtectedRouteDept = ({ element }: ChildLayout) => {
-    const [isAuth] = useState(true)
+    const [isAuth] = useState(false)
     return isAuth ? element : <Navigate to='/department/login' />
   }
   return (
@@ -117,7 +117,7 @@ export default function App() {
             <Route path='/faculty/view/batch' element={<FacViewBatches />} />
             <Route path='/faculty/marks/all' element={<MarksSubject />} />
             <Route
-              path="/faculty/marks/splitup/:subCode/:batchName"
+              path="/faculty/marks/splitup/:subject/:batch"
               element={<ManageSplitup />}
             />
             <Route path='/faculty/marks/viewall' element={<ViewMarks />} />
