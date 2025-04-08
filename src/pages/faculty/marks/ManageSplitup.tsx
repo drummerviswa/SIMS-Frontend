@@ -71,7 +71,6 @@ export default function ManageSplitup() {
             Remaining marks: <span className="font-black">{100}</span>
           </div>
           <h1>Assessment - 2</h1>
-          {/* Splitup - Weightage table */}
         </div>
       </div>
     </div>
