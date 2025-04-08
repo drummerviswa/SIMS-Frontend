@@ -12,7 +12,7 @@ export default function AdminLogin() {
       {/* Main login container */}
       <div className='bg-white rounded-2xl shadow-lg flex w-[900px] max-w-full overflow-hidden z-10'>
         <div className='w-1/2 p-10'>
-          <h1 className='text-3xl font-semibold mb-8 text-center'>Login</h1>
+          <h1 className='text-3xl font-semibold mb-8 text-center'>Admin Login</h1>
 
           {/* Email Field */}
           <div className='mb-5'>
@@ -20,7 +20,7 @@ export default function AdminLogin() {
               htmlFor='email'
               className='block mb-1 text-sm font-medium text-gray-700'
             >
-              email
+              Email
             </label>
             {Errors.email && (
               <p className='text-red-500 text-xs mb-1'>{Errors.email}</p>
@@ -63,15 +63,6 @@ export default function AdminLogin() {
               Forgot password?
             </a> */}
           </div>
-
-          {/* Remember Me */}
-          <div className='mb-5 flex items-center gap-2'>
-            <input type='checkbox' id='remember' className='w-4 h-4' />
-            <label htmlFor='remember' className='text-sm text-gray-600'>
-              Remember me
-            </label>
-          </div>
-
           {/* Submit Button */}
           <button
             type='submit'
