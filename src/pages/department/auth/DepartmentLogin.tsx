@@ -1,14 +1,17 @@
 import React from 'react'
 // import { useState } from "react";
-// import '../../../../src/Styles/departmentlogin.css'
+import Validate from '../../department/auth/Validate'
 
-
+import useForm from '../../department/auth/useForm'
 
 export default function DepartmentLogin() {
+  const { handleChange, value, handleSubmit, Errors } = useForm(Validate)
+
   return (
     <>
-      <div className='departmentlogin'>
-        <form className='max-w-sm mx-auto flex flex-col justify-center mt-40 '>
+      <div>
+        <h1 className='text-3xl text-center mt-35 mb-10'>Department Login</h1>
+        <form className='max-w-sm mx-auto flex flex-col justify-center  '>
           <div className='mb-5'>
             <label
               htmlFor='email'
@@ -16,12 +19,19 @@ export default function DepartmentLogin() {
             >
               Your email
             </label>
+            {Errors.email && (
+              <p className='block mb-2 text-sm font-medium text-red-500 dark:text-white'>
+                {Errors.email}
+              </p>
+            )}
             <input
               type='email'
               id='email'
               className='shadow-xs bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-xs-light'
               placeholder='name@flowbite.com'
-              required
+              name='email'
+              value={value.email}
+              onChange={handleChange}
             />
           </div>
           <div className='mb-5'>
@@ -31,11 +41,18 @@ export default function DepartmentLogin() {
             >
               Your password
             </label>
+            {Errors.password && (
+              <p className='block mb-2 text-sm font-medium text-red-500 dark:text-white'>
+                {Errors.password}
+              </p>
+            )}
             <input
               type='password'
               id='password'
               className='shadow-xs bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-xs-light'
-              required
+              name='password'
+              value={value.password}
+              onChange={handleChange}
             />
           </div>
           <div className='mb-5'>
@@ -45,11 +62,18 @@ export default function DepartmentLogin() {
             >
               Repeat password
             </label>
+            {Errors.confirmPassword && (
+              <p className='block mb-2 text-sm font-medium text-red-500 dark:text-white'>
+                {Errors.confirmPassword}
+              </p>
+            )}
             <input
               type='password'
               id='repeat-password'
               className='shadow-xs bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-xs-light'
-              required
+              name='repeat-password'
+              value={value.confirmPassword}
+              onChange={handleChange}
             />
           </div>
           <div className='flex items-start mb-5'>
