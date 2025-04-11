@@ -53,6 +53,10 @@ const navItems: NavItem[] = [
         name: "View Marks",
         path: "/faculty/marks/viewall",
       },
+      {
+        name:"View Regulations",
+        path:"/faculty/marks/regulation"
+      }
     ],
   },
   {
