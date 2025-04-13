@@ -9,6 +9,7 @@ interface Column {
   key: string;
   label: string;
   fetchKey?: string;
+  render?: (value: any) => string | number;
 }
 interface Entity {
   [key: string]: any;
@@ -200,7 +201,7 @@ export default function ManageEntity({
         }}
         className="text-white font-bold py-2 px-4 rounded"
       >
-        <IoIosRefresh />
+        <IoIosRefresh className="text-gray-600" />
       </button>
 
       <div className="relative overflow-x-auto shadow-md sm:rounded-lg no-scrollbar">

@@ -1,4 +1,3 @@
-//batch Regulation modification
 //subject - component mapping - component setted up as foreign key
 
 //Regulation splitup into multiple components _Table mapping
@@ -6,5 +5,9 @@
 
 //assesscomp - //category, regulation +
 
-
 //R2019 Lab paper reg
+
+
+// Theory cum lab => 2nd assess = Theory + Lab
+
+//Splitup for assessment test and internals

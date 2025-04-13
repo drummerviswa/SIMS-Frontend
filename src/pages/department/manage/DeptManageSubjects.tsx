@@ -4,47 +4,46 @@ export default function DeptManageSubjects() {
   return (
     <div className="max-w-[74rem] no-scrollbar">
       <ManageEntity
-        apiEndpoint="/department/manage/subject"
+        apiEndpoint={`/department/manage/subject/${1}`}
         entityName="Subject"
         columns={[
           { key: "subid", label: "Subject ID" },
           { key: "subName", label: "Subject Name" },
           { key: "subCode", label: "Subject Code" },
-          { key: "lecture", label: "Letures" },
-          { key: "tutorial", label: "Tutorials" },
-          { key: "practical", label: "Practicals" },
-          { key: "credits", label: "Credits" },
-          { key: "category", label: "Category" },
-          { key: "totalHours", label: "Total Hours" },
-          { key: "totalMarks", label: "Total Marks" },
-          { key: "internal", label: "Internal Marks" },
-          { key: "external", label: "External Marks" },
+          { key: "l", label: "Letures" },
+          { key: "t", label: "Tutorials" },
+          { key: "p", label: "Practicals" },
+          { key: "c", label: "Credits" },
+          { key: "assess1", label: "Assessment I" },
+          { key: "assess2", label: "Assessment II" },
+          { key: "endsem", label: "End Semester" },
+          { key: "cperiod", label: "Hours" },
+          { key: "type", label: "Type" },
+          { key: "regulation", label: "Regulation" },
         ]}
         initialState={{}}
         inputOptions={[
           { key: "subName", label: "Subject Name", type: "text" },
           { key: "subCode", label: "Subject Code", type: "text" },
           {
-            key: "category",
-            label: "Category",
+            key: "component",
+            label: "Component",
             type: "select",
-            static: true,
-            options: [
-              { key: "", label: "Select Category" },
-              { key: "theory", label: "Theory" },
-              { key: "lab", label: "Lab" },
-              { key: "TheoryCumLab", label: "Theory and Lab" },
-              { key: "internal", label: "Internal Only" },
+            fetchEndpoint: "/admin/manage/assesscomp",
+            fetchKey: "acid",
+            selectLabel: [
+              "regName",
+              "l",
+              "t",
+              "p",
+              "c",
+              "assess1",
+              "assess2",
+              "endsem",
+              "cperiod",
+              "type",
             ],
           },
-          { key: "lecture", label: "Lectures", type: "number" },
-          { key: "tutorial", label: "Tutorials", type: "number" },
-          { key: "practical", label: "Practicals", type: "number" },
-          { key: "credits", label: "Credits", type: "number" },
-          { key: "totalHours", label: "Total Hours", type: "number" },
-          { key: "totalMarks", label: "Total Marks", type: "number" },
-          { key: "internal", label: "Internal Marks", type: "number" },
-          { key: "external", label: "External Marks", type: "number" },
         ]}
         uniqueKey="subid"
       />

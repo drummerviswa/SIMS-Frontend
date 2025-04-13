@@ -1,12 +1,12 @@
-import React, { useEffect } from "react";
-import MarkCard from "../../../components/common/MarkCard";
+import React from "react";
 import API from "../../../utils/API";
+import SplitCard from "../../../components/common/SplitCard";
 
-export default function MarksSubject() {
+export default function Marks() {
   const [subjects, setSubjects] = React.useState([]);
   const [loading, setLoading] = React.useState(true);
 
-  useEffect(() => {
+  React.useEffect(() => {
     const fetchSubjects = async () => {
       try {
         const response = await API.get(`/faculty/assignedSub/${1}`);
@@ -31,7 +31,6 @@ export default function MarksSubject() {
     acc[key].push(subject);
     return acc;
   }, {});
-
   return (
     <div className="flex flex-col gap-6 p-4 w-full h-full">
       {Object.entries(groupedSubjects).map(([key, group]) => {
@@ -46,7 +45,7 @@ export default function MarksSubject() {
             </h2>
             <div className="flex flex-wrap gap-4">
               {group.map((sub, index) => (
-                <MarkCard key={index} {...sub} />
+                <SplitCard key={index} {...sub} />
               ))}
             </div>
           </div>

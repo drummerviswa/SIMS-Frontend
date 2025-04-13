@@ -55,6 +55,13 @@ import ViewMarks from "./pages/faculty/marks/ViewMarks";
 import React, { useEffect, useState } from "react";
 import Format from "./pages/faculty/marks/Format";
 import Regulation from "./pages/faculty/marks/Regulation";
+import ManageAssessComp from "./pages/admin/mange/ManageAssessComp";
+import Criteria from "./pages/faculty/marks/Criteria";
+import Marks from "./pages/faculty/marks/Marks";
+import MarkGrant from "./pages/faculty/marks/MarkGrant";
+import MarkSplit from "./pages/faculty/marks/MarkSplit";
+import ManageDegrees from "./pages/admin/mange/ManageDegree";
+import ManageSubjectDepartment from "./pages/admin/mange/ManageSubjectDepartment";
 interface ChildLayout {
   element: React.ReactNode;
 }
@@ -107,6 +114,10 @@ export default function App() {
               element={<ManageDepartment />}
             />
             <Route path="/admin/manage/faculty" element={<ManageFaculty />} />
+            <Route
+              path="/admin/manage/subdept"
+              element={<ManageSubjectDepartment />}
+            />
             <Route path="/admin/manage/student" element={<ManageStudents />} />
             <Route
               path="/admin/manage/regulation"
@@ -114,6 +125,10 @@ export default function App() {
             />
             <Route path="/admin/manage/branch" element={<ManageBranch />} />
             <Route path="/admin/manage/batch" element={<ManageBatch />} />
+            <Route
+              path="/admin/manage/assesscomp"
+              element={<ManageAssessComp />}
+            />
             <Route path="/admin/manage/degree" element={<ManageDegree />} />
             <Route path="/admin/manage/subject" element={<ManageSubject />} />
             <Route path="/admin/report" element={<AdminReports />} />
@@ -147,8 +162,9 @@ export default function App() {
             <Route path="/faculty/view/subject" element={<FacViewSubjects />} />
             <Route path="/faculty/view/batch" element={<FacViewBatches />} />
             <Route path="/faculty/marks/all" element={<MarksSubject />} />
+            <Route path="/faculty/criteria" element={<Criteria />} />
             <Route
-              path="/faculty/marks/splitup/:subCode/:batchName"
+              path="/faculty/marks/splitup/:subCode/:acid/:batchName"
               element={<ManageSplitup />}
             />
             <Route path="/faculty/marks/viewall" element={<ViewMarks />} />
@@ -156,9 +172,18 @@ export default function App() {
               path="/faculty/marks/view/:subCode/:batchName"
               element={<ViewMarksSubject />}
             />
+            <Route path="/faculty/marks/upload" element={<Marks />} />
             <Route
-              path="/faculty/marks/upload/:subCode/:batchName/:splitup"
+              path="/faculty/marks/upload/:subCode/:batchName"
               element={<UploadMarks />}
+            />
+            <Route
+              path="/faculty/marks/upload/:subCode/:batchName/:tenure"
+              element={<MarkGrant />}
+            />
+            <Route
+              path="/faculty/marks/upload/:subCode/:batchName/:tenure/:msid"
+              element={<MarkSplit />}
             />
             <Route
               path="/faculty/marks/regulation/:regName"
