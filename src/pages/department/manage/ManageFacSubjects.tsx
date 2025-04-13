@@ -41,7 +41,7 @@ export default function ManageFacSubjects() {
             type: "select",
             fetchEndpoint: "/admin/manage/batch",
             fetchKey: "batchid",
-            selectLabel: ["batchid", "batchName"],
+            selectLabel: ["batchid", "batchName", "regName"],
           },
           {
             key: "degree",

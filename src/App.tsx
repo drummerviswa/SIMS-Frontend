@@ -52,23 +52,55 @@ import FacContactAdmin from "./pages/faculty/contact/FacContactAdmin";
 import FacContactDept from "./pages/faculty/contact/FacContactDept";
 import MarksSubject from "./pages/faculty/marks/MarksSubject";
 import ViewMarks from "./pages/faculty/marks/ViewMarks";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import Format from "./pages/faculty/marks/Format";
+import Regulation from "./pages/faculty/marks/Regulation";
+import ManageAssessComp from "./pages/admin/mange/ManageAssessComp";
+import Criteria from "./pages/faculty/marks/Criteria";
+import Marks from "./pages/faculty/marks/Marks";
+import MarkGrant from "./pages/faculty/marks/MarkGrant";
+import MarkSplit from "./pages/faculty/marks/MarkSplit";
+import ManageDegrees from "./pages/admin/mange/ManageDegree";
+import ManageSubjectDepartment from "./pages/admin/mange/ManageSubjectDepartment";
 interface ChildLayout {
-  element: React.ReactNode
+  element: React.ReactNode;
 }
 export default function App() {
+  useEffect(() => {
+    document.title = "SIMS | Student Internals Management System";
+  }, []);
+  const PublicRouteAdmin = ({ element }: ChildLayout) => {
+    const [isAuth, setIsAuth] = useState<boolean | null>(null);
+
+    useEffect(() => {
+      const token = localStorage.getItem("adminToken");
+      setIsAuth(!!token);
+    }, []);
+
+    if (isAuth === null) return <div>Loading...</div>;
+
+    return isAuth ? <Navigate to="/admin" /> : element;
+  };
   const ProtectedRouteAdmin = ({ element }: ChildLayout) => {
-    const [isAuth] = useState(true)
-    return isAuth ? element : <Navigate to='/admin/login' />
-  }
+    const [isAuth, setIsAuth] = useState<boolean | null>(null);
+
+    useEffect(() => {
+      const token = localStorage.getItem("adminToken");
+      setIsAuth(!!token);
+    }, []);
+
+    if (isAuth === null) return <div>Loading...</div>;
+
+    return isAuth ? element : <Navigate to="/admin/login" />;
+  };
   const ProtectedRouteFac = ({ element }: ChildLayout) => {
-    const [isAuth] = useState(true)
-    return isAuth ? element : <Navigate to='/faculty/login' />
-  }
+    const [isAuth] = useState(true);
+    return isAuth ? element : <Navigate to="/faculty/login" />;
+  };
   const ProtectedRouteDept = ({ element }: ChildLayout) => {
-    const [isAuth] = useState(false)
-    return isAuth ? element : <Navigate to='/department/login' />
-  }
+    const [isAuth] = useState(true);
+    return isAuth ? element : <Navigate to="/department/login" />;
+  };
   return (
     <>
       <Router>
@@ -76,67 +108,96 @@ export default function App() {
         <Routes>
           {/* Admin Dashboard */}
           <Route element={<ProtectedRouteAdmin element={<AdminLayout />} />}>
-            <Route path='/admin' element={<AdminHome />} />
+            <Route path="/admin" element={<AdminHome />} />
             <Route
-              path='/admin/manage/department'
+              path="/admin/manage/department"
               element={<ManageDepartment />}
             />
-            <Route path='/admin/manage/faculty' element={<ManageFaculty />} />
-            <Route path='/admin/manage/student' element={<ManageStudents />} />
+            <Route path="/admin/manage/faculty" element={<ManageFaculty />} />
             <Route
-              path='/admin/manage/regulation'
+              path="/admin/manage/subdept"
+              element={<ManageSubjectDepartment />}
+            />
+            <Route path="/admin/manage/student" element={<ManageStudents />} />
+            <Route
+              path="/admin/manage/regulation"
               element={<ManageRegulation />}
             />
-            <Route path='/admin/manage/branch' element={<ManageBranch />} />
-            <Route path='/admin/manage/batch' element={<ManageBatch />} />
-            <Route path='/admin/manage/degree' element={<ManageDegree />} />
-            <Route path='/admin/manage/subject' element={<ManageSubject />} />
-            <Route path='/admin/report' element={<AdminReports />} />
-            <Route path='/admin/academic' element={<AdminAcademics />} />
-            <Route path='/admin/backup' element={<AdminBackup />} />
+            <Route path="/admin/manage/branch" element={<ManageBranch />} />
+            <Route path="/admin/manage/batch" element={<ManageBatch />} />
             <Route
-              path='/admin/greivance/department'
+              path="/admin/manage/assesscomp"
+              element={<ManageAssessComp />}
+            />
+            <Route path="/admin/manage/degree" element={<ManageDegree />} />
+            <Route path="/admin/manage/subject" element={<ManageSubject />} />
+            <Route path="/admin/report" element={<AdminReports />} />
+            <Route path="/admin/academic" element={<AdminAcademics />} />
+            <Route path="/admin/backup" element={<AdminBackup />} />
+            <Route
+              path="/admin/greivance/department"
               element={<AdminDeptQuery />}
             />
             <Route
-              path='/admin/greivance/faculty'
+              path="/admin/greivance/faculty"
               element={<AdminFacQuery />}
             />
-            <Route path='/admin/calendar' element={<AdminAcademicCalendar />} />
-            <Route path='/admin/schedule' element={<AdminAcademicSchedule />} />
-            <Route path='/admin/profile' element={<AdminProfile />} />
+            <Route path="/admin/calendar" element={<AdminAcademicCalendar />} />
+            <Route path="/admin/schedule" element={<AdminAcademicSchedule />} />
+            <Route path="/admin/profile" element={<AdminProfile />} />
           </Route>
-          <Route path='/admin/login' element={<AdminLogin />} />
-          <Route path='/admin/register' element={<AdminRegister />} />
+          <Route
+            path="/admin/login"
+            element={<PublicRouteAdmin element={<AdminLogin />} />}
+          />
+          <Route
+            path="/admin/register"
+            element={<PublicRouteAdmin element={<AdminRegister />} />}
+          />
 
           {/* Faculty Dashboard */}
           <Route element={<ProtectedRouteFac element={<FacultyLayout />} />}>
-            <Route path='/faculty' element={<FacultyHome />} />
-            <Route path='/faculty/report' element={<FacReport />} />
-            <Route path='/faculty/view/subject' element={<FacViewSubjects />} />
-            <Route path='/faculty/view/batch' element={<FacViewBatches />} />
-            <Route path='/faculty/marks/all' element={<MarksSubject />} />
+            <Route path="/faculty" element={<FacultyHome />} />
+            <Route path="/faculty/report" element={<FacReport />} />
+            <Route path="/faculty/view/subject" element={<FacViewSubjects />} />
+            <Route path="/faculty/view/batch" element={<FacViewBatches />} />
+            <Route path="/faculty/marks/all" element={<MarksSubject />} />
+            <Route path="/faculty/criteria" element={<Criteria />} />
             <Route
-              path="/faculty/marks/splitup/:subject/:batch"
+              path="/faculty/marks/splitup/:subCode/:acid/:batchName"
               element={<ManageSplitup />}
             />
-            <Route path='/faculty/marks/viewall' element={<ViewMarks />} />
+            <Route path="/faculty/marks/viewall" element={<ViewMarks />} />
             <Route
-              path='/faculty/marks/view/:subject/:batch'
+              path="/faculty/marks/view/:subCode/:batchName"
               element={<ViewMarksSubject />}
             />
+            <Route path="/faculty/marks/upload" element={<Marks />} />
             <Route
-              path='/faculty/marks/upload/:subject/:batch/:splitup'
+              path="/faculty/marks/upload/:subCode/:batchName"
               element={<UploadMarks />}
             />
-            <Route path='/faculty/view/report' element={<FacReport />} />
-            <Route path='/faculty/academic' element={<FacAcademicCal />} />
             <Route
-              path='/faculty/contact/admin'
+              path="/faculty/marks/upload/:subCode/:batchName/:tenure"
+              element={<MarkGrant />}
+            />
+            <Route
+              path="/faculty/marks/upload/:subCode/:batchName/:tenure/:msid"
+              element={<MarkSplit />}
+            />
+            <Route
+              path="/faculty/marks/regulation/:regName"
+              element={<Format />}
+            />
+            <Route path="/faculty/marks/regulation" element={<Regulation />} />
+            <Route path="/faculty/view/report" element={<FacReport />} />
+            <Route path="/faculty/academic" element={<FacAcademicCal />} />
+            <Route
+              path="/faculty/contact/admin"
               element={<FacContactAdmin />}
             />
             <Route
-              path='/faculty/contact/department'
+              path="/faculty/contact/department"
               element={<FacContactDept />}
             />
             {/* <Route */}
@@ -148,47 +209,47 @@ export default function App() {
           <Route
             element={<ProtectedRouteDept element={<DepartmentLayout />} />}
           >
-            <Route path='/department' element={<DepartmentHome />} />
-            <Route path='/department/calendar' element={<DeptAcademic />} />
+            <Route path="/department" element={<DepartmentHome />} />
+            <Route path="/department/calendar" element={<DeptAcademic />} />
             <Route
-              path='/department/view/faculty'
+              path="/department/view/faculty"
               element={<ViewFaculties />}
             />
-            <Route path='/department/view/branch' element={<ViewBranches />} />
-            <Route path='/department/view/degree' element={<ViewDegrees />} />
+            <Route path="/department/view/branch" element={<ViewBranches />} />
+            <Route path="/department/view/degree" element={<ViewDegrees />} />
             <Route
-              path='/department/manage/subjects'
+              path="/department/manage/subjects"
               element={<DeptManageSubjects />}
             />
             <Route
-              path='/department/manage/batch'
+              path="/department/manage/batch"
               element={<DeptManageBatches />}
             />
             <Route
-              path='/department/manage/facsub'
+              path="/department/manage/facsub"
               element={<ManageFacSubjects />}
             />
             <Route
-              path='/department/manage/student'
+              path="/department/manage/student"
               element={<DeptManageStudents />}
             />
             <Route
-              path='/department/grievance/faculty'
+              path="/department/grievance/faculty"
               element={<DeptFacQuery />}
             />
-            <Route path='/department/report' element={<DeptReport />} />
-            <Route path='/department/contactadmin' element={<ContactAdmin />} />
+            <Route path="/department/report" element={<DeptReport />} />
+            <Route path="/department/contactadmin" element={<ContactAdmin />} />
           </Route>
           <Route path="/department/profile" element={<DepartmentProfile />} />
           <Route path="/department/login" element={<DepartmentLogin />} />
 
           {/* Main App Layout */}
-          <Route index path='/' element={<Home />} />
+          <Route index path="/" element={<Home />} />
 
           {/* Fallback Route */}
-          <Route path='*' element={<NotFound />} />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </Router>
     </>
-  )
+  );
 }

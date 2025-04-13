@@ -54,7 +54,7 @@ function getRelativeLuminance(r, g, b) {
   return 0.2126 * R + 0.7152 * G + 0.0722 * B;
 }
 
-export default function MarkCard({
+export default function SplitCard({
   acid,
   subName,
   subCode,
@@ -74,7 +74,7 @@ export default function MarkCard({
 
   return (
     <Link
-      to={`/faculty/marks/splitup/${subCode}/${acid}/${batchName}`}
+      to={`/faculty/marks/upload/${subCode}/${batchName}`}
       className="flex justify-center items-center"
     >
       <motion.div

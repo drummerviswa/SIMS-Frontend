@@ -31,7 +31,7 @@ export default function ManageStudents() {
           type: "select",
           fetchEndpoint: "/admin/manage/branch",
           selectMultiple: false,
-          selectLabel: ["bid", "branchName"],
+          selectLabel: ["bid", "branchName", "regName"],
           fetchKey: "bid",
         },
         {

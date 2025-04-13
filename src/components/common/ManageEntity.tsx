@@ -9,6 +9,7 @@ interface Column {
   key: string;
   label: string;
   fetchKey?: string;
+  render?: (value: any) => string | number;
 }
 interface Entity {
   [key: string]: any;
@@ -200,7 +201,7 @@ export default function ManageEntity({
         }}
         className="text-white font-bold py-2 px-4 rounded"
       >
-        <IoIosRefresh />
+        <IoIosRefresh className="text-gray-600" />
       </button>
 
       <div className="relative overflow-x-auto shadow-md sm:rounded-lg no-scrollbar">
@@ -278,7 +279,7 @@ export default function ManageEntity({
                   !input.static ? (
                     <select
                       name={input?.key}
-                      className="block w-full p-2 rounded mb-3 dark:bg-gray-800 dark:text-white"
+                      className="block w-full p-2 rounded mb-3 dark:bg-gray-800 dark:text-white bg-gray-100 border outline-blue-500 focus:outline-blue-500"
                       value={formData?.[input?.key] ?? ""}
                       onChange={handleChange}
                     >
@@ -294,7 +295,7 @@ export default function ManageEntity({
                   ) : (
                     <select
                       name={input?.key}
-                      className="block w-full p-2 rounded mb-3 dark:bg-gray-800 dark:text-white"
+                      className="block w-full p-2 rounded mb-3 dark:bg-gray-800 dark:text-white bg-gray-100 border outline-blue-500 focus:outline-blue-500"
                       value={formData?.[input?.key] ?? ""}
                       onChange={handleChange}
                       multiple={input?.selectMultiple}
@@ -316,14 +317,14 @@ export default function ManageEntity({
                         : ""
                     }
                     onChange={handleChange}
-                    className="block w-full p-2 rounded mb-3 dark:bg-gray-800 dark:text-white"
+                    className="block w-full p-2 rounded mb-3 dark:bg-gray-800 dark:text-white bg-gray-100 border outline-blue-500 focus:outline-blue-500"
                   />
                 ) : input.type === "textarea" ? (
                   <textarea
                     name={input.key}
                     value={formData?.[input?.key] ?? ""}
                     onChange={handleChange}
-                    className="block w-full p-2 rounded mb-3 dark:bg-gray-800 dark:text-white"
+                    className="block w-full p-2 rounded mb-3 dark:bg-gray-800 dark:text-white bg-gray-100 border outline-blue-500 focus:outline-blue-500"
                   ></textarea>
                 ) : (
                   <input
@@ -331,7 +332,7 @@ export default function ManageEntity({
                     name={input.key}
                     value={formData?.[input?.key] ?? ""}
                     onChange={handleChange}
-                    className="block w-full p-2 rounded mb-3 dark:bg-gray-800 dark:text-white"
+                    className="block w-full p-2 rounded mb-3 dark:bg-gray-800 dark:text-white bg-gray-100 border outline-blue-500 focus:outline-blue-500"
                   />
                 )}
               </div>

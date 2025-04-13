@@ -11,6 +11,7 @@ export default function ManageDegrees() {
       columns={[
         { key: "degid", label: "Degree ID" },
         { key: "degName", label: "Degree Name" },
+        { key: "degSym", label: "Degree Symbol" },
         { key: "duration", label: "Duration" },
         { key: "graduation", label: "Graduation" },
         { key: "department", label: "Department", fetchKey: "deptName" },
@@ -20,6 +21,11 @@ export default function ManageDegrees() {
         {
           key: "degName",
           label: "Degree Name",
+          type: "text",
+        },
+        {
+          key: "degSym",
+          label: "Degree Symbol",
           type: "text",
         },
         {

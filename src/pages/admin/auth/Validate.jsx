@@ -1,31 +1,35 @@
-import React from "react";
+export default function Validate(values) {
+  const errors = {};
 
-const Validate = (value) => {
-  let errors = {};
-
-  if (!value.username.trim()) {
-    errors.username = "Username is required";
-  }
-
-  if (!value.email.trim()) {
+  // Email validation
+  if (!values.email || values.email.trim() === "") {
     errors.email = "Email is required";
-  } else if (!/^[\w\.=-]+@[\w\.-]+\.[\w]{2,3}$/.test.value.email) {
+  } else if (!/\S+@\S+\.\S+/.test(values.email)) {
     errors.email = "Email is invalid";
   }
 
-  if (!value.password.trim()) {
+  // Password validation
+  if (!values.password || values.password.trim() === "") {
     errors.password = "Password is required";
-  } else if (value.password.length > 8) {
-    errors.password = "Password must be less than 8 characters";
+  } else if (values.password.length < 6) {
+    errors.password = "Password must be at least 6 characters";
   }
 
-  if (!value.confirmpassword.trim()) {
-    errors.confirmpassword = "Confirm password is required";
-  } else if (value.password != value.confirmpassword) {
-    errors.confirmpassword = "Password does not match";
+  // Confirm Password (only if it's being used)
+  if (typeof values.confirmpassword === "string") {
+    if (values.confirmpassword.trim() === "") {
+      errors.confirmpassword = "Confirm password is required";
+    } else if (values.confirmpassword !== values.password) {
+      errors.confirmpassword = "Passwords do not match";
+    }
+  }
+
+  // Username (if present)
+  if (typeof values.username === "string") {
+    if (values.username.trim() === "") {
+      errors.username = "Username is required";
+    }
   }
 
   return errors;
-};
-
-export default Validate;
+}

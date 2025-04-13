@@ -10,6 +10,7 @@ export default function ViewBranches() {
         columns={[
           { key: "bid", label: "Branch ID" },
           { key: "degName", label: "Degree" },
+          { key: "degSym", label: "Degree Symbol" },
           { key: "branchName", label: "Branch Name" },
         ]}
         initialState={{}}

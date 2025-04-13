@@ -11,6 +11,7 @@ export default function ViewDegrees() {
         columns={[
           { key: "degid", label: "Degree ID" },
           { key: "degName", label: "Degree Name" },
+          { key: "degSym", label: "Degree Symbol" },
           { key: "duration", label: "Duration" },
           { key: "graduation", label: "Graduation" },
           { key: "deptName", label: "Department" },
