@@ -2,11 +2,14 @@ import React from "react";
 import ViewEntity from "../../../components/common/ViewEntity";
 
 export default function ViewDegrees() {
+  const department = localStorage.getItem("department");
+  const departmentData = department ? JSON.parse(department) : null;
+  const departmentId = departmentData ? departmentData.deptid : null;
   return (
     <div>
       <ViewEntity
         entityName="View Degrees"
-        apiEndpoint={`/department/view/${1}/degree`}
+        apiEndpoint={`/department/view/${departmentId}/degree`}
         uniqueKey="degid"
         columns={[
           { key: "degid", label: "Degree ID" },

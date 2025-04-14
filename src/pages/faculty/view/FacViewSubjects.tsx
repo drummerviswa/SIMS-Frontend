@@ -1,10 +1,13 @@
 import ViewEntity from "../../../components/common/ViewEntity";
 
 export default function FacViewSubjects() {
+  const faculty = localStorage.getItem("faculty");
+  const facultyData = JSON.parse(faculty);
+  const facultyId = facultyData["facid"];
   return (
     <div className="max-w-[74rem] no-scrollbar">
       <ViewEntity
-        apiEndpoint={`/faculty/view/${1}/subject`}
+        apiEndpoint={`/faculty/view/${facultyId}/subject`}
         entityName="View Branches"
         uniqueKey="subid"
         columns={[

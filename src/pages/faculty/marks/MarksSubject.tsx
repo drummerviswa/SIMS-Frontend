@@ -10,11 +10,13 @@ type Subject = {
 export default function MarksSubject() {
   const [subjects, setSubjects] = React.useState<Subject[]>([]);
   const [loading, setLoading] = React.useState(true);
-
+  const faculty = localStorage.getItem("faculty");
+  const facultyData = JSON.parse(faculty);
+  const facultyId = facultyData["facid"];
   useEffect(() => {
     const fetchSubjects = async () => {
       try {
-        const response = await API.get(`/faculty/assignedSub/${1}`);
+        const response = await API.get(`/faculty/assignedSub/${facultyId}`);
         setSubjects(response.data);
         console.log("Subjects fetched successfully:", response.data);
       } catch (error) {

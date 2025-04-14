@@ -1,42 +1,22 @@
-import React from 'react'
-
 const Validate = (values) => {
+  let errors = {};
 
- let errors={}
+  if (typeof values.username === "string") {
+    if (values.username.trim() === "") {
+      errors.username = "Username is required";
+    } else if (values.username.length < 6) {
+      errors.username = "Username must be at least 6 characters";
+    }
+  }
 
- if(!values.email.trim())
- {
-  errors.email = "Email is required"
- }
+  if (!values.password || values.password.trim() === "") {
+    errors.password = "Password is required";
+  } 
+  // else if (values.password.length < 6) {
+  //   errors.password = "Password must be at least 6 characters";
+  // }
 
- else if(!/\S+@\S+\.\S+/.test(values.email))
- {
-  errors.email = "Email is invalid"
- }
+  return errors;
+};
 
- if(!values.password.trim())
- {
-  errors.password = "Password is required"
- }
-
- else if(values.password.length > 8)
- {
-  errors.password = "Password must be less than 8 characters"
- }
-
- if(!values.confirmPassword.trim())
- {
-  errors.confirmPassword = "Confirm Password is required"
- }
-
- else if(values.confirmPassword !== values.password)
- {
-  errors.confirmPassword = "Password does not match"
- }
-
-
-
-  return errors
-}
-
-export default Validate
+export default Validate;

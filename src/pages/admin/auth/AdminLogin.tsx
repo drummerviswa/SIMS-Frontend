@@ -1,24 +1,22 @@
+import { IoMdClose } from "react-icons/io";
 import { setAuthToken } from "../../../utils/API";
 import useForm from "../../admin/auth/useForm";
 import Validate from "../../admin/auth/Validate";
-import { useNavigate } from "react-router"; // if using React Router
-
+import { useNavigate } from "react-router";
 export default function AdminLogin() {
   const navigate = useNavigate();
 
   const submitCallback = (data) => {
-    // Handle successful login here
-    setAuthToken(data.token); // Set the token in the API instance
+    setAuthToken(data.token);
     localStorage.setItem("adminToken", data.token);
-    localStorage.setItem("admin", JSON.stringify(data.admin)); // Store user data in local storage
+    localStorage.setItem("admin", JSON.stringify(data.admin));
     console.log("Login success:", data);
     navigate("/admin", {
       replace: true,
     });
   };
 
-  const endpoint = "/admin/auth/login"; // your backend endpoint
-
+  const endpoint = "/admin/auth/login";
   const { handleChange, value, handleSubmit, isSubmitting, Errors } = useForm(
     Validate,
     submitCallback,
@@ -30,19 +28,25 @@ export default function AdminLogin() {
       <div className="absolute bottom-0 left-0 w-full h-1/2 bg-white z-0" />
 
       <div className="bg-white rounded-2xl shadow-lg flex w-[900px] max-w-full overflow-hidden z-10">
+        <button
+          onClick={() => navigate("/",{
+            replace: true,
+          })}
+          className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 text-xl font-bold"
+          aria-label="Close"
+        >
+          <IoMdClose size={50} />
+        </button>
+
         <div className="w-1/2 p-10">
           <h1 className="text-3xl font-semibold mb-8 text-center">
             Admin Login
           </h1>
-
-          {/* Display server error if any */}
           {Errors.api && (
             <p className="text-red-500 text-sm mb-4 text-center">
               {Errors.api}
             </p>
           )}
-
-          {/* Email Field */}
           <div className="mb-5">
             <label
               htmlFor="email"
@@ -63,8 +67,6 @@ export default function AdminLogin() {
               className="w-full p-2 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-blue-500"
             />
           </div>
-
-          {/* Password Field */}
           <div className="mb-5">
             <label
               htmlFor="password"
@@ -85,8 +87,6 @@ export default function AdminLogin() {
               className="w-full p-2 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-blue-500"
             />
           </div>
-
-          {/* Submit Button */}
           <button
             type="submit"
             onClick={handleSubmit}
@@ -95,8 +95,6 @@ export default function AdminLogin() {
           >
             {isSubmitting ? "Logging in..." : "Login"}
           </button>
-
-          {/* Sign Up Text */}
           <p className="text-sm text-center mt-4 text-gray-600">
             Don't have an account?{" "}
             <a href="#" className="text-blue-500 hover:underline">
@@ -104,8 +102,6 @@ export default function AdminLogin() {
             </a>
           </p>
         </div>
-
-        {/* Right Side Illustration */}
         <div className="w-1/2 bg-gray-50 p-10 flex flex-col justify-center items-center text-center">
           <img
             src="../../../../public/SIMS_hero.svg"

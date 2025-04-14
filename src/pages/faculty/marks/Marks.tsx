@@ -10,11 +10,13 @@ type Subject = {
 export default function Marks() {
   const [subjects, setSubjects] = React.useState<Subject[]>([]);
   const [loading, setLoading] = React.useState(true);
-
+  const faculty = localStorage.getItem("faculty");
+  const facultyData = JSON.parse(faculty);
+  const facultyId = facultyData["facid"];
   React.useEffect(() => {
     const fetchSubjects = async () => {
       try {
-        const response = await API.get(`/faculty/assignedSub/${1}`);
+        const response = await API.get(`/faculty/assignedSub/${facultyId}`);
         setSubjects(response.data);
         console.log("Subjects fetched successfully:", response.data);
       } catch (error) {
@@ -53,22 +55,22 @@ export default function Marks() {
             </h2>
             <div className="flex flex-wrap gap-4">
               {group.map((sub, index) => (
-                <SplitCard 
-                key={index}
-                acid={sub.acid}
-                subName={sub.subName}
-                subCode={sub.subCode}
-                type={sub.type}
-                cperiod={sub.cperiod}
-                assess1={sub.assess1}
-                assess2={sub.assess2}
-                endsem={sub.endsem}
-                l={sub.l}
-                t={sub.t}
-                p={sub.p}
-                c={sub.c}
-                batchName={sub.batchName}
-                semester={sub.semester}
+                <SplitCard
+                  key={index}
+                  acid={sub.acid}
+                  subName={sub.subName}
+                  subCode={sub.subCode}
+                  type={sub.type}
+                  cperiod={sub.cperiod}
+                  assess1={sub.assess1}
+                  assess2={sub.assess2}
+                  endsem={sub.endsem}
+                  l={sub.l}
+                  t={sub.t}
+                  p={sub.p}
+                  c={sub.c}
+                  batchName={sub.batchName}
+                  semester={sub.semester}
                 />
               ))}
             </div>

@@ -1,44 +1,49 @@
-import React, { useState } from 'react'
+import { useState } from "react";
+import API from "../../../utils/API";
 
-const useForm = (Validate) => {
+const useForm = (Validate, submitCallback, endpoint) => {
+  const [value, setValue] = useState({
+    username: "",
+    password: "",
+  });
 
-
- const [value,setValue] = useState({
-  email:"",
-  password:"",
-  confirmPassword:"",
-
- })
-
- const [Errors,setErrors] = useState({})
+  const [Errors, setErrors] = useState({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleChange = (e) => {
-    // console.log(e.target.value, e.target.name)
-    const {name,value} = e.target
-
-
-
-    setValue((prevValue)=>{
-     return{
+    const { name, value } = e.target;
+    setValue((prevValue) => ({
       ...prevValue,
-      [name]:value
-     }
-    })
-  }
+      [name]: value,
+    }));
+  };
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const validationErrors = Validate(value);
+    setErrors(validationErrors);
 
-  const handleSubmit=(e)=>{
-   e.preventDefault()
+    if (Object.keys(validationErrors).length === 0) {
+      setIsSubmitting(true);
+      try {
+        console.log("Submitting data:", value);
+        console.log("Endpoint:", endpoint);
 
-   setErrors(Validate(value))
+        const response = await API.post(endpoint, value);
+        if (submitCallback) submitCallback(response.data);
+        console.log("Response:", response.data);
+      } catch (error) {
+        console.error(error);
+        setErrors({
+          api: error.response?.data?.message || "Server error",
+        });
+      } finally {
+        setIsSubmitting(false);
+      }
+    }
+  };
 
+  return { handleChange, value, handleSubmit, Errors, isSubmitting };
+};
 
-  }
-
-
-
-
-  return {handleChange,value,handleSubmit,Errors}
-}
-
-export default useForm
+export default useForm;

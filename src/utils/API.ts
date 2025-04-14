@@ -20,7 +20,15 @@ export const setAuthToken = (newToken: string) => {
 };
 
 export const getAuthToken = () => {
-  return localStorage.getItem("token");
+  return localStorage.getItem("adminToken");
+};
+
+export const getFacultyToken = () => {
+  return localStorage.getItem("facultyToken");
+};
+
+export const getDepartmentToken = () => {
+  return localStorage.getItem("departmentToken");
 };
 
 export default API;
