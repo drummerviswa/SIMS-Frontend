@@ -6,7 +6,7 @@ import { useParams } from "react-router";
 export default function MarkGrant() {
   const [splitup, setSplitup] = useState([]);
   const [loading, setLoading] = useState(true);
-  const { subCode, batchName, tenure } = useParams();
+  const { subCode, batchName, tenure, msid } = useParams();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -16,7 +16,7 @@ export default function MarkGrant() {
         );
         const subId = subjectRes.data.subid;
         const splitupRes = await API.get(
-          `/faculty/subSplitup/1/${subId}/${2}/${tenure}`
+          `/faculty/subSplitup/ten/${1}/${subId}/${tenure}`
         );
         setSplitup(splitupRes.data);
         console.log("Splitup fetched:", splitupRes.data);

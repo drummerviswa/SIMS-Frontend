@@ -56,7 +56,7 @@ function getRelativeLuminance(r, g, b) {
 export default function WeightageCard({ data }) {
   const bgColor = getRandomHSLColor();
   const { subCode, batchName, tenure } = useParams();
-  const msid = 1;
+  const msid = 6;
   return (
     <Link
       to={`/faculty/marks/upload/${subCode}/${batchName}/${tenure}/${msid}`}
