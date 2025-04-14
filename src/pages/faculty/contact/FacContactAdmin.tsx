@@ -1,10 +1,13 @@
 import GrievanceEntity from "../../../components/common/GrievanceEntity";
 
 export default function FacContactAdmin() {
+  const faculty = localStorage.getItem("faculty");
+  const facultyData = JSON.parse(faculty);
+  const facultyId = facultyData["facid"];
   return (
     <div>
       <GrievanceEntity
-        apiEndpoint={`/faculty/grievance/contactAdmin/${1}`}
+        apiEndpoint={`/faculty/grievance/contactAdmin/${facultyId}`}
         columns={[
           { key: "gid", label: "gid" },
           { key: "gMessage", label: "Message" },

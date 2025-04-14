@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from "react";
 import WeightageCard from "../../../components/common/WeightageCard";
 import API from "../../../utils/API";
@@ -6,8 +7,10 @@ import { useParams } from "react-router";
 export default function MarkGrant() {
   const [splitup, setSplitup] = useState([]);
   const [loading, setLoading] = useState(true);
-  const { subCode, batchName, tenure, msid } = useParams();
-
+  const { subCode, batchName, tenure } = useParams();
+  const faculty = localStorage.getItem("faculty");
+  const facultyData = JSON.parse(faculty);
+  const facultyId = facultyData["facid"];
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -16,7 +19,7 @@ export default function MarkGrant() {
         );
         const subId = subjectRes.data.subid;
         const splitupRes = await API.get(
-          `/faculty/subSplitup/ten/${1}/${subId}/${tenure}`
+          `/faculty/subSplitup/ten/${facultyId}/${subId}/${tenure}`
         );
         setSplitup(splitupRes.data);
         console.log("Splitup fetched:", splitupRes.data);

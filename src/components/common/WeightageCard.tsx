@@ -56,30 +56,34 @@ function getRelativeLuminance(r, g, b) {
 export default function WeightageCard({ data }) {
   const bgColor = getRandomHSLColor();
   const { subCode, batchName, tenure } = useParams();
-  const msid = 6;
-  return (
-    <Link
-      to={`/faculty/marks/upload/${subCode}/${batchName}/${tenure}/${msid}`}
+
+  const hasValidSubsplit = data.subsplitups.some(
+    (item) => item.subsplitid !== null
+  );
+
+  const CardContent = (
+    <div
+      style={{
+        backgroundColor: hasValidSubsplit ? bgColor : "#2e2e2e", // Tailwind gray-200
+        cursor: hasValidSubsplit ? "pointer" : "not-allowed",
+        opacity: hasValidSubsplit ? 1 : 0.6,
+      }}
+      className="w-[320px] rounded-lg flex flex-col justify-center hover:shadow-lg hover:scale-105 duration-700 min-h-[180px] dark:text-white items-start relative group"
     >
-      <div
-        style={{ backgroundColor: bgColor }}
-        className="w-[320px] rounded-lg flex flex-col justify-center hover:shadow-lg hover:scale-105 duration-700 min-h-[180px] dark:text-white items-start relative group"
-      >
-        <div className="m-5">
-          <div className="mt-4 text-left w-full mb-3">
-            <h2 className="text-2xl roboto-mono-500 text-gray-25 dark:text-white">
-              {data.criteriaName} - <span>{data.mainWeightage} marks</span>
-            </h2>
+      <div className="m-5">
+        <div className="mt-4 text-left w-full mb-3">
+          <h2 className="text-2xl roboto-mono-500 text-gray-25 dark:text-white">
+            {data.criteriaName} - <span>{data.mainWeightage} marks</span>
+          </h2>
+          <p className="text-gray-50 dark:text-gray-25 text-sm">
+            Overall contribution:{" "}
+            {(Number(data.mainWeightage) / Number(data.assess1)) * 100}%
+          </p>
 
-            {/* Weightage */}
-            <p className="text-gray-50 dark:text-gray-25 text-sm">
-              Overall contribution:{" "}
-              {(Number(data.mainWeightage) / Number(data.assess1)) * 100}%
-            </p>
-
-            {/* SubSplitups */}
-            <div className="flex flex-col gap-2 mt-2">
-              {data.subsplitups.map((item, index) =>
+          <div className="flex flex-col gap-2 mt-2">
+            {data.subsplitups.length > 0 &&
+            data.subsplitups.some((item) => item.subsplitid !== null) ? (
+              data.subsplitups.map((item, index) =>
                 item.subsplitid !== null ? (
                   <div className="flex items-center gap-2" key={index}>
                     <input
@@ -88,23 +92,33 @@ export default function WeightageCard({ data }) {
                       disabled
                     />
                     <label className="text-gray-25 dark:text-gray-300">
-                      {item.subCriteria} - {Number(item.subWeightage)}marks -{" "}
-                      {(Number(item.subWeightage) /
-                        Number(data.mainWeightage)) *
-                        100}
+                      {item.subCriteria} - {Number(item.subWeightage)} marks -{" "}
+                      {(
+                        (Number(item.subWeightage) /
+                          Number(data.mainWeightage)) *
+                        100
+                      ).toFixed(0)}
                       %
                     </label>
                   </div>
-                ) : (
-                  <div className="flex items-center gap-2" key={index}>
-                    <h1 className="text-gray-25">No splitups</h1>
-                  </div>
-                )
-              )}
-            </div>
+                ) : null
+              )
+            ) : (
+              <h1 className="text-white dark:text-white">No splitups</h1>
+            )}
           </div>
         </div>
       </div>
+    </div>
+  );
+
+  return hasValidSubsplit ? (
+    <Link
+      to={`/faculty/marks/upload/${subCode}/${batchName}/${tenure}/${data.msid}`}
+    >
+      {CardContent}
     </Link>
+  ) : (
+    <div>{CardContent}</div>
   );
 }

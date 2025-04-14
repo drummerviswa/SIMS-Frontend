@@ -1,10 +1,13 @@
 import ManageEntity from "../../../components/common/ManageEntity";
 
 export default function DeptFacQuery() {
+  const department = localStorage.getItem("department");
+  const departmentData = department ? JSON.parse(department) : null;
+  const departmentId = departmentData ? departmentData.deptid : null;
   return (
     <div>
       <ManageEntity
-        apiEndpoint={`/department/grievance/faculty/${1}`}
+        apiEndpoint={`/department/grievance/faculty/${departmentId}`}
         columns={[
           { key: "gid", label: "Grievance ID" },
           { key: "facName", label: "Faculty Name" },

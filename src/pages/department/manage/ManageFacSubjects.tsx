@@ -1,11 +1,14 @@
 import ManageEntity from "../../../components/common/ManageEntity";
 
 export default function ManageFacSubjects() {
+  const department = localStorage.getItem("department");
+  const departmentData = department ? JSON.parse(department) : null;
+  const departmentId = departmentData ? departmentData.deptid : null;
   return (
     <div className="max-w-[74rem] no-scrollbar">
       <ManageEntity
         entityName="Subject Mapping"
-        apiEndpoint={`/department/manage/subjectAssign/${1}`}
+        apiEndpoint={`/department/manage/subjectAssign/${departmentId}`}
         columns={[
           { key: "assignid", label: "Subject ID" },
           { key: "subName", label: "Subject Name" },

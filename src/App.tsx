@@ -62,6 +62,10 @@ import MarkGrant from "./pages/faculty/marks/MarkGrant";
 import MarkSplit from "./pages/faculty/marks/MarkSplit";
 import ManageDegrees from "./pages/admin/mange/ManageDegree";
 import ManageSubjectDepartment from "./pages/admin/mange/ManageSubjectDepartment";
+import ViewMarksByStudent from "./pages/faculty/marks/ViewMarksByStudent";
+import ViewMarksByAssessment from "./pages/faculty/marks/ViewMarksByAssessment";
+import ViewMarksChoose from "./pages/faculty/marks/ViewMarksChoose";
+import ViewMarksStudentList from "./pages/faculty/marks/ViewMarksStudentList";
 interface ChildLayout {
   element: React.ReactNode;
 }
@@ -94,11 +98,27 @@ export default function App() {
     return isAuth ? element : <Navigate to="/admin/login" />;
   };
   const ProtectedRouteFac = ({ element }: ChildLayout) => {
-    const [isAuth] = useState(true);
+    const [isAuth, setIsAuth] = useState<boolean | null>(null);
+
+    useEffect(() => {
+      const token = localStorage.getItem("facultyToken");
+      setIsAuth(!!token);
+    }, []);
+
+    if (isAuth === null) return <div>Loading...</div>;
     return isAuth ? element : <Navigate to="/faculty/login" />;
   };
+
+  // Fix: Department Protected Route
   const ProtectedRouteDept = ({ element }: ChildLayout) => {
-    const [isAuth] = useState(true);
+    const [isAuth, setIsAuth] = useState<boolean | null>(null);
+
+    useEffect(() => {
+      const token = localStorage.getItem("departmentToken");
+      setIsAuth(!!token);
+    }, []);
+
+    if (isAuth === null) return <div>Loading...</div>;
     return isAuth ? element : <Navigate to="/department/login" />;
   };
   return (
@@ -168,8 +188,21 @@ export default function App() {
               element={<ManageSplitup />}
             />
             <Route path="/faculty/marks/viewall" element={<ViewMarks />} />
+            <Route path="/faculty/marks/view/choose/:subCode" element={<ViewMarksChoose />} />
             <Route
-              path="/faculty/marks/view/:subCode/:batchName"
+              path="/faculty/marks/view/student/:subCode/:regNo"
+              element={<ViewMarksByStudent />}
+            />
+            <Route
+              path="/faculty/marks/view/student/:subCode"
+              element={<ViewMarksStudentList />}
+            />
+            <Route
+              path="/faculty/marks/view/assess/:subCode/:tenure"
+              element={<ViewMarksByAssessment />}
+            />
+            <Route
+              path="/faculty/marks/view/subject/:subCode"
               element={<ViewMarksSubject />}
             />
             <Route path="/faculty/marks/upload" element={<Marks />} />

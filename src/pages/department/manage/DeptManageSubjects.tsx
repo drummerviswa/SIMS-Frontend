@@ -1,10 +1,13 @@
 import ManageEntity from "../../../components/common/ManageEntity";
 
 export default function DeptManageSubjects() {
+  const department = localStorage.getItem("department");
+  const departmentData = department ? JSON.parse(department) : null;
+  const departmentId = departmentData ? departmentData.deptid : null;
   return (
     <div className="max-w-[74rem] no-scrollbar">
       <ManageEntity
-        apiEndpoint={`/department/manage/subject/${1}`}
+        apiEndpoint={`/department/manage/subject/${departmentId}`}
         entityName="Subject"
         columns={[
           { key: "subid", label: "Subject ID" },
