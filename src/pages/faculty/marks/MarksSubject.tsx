@@ -2,8 +2,13 @@ import React, { useEffect } from "react";
 import MarkCard from "../../../components/common/MarkCard";
 import API from "../../../utils/API";
 
+type Subject = {
+  degName: string;
+  branchName: string;
+  [key: string]: string | number;
+};
 export default function MarksSubject() {
-  const [subjects, setSubjects] = React.useState([]);
+  const [subjects, setSubjects] = React.useState<Subject[]>([]);
   const [loading, setLoading] = React.useState(true);
 
   useEffect(() => {
@@ -23,14 +28,17 @@ export default function MarksSubject() {
   }, []);
 
   // Grouping by degName and branchName
-  const groupedSubjects = subjects.reduce((acc, subject) => {
-    const key = `${subject.degName}__${subject.branchName}`;
-    if (!acc[key]) {
-      acc[key] = [];
-    }
-    acc[key].push(subject);
-    return acc;
-  }, {});
+  const groupedSubjects: Record<string, Subject[]> = subjects.reduce(
+    (acc, subject) => {
+      const key = `${subject.degName}__${subject.branchName}`;
+      if (!acc[key]) {
+        acc[key] = [];
+      }
+      acc[key].push(subject);
+      return acc;
+    },
+    {} as Record<string, Subject[]>
+  );
 
   return (
     <div className="flex flex-col gap-6 p-4 w-full h-full">
@@ -46,7 +54,23 @@ export default function MarksSubject() {
             </h2>
             <div className="flex flex-wrap gap-4">
               {group.map((sub, index) => (
-                <MarkCard key={index} {...sub} />
+                <MarkCard
+                  key={index}
+                  acid={sub.acid}
+                  subName={sub.subName}
+                  subCode={sub.subCode}
+                  type={sub.type}
+                  cperiod={sub.cperiod}
+                  assess1={sub.assess1}
+                  assess2={sub.assess2}
+                  endsem={sub.endsem}
+                  l={sub.l}
+                  t={sub.t}
+                  p={sub.p}
+                  c={sub.c}
+                  batchName={sub.batchName}
+                  semester={sub.semester}
+                />
               ))}
             </div>
           </div>
