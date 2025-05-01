@@ -58,7 +58,7 @@ export default function MarksSubject() {
               {group.map((sub, index) => (
                 <MarkCard
                   key={index}
-                  acid={sub.acid}
+                  acid={sub.subject}
                   subName={sub.subName}
                   subCode={sub.subCode}
                   type={sub.type}

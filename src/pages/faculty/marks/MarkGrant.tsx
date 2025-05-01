@@ -39,10 +39,27 @@ export default function MarkGrant() {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-[34rem] gap-8 px-4 py-8">
-      <div className="flex flex-wrap gap-4 justify-around w-full h-full">
-        {splitup.map((item, index) => (
-          <WeightageCard key={index} data={item} />
-        ))}
+      <div>
+        <h1 className="text-2xl font-bold text-gray-800 dark:text-white mb-4">
+          Written Test
+        </h1>
+        <div className="flex flex-wrap gap-4 justify-around w-full h-full">
+        {splitup.map(
+            (item, index) =>
+              item.writtenTest != 0 && <WeightageCard key={index} data={item} />
+          )}
+        </div>
+      </div>
+      <div>
+        <h1 className="text-2xl font-bold text-gray-800 dark:text-white mb-4">
+          Assignments
+        </h1>
+        <div className="flex flex-wrap gap-4 justify-around w-full h-full">
+          {splitup.map(
+            (item, index) =>
+              item.writtenTest != 1 && <WeightageCard key={index} data={item} />
+          )}
+        </div>
       </div>
     </div>
   );

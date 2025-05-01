@@ -54,12 +54,12 @@ function useSkipper() {
   return [shouldSkip, skip] as const;
 }
 
-interface DynamicMarkTableProps {
+interface ViewMarksTableProps {
   data: Person[];
   submitURL: string;
 }
 
-const DynamicMarkTable: React.FC<DynamicMarkTableProps> = ({
+const ViewMarksTable: React.FC<ViewMarksTableProps> = ({
   data,
   submitURL,
 }) => {
@@ -364,4 +364,4 @@ const DynamicMarkTable: React.FC<DynamicMarkTableProps> = ({
   );
 };
 
-export default DynamicMarkTable;
+export default ViewMarksTable;

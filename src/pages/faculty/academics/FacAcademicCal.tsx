@@ -1,7 +1,10 @@
 import React from 'react'
+import CalView from '../../CalView'
 
 export default function FacAcademicCal() {
   return (
-    <div>FacAcademicCal</div>
+    <div>
+      <CalView />
+    </div>
   )
 }

@@ -11,6 +11,8 @@ interface SplitupTableProps {
   tenture?: string;
   facultyId?: number;
   subjectId?: number;
+  written?: number;
+  assignment?: number;
 }
 
 export default function SplitupTableWithModal({
@@ -21,6 +23,8 @@ export default function SplitupTableWithModal({
   tenture,
   facultyId,
   subjectId,
+  written,
+  assignment,
 }: SplitupTableProps) {
   const [splitupList, setsplitupList] = useState([]);
   const [criteriaList, setCriteriaList] = useState([]);
@@ -99,7 +103,7 @@ export default function SplitupTableWithModal({
       ? splitupList.find((item) => item.msid === editingId)?.mainWeightage || 0
       : 0;
 
-  const remainingMarks = maxWeightage - totalWeightage;
+  const remainingMarks = written + assignment - totalWeightage;
   const effectiveRemainingMarks = remainingMarks + editingItemWeightage;
 
   const calculateRemainingSubWeightage = () => {
@@ -290,9 +294,13 @@ export default function SplitupTableWithModal({
                     <td className="px-6 py-4">{item.mainWeightage}</td>
                     <td className="px-1 py-4">
                       <span className="text-xs text-gray-500 dark:text-gray-400">
-                        {`${((item.mainWeightage / maxWeightage) * 100).toFixed(
-                          0
-                        )}%`}
+                        {`${(
+                          (item.mainWeightage /
+                            (item.mainWeightage === written
+                              ? written
+                              : assignment)) *
+                          100
+                        ).toFixed(0)}%`}
                       </span>
                     </td>
                     <td className="px-6 py-4 flex gap-4">
@@ -323,7 +331,7 @@ export default function SplitupTableWithModal({
                     className="w-full rounded bg-gray-100 dark:bg-gray-700 dark:text-white"
                   >
                     <option value="">Select Criteria</option>
-                    {criteriaList.map((item) => (
+                    {criteriaList.map((item) => item.criteriaName!=="Assessment" && (
                       <option key={item.id} value={item.cid}>
                         {item.criteriaName}
                       </option>

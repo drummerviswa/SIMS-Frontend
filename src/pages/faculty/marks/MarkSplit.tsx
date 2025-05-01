@@ -23,8 +23,12 @@ export default function MarkSplit() {
   useEffect(() => {
     const fetchIds = async () => {
       try {
-        const subjectRes = await API.get(`/admin/manage/subject/subCode/${subCode}`);
-        const batchRes = await API.get(`/admin/manage/batch/batchName/${batchName}`);
+        const subjectRes = await API.get(
+          `/admin/manage/subject/subCode/${subCode}`
+        );
+        const batchRes = await API.get(
+          `/admin/manage/batch/batchName/${batchName}`
+        );
         const assignRes = await API.get(
           `/faculty/assignedSub/facSub/${facultyId}/${subjectRes.data.subid}`
         );
@@ -52,7 +56,42 @@ export default function MarkSplit() {
           const res = await API.get(
             `/faculty/marks/${facultyId}/${subid}/${tenure}/${batchid}/${degid}/${bid}/${msid}`
           );
-          setData(res.data);
+
+          let enrichedData;
+
+          console.log("Students response:", res.data);
+          if (res.data.length === 0) {
+            // 📌 No marks exist yet → fetch student list separately
+            const studentsRes = await API.get(
+              `/faculty/marks/${facultyId}/${subid}/${tenure}/${batchid}/${degid}/${bid}/${msid}` // <-- This is just an example URL. Adjust it to your real "student list" API endpoint
+            );
+
+            enrichedData = studentsRes.data.map((student) => ({
+              regNo: student.regNo,
+              sName: student.sName,
+              criteriaName: "",
+              subject:student.subject,
+              mainCriteria:student.mainCriteria,
+              tenure: student.tenure,
+              MainWeightage: 0,
+              SubCriteriaBreakdown: [], // initially empty, you'll handle subcriteria inside DynamicMarkTable
+              total: 0,
+            }));
+          } else {
+            enrichedData = res.data.map((student) => ({
+              regNo: student.regNo,
+              sName: student.sName,
+              subject:student.subject,
+              mainCriteria:student.mainCriteria,
+              tenure: student.tenure,
+              criteriaName: student.criteriaName,
+              MainWeightage: student.mainWeightage,
+              SubCriteriaBreakdown: student.SubCriteriaBreakdown,
+            }));
+            console.log("Enriched data:", enrichedData);
+          }
+
+          setData(enrichedData);
         } catch (error) {
           console.error("Error loading marks:", error);
           setFetchError("Failed to load marks.");

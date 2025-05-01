@@ -1,8 +1,8 @@
 import { IoMdClose } from "react-icons/io";
-import { setAuthToken } from "../../../utils/API";
+import API, { setAuthToken } from "../../../utils/API";
 import useForm from "../../admin/auth/useForm";
 import Validate from "../../admin/auth/Validate";
-import { useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router";
 export default function AdminLogin() {
   const navigate = useNavigate();
 
@@ -10,6 +10,7 @@ export default function AdminLogin() {
     setAuthToken(data.token);
     localStorage.setItem("adminToken", data.token);
     localStorage.setItem("admin", JSON.stringify(data.admin));
+    API.defaults.headers.common["Authorization"] = `Bearer ${data.token}`;
     console.log("Login success:", data);
     navigate("/admin", {
       replace: true,
@@ -97,9 +98,9 @@ export default function AdminLogin() {
           </button>
           <p className="text-sm text-center mt-4 text-gray-600">
             Don't have an account?{" "}
-            <a href="#" className="text-blue-500 hover:underline">
+            <Link to={"/admin/register"} className="text-blue-500 hover:underline">
               Sign up
-            </a>
+            </Link>
           </p>
         </div>
         <div className="w-1/2 bg-gray-50 p-10 flex flex-col justify-center items-center text-center">
