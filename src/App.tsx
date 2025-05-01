@@ -66,6 +66,7 @@ import ViewMarksByStudent from "./pages/faculty/marks/ViewMarksByStudent";
 import ViewMarksByAssessment from "./pages/faculty/marks/ViewMarksByAssessment";
 import ViewMarksChoose from "./pages/faculty/marks/ViewMarksChoose";
 import ViewMarksStudentList from "./pages/faculty/marks/ViewMarksStudentList";
+import VerifyEmail from "./pages/admin/auth/VerifyEmail";
 interface ChildLayout {
   element: React.ReactNode;
 }
@@ -174,6 +175,10 @@ export default function App() {
             path="/admin/register"
             element={<PublicRouteAdmin element={<AdminRegister />} />}
           />
+          <Route
+            path="/verify-email/:verificationCode"
+            element={<VerifyEmail />}
+          />
 
           {/* Faculty Dashboard */}
           <Route element={<ProtectedRouteFac element={<FacultyLayout />} />}>
@@ -188,7 +193,10 @@ export default function App() {
               element={<ManageSplitup />}
             />
             <Route path="/faculty/marks/viewall" element={<ViewMarks />} />
-            <Route path="/faculty/marks/view/choose/:subCode" element={<ViewMarksChoose />} />
+            <Route
+              path="/faculty/marks/view/choose/:subCode"
+              element={<ViewMarksChoose />}
+            />
             <Route
               path="/faculty/marks/view/student/:subCode/:regNo"
               element={<ViewMarksByStudent />}
@@ -233,10 +241,10 @@ export default function App() {
               path="/faculty/contact/department"
               element={<FacContactDept />}
             />
+            <Route path="/faculty/profile" element={<FacProfile />} />
             {/* <Route */}
           </Route>
           <Route path="/faculty/login" element={<FacLogin />} />
-          <Route path="/faculty/profile" element={<FacProfile />} />
 
           {/* Department Dashboard */}
           <Route
@@ -272,8 +280,8 @@ export default function App() {
             />
             <Route path="/department/report" element={<DeptReport />} />
             <Route path="/department/contactadmin" element={<ContactAdmin />} />
+            <Route path="/department/profile" element={<DepartmentProfile />} />
           </Route>
-          <Route path="/department/profile" element={<DepartmentProfile />} />
           <Route path="/department/login" element={<DepartmentLogin />} />
 
           {/* Main App Layout */}

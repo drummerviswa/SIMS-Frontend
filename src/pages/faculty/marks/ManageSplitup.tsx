@@ -38,7 +38,7 @@ export default function ManageSplitup() {
       try {
         const response = await API.get(`/faculty/assignedSub/sub/${acid}`);
         console.log("Full response:", response.data);
-        setDetails(response.data); // Check if you need to do response.data.subject instead
+        setDetails(response.data);
       } catch (error) {
         console.error("Error fetching subjects:", error);
       } finally {
@@ -47,7 +47,7 @@ export default function ManageSplitup() {
     };
     fetchDetails();
   }, [acid]);
-
+  console.log("Sub ID:", details?.subid);
   const getTypeStyles = (type) => {
     switch (type?.toLowerCase()) {
       case "theory":
@@ -56,6 +56,8 @@ export default function ManageSplitup() {
         return "bg-green-200 text-green-800";
       case "project":
         return "bg-purple-200 text-purple-800";
+      case "theorycumlab":
+        return "bg-cyan-200 text-cyan-800";
       default:
         return "bg-gray-200 text-gray-800";
     }
@@ -166,6 +168,8 @@ export default function ManageSplitup() {
               tenture={"assess1"}
               facultyId={Number(details?.facid)}
               subjectId={Number(details?.subid)}
+              written={Number(details?.written)}
+              assignment={Number(details?.assignment)}
             />
           )}
         </div>
@@ -179,6 +183,8 @@ export default function ManageSplitup() {
               tenture={"assess2"}
               facultyId={Number(details?.facid)}
               subjectId={Number(details?.subid)}
+              written={Number(details?.written)}
+              assignment={Number(details?.assignment)}
             />
           )}
         </div>

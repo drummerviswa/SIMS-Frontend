@@ -24,10 +24,10 @@ export default function Validate(values) {
     }
   }
 
-  // Username (if present)
-  if (typeof values.username === "string") {
-    if (values.username.trim() === "") {
-      errors.username = "Username is required";
+  // Name (if present)
+  if (typeof values.name === "string") {
+    if (values.name.trim() === "") {
+      errors.name = "name is required";
     }
   }
 

@@ -21,7 +21,7 @@ function getRandomHSLColor() {
     hsl = { hue, saturation, lightness };
     rgb = hslToRgb(hue, saturation, lightness);
     luminance = getRelativeLuminance(rgb.r, rgb.g, rgb.b);
-  } while (luminance > 0.85);
+  } while (luminance > 0.75);
 
   return `hsl(${hsl.hue}, ${hsl.saturation}%, ${hsl.lightness}%)`;
 }
@@ -57,9 +57,11 @@ export default function WeightageCard({ data }) {
   const bgColor = getRandomHSLColor();
   const { subCode, batchName, tenure } = useParams();
 
-  const hasValidSubsplit = data.subsplitups.some(
-    (item) => item.subsplitid !== null
-  );
+  const hasValidSubsplit =
+    (Array.isArray(data.subsplitups) &&
+      data.subsplitups.some((item) => item.subsplitid != null)) ||
+    data.writtenTest === true ||
+    data.writtenTest === 1;
 
   const CardContent = (
     <div

@@ -16,7 +16,7 @@ export default function ViewMarksChoose() {
   };
 
   return (
-    <div className="w-full h-full p-6">
+    <div className="w-full h-full p-6 flex justify-center items-center flex-col gap-6">
       <h1 className="text-3xl font-semibold text-center mb-8 text-gray-800 dark:text-white">
         View Marks
       </h1>
