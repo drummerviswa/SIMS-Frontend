@@ -18,6 +18,26 @@ export default function MarkSplit() {
   const [batchid, setBatchid] = useState(null);
   const [degid, setDegid] = useState(null);
   const [bid, setBid] = useState(null);
+  const [regulation, setRegulation] = useState("");
+
+  useEffect(() => {
+    const fetchRegulation = async () => {
+      try {
+        const response = await API.get(
+          `/admin/manage/subject/subBatch/${subCode}/${batchName}`
+        );
+
+        setRegulation(response.data.regName);
+        console.log("Subjects fetched successfully:", response.data.regName);
+      } catch (error) {
+        console.error("Error fetching subjects:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchRegulation();
+  }, []);
 
   // Fetch all required IDs
   useEffect(() => {
@@ -53,45 +73,87 @@ export default function MarkSplit() {
     const loadData = async () => {
       if (subid && batchid && degid && bid) {
         try {
-          const res = await API.get(
-            `/faculty/marks/${facultyId}/${subid}/${tenure}/${batchid}/${degid}/${bid}/${msid}`
-          );
-
-          let enrichedData;
-
-          console.log("Students response:", res.data);
-          if (res.data.length === 0) {
-            // 📌 No marks exist yet → fetch student list separately
-            const studentsRes = await API.get(
-              `/faculty/marks/${facultyId}/${subid}/${tenure}/${batchid}/${degid}/${bid}/${msid}` // <-- This is just an example URL. Adjust it to your real "student list" API endpoint
+          if (tenure !== "assignment") {
+            const res = await API.get(
+              `/faculty/marks/${facultyId}/${subid}/${tenure}/${batchid}/${degid}/${bid}/${msid}`
             );
 
-            enrichedData = studentsRes.data.map((student) => ({
-              regNo: student.regNo,
-              sName: student.sName,
-              criteriaName: "",
-              subject:student.subject,
-              mainCriteria:student.mainCriteria,
-              tenure: student.tenure,
-              MainWeightage: 0,
-              SubCriteriaBreakdown: [], // initially empty, you'll handle subcriteria inside DynamicMarkTable
-              total: 0,
-            }));
-          } else {
-            enrichedData = res.data.map((student) => ({
-              regNo: student.regNo,
-              sName: student.sName,
-              subject:student.subject,
-              mainCriteria:student.mainCriteria,
-              tenure: student.tenure,
-              criteriaName: student.criteriaName,
-              MainWeightage: student.mainWeightage,
-              SubCriteriaBreakdown: student.SubCriteriaBreakdown,
-            }));
-            console.log("Enriched data:", enrichedData);
-          }
+            let enrichedData;
 
-          setData(enrichedData);
+            console.log("Students response:", res.data);
+            if (res.data.length === 0) {
+              // 📌 No marks exist yet → fetch student list separately
+              const studentsRes = await API.get(
+                `/faculty/marks/${facultyId}/${subid}/${tenure}/${batchid}/${degid}/${bid}/${msid}` // <-- This is just an example URL. Adjust it to your real "student list" API endpoint
+              );
+
+              enrichedData = studentsRes.data.map((student) => ({
+                regNo: student.regNo,
+                sName: student.sName,
+                criteriaName: "",
+                subject: student.subject,
+                mainCriteria: student.mainCriteria,
+                tenure: student.tenure,
+                MainWeightage: 0,
+                SubCriteriaBreakdown: [], // initially empty, you'll handle subcriteria inside DynamicMarkTable
+                total: 0,
+              }));
+            } else {
+              enrichedData = res.data.map((student) => ({
+                regNo: student.regNo,
+                sName: student.sName,
+                subject: student.subject,
+                mainCriteria: student.mainCriteria,
+                tenure: student.tenure,
+                criteriaName: student.criteriaName,
+                MainWeightage: student.mainWeightage,
+                SubCriteriaBreakdown: student.SubCriteriaBreakdown,
+              }));
+              console.log("Enriched data:", enrichedData);
+            }
+
+            setData(enrichedData);
+          } else {
+            const res = await API.get(
+              `/faculty/marks/other/${facultyId}/${subid}/${tenure}/${batchid}/${degid}/${bid}/${msid}` // <-- This is just an example URL. Adjust it to your real "student list" API endpoint
+            );
+
+            let enrichedData;
+
+            console.log("Students response:", res.data);
+            if (res.data.length === 0) {
+              // 📌 No marks exist yet → fetch student list separately
+              const studentsRes = await API.get(
+                `/faculty/marks/other/${facultyId}/${subid}/${tenure}/${batchid}/${degid}/${bid}/${msid}` // <-- This is just an example URL. Adjust it to your real "student list" API endpoint
+              );
+
+              enrichedData = studentsRes.data.map((student) => ({
+                regNo: student.regNo,
+                sName: student.sName,
+                criteriaName: "",
+                subject: student.subject,
+                mainCriteria: student.mainCriteria,
+                tenure: student.tenure,
+                MainWeightage: 0,
+                SubCriteriaBreakdown: [], // initially empty, you'll handle subcriteria inside DynamicMarkTable
+                total: 0,
+              }));
+            } else {
+              enrichedData = res.data.map((student) => ({
+                regNo: student.regNo,
+                sName: student.sName,
+                subject: student.subject,
+                mainCriteria: student.mainCriteria,
+                tenure: student.tenure,
+                criteriaName: student.criteriaName,
+                MainWeightage: student.mainWeightage,
+                SubCriteriaBreakdown: student.SubCriteriaBreakdown,
+              }));
+              console.log("Enriched data:", enrichedData);
+            }
+
+            setData(enrichedData);
+          }
         } catch (error) {
           console.error("Error loading marks:", error);
           setFetchError("Failed to load marks.");

@@ -71,6 +71,7 @@ export default function Marks() {
                   c={sub.c}
                   batchName={sub.batchName}
                   semester={sub.semester}
+                  reg={sub.regName}
                 />
               ))}
             </div>

@@ -1,20 +1,47 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { IoMdBookmarks } from "react-icons/io";
 import { MdOutlineAssessment } from "react-icons/md";
 import { PiStudent } from "react-icons/pi";
 import { Link, useNavigate, useParams } from "react-router";
 import { Modal } from "../../../components/ui/modal";
+import API from "../../../utils/API";
 
 export default function ViewMarksChoose() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
-  const { subCode } = useParams();
+  const { subCode, batchName } = useParams();
+  const [regulation, setRegulation] = useState("");
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchRegulation = async () => {
+      try {
+        const response = await API.get(
+          `/admin/manage/subject/subBatch/${subCode}/${batchName}`
+        );
+
+        setRegulation(response.data.regName);
+        console.log("Subjects fetched successfully:", response.data.regName);
+      } catch (error) {
+        console.error("Error fetching subjects:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchRegulation();
+  }, []);
 
   const handleAssessmentSelect = (type: string) => {
     navigate(`/faculty/marks/view/assess/${subCode}/${type.toLowerCase()}`);
     setIsModalOpen(false);
   };
+  const assessmentTypes =
+    regulation === "R2019"
+      ? ["assess1", "assess2"]
+      : ["assess1", "assess2", "assignment"];
 
+  const isOdd = assessmentTypes.length % 2 !== 0;
   return (
     <div className="w-full h-full p-6 flex justify-center items-center flex-col gap-6">
       <h1 className="text-3xl font-semibold text-center mb-8 text-gray-800 dark:text-white">
@@ -31,22 +58,36 @@ export default function ViewMarksChoose() {
           <h2 className="text-xl sm:text-2xl font-semibold text-center mb-6 text-gray-800 dark:text-white">
             Choose Assessment
           </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {["assess1", "assess2"].map((type, index) => (
-              <div
-                key={index}
-                onClick={() => handleAssessmentSelect(type)}
-                className="cursor-pointer bg-gray-100 dark:bg-gray-700 p-5 rounded-lg shadow hover:scale-105 transition-all text-center"
-              >
-                <MdOutlineAssessment
-                  size={36}
-                  className="text-blue-600 mx-auto mb-2"
-                />
-                <p className="font-medium text-gray-800 dark:text-white">
-                  {type === "assess1" ? "Assessment 1" : "Assessment 2"}
-                </p>
-              </div>
-            ))}
+          <div className="grid grid-cols-6 gap-4">
+            {assessmentTypes.map((type, index) => {
+              const isLast = index === assessmentTypes.length - 1;
+              const isSingleCentered = isOdd && isLast;
+
+              // Use 3-column wide card, centered in 6-col grid
+              const classNames = isSingleCentered
+                ? "col-span-4 col-start-2"
+                : "col-span-3"; // Half width (3/6 = 50%) for normal
+
+              return (
+                <div
+                  key={index}
+                  onClick={() => handleAssessmentSelect(type)}
+                  className={`cursor-pointer bg-gray-100 dark:bg-gray-700 p-5 rounded-lg shadow hover:scale-105 transition-all text-center ${classNames}`}
+                >
+                  <MdOutlineAssessment
+                    size={36}
+                    className="text-blue-600 mx-auto mb-2"
+                  />
+                  <p className="font-medium text-gray-800 dark:text-white">
+                    {type === "assess1"
+                      ? "Assessment 1"
+                      : type === "assess2"
+                      ? "Assessment 2"
+                      : "Assignment"}
+                  </p>
+                </div>
+              );
+            })}
           </div>
         </div>
       </Modal>

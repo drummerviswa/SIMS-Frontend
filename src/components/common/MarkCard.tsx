@@ -56,6 +56,7 @@ function getRelativeLuminance(r, g, b) {
 
 export default function MarkCard({
   acid,
+  reg,
   subName,
   subCode,
   type,
@@ -84,19 +85,22 @@ export default function MarkCard({
         whileTap={{ scale: 0.1, boxShadow: "0 4px 8px rgba(0,0,0,0.2)" }}
         transition={{ type: "tween", stiffness: 250, damping: 18 }}
         style={{ backgroundColor: bgColor }}
-        className="grid grid-rows-12 min-h-[150px] min-w-48 max-h-[150px] max-w-[300px] rounded-lg shadow-md p-4 overflow-hidden transition-all duration-300 text-white"
+        className="grid grid-rows-12 min-h-[150px] min-w-48 max-h-[160px] max-w-[300px] rounded-lg shadow-md p-4 overflow-hidden transition-all duration-300 text-white"
       >
         {/* Top content section */}
         <div className="row-span-9 grid grid-cols-12 gap-2">
           <div className="col-span-10 flex flex-col justify-center items-start">
             <p className="font-semibold text-lg leading-none">{subCode}</p>
             <p className="font-bold text-xl leading-tight">{subName}</p>
-            <div className="w-full flex justify-between items-start">
+            <div className="w-full flex justify-between items-center m-2">
               <p className="text-xs font-medium bg-white/20 px-2 py-0.5 rounded text-white">
                 {batchName}
               </p>
               <p className="text-xs font-medium bg-white/20 px-2 py-0.5 rounded text-white">
                 Semester {semester}
+              </p>
+              <p className="text-xs font-medium bg-white/20 px-2 py-0.5 rounded text-white">
+                {reg}
               </p>
             </div>
           </div>

@@ -25,6 +25,7 @@ interface InputOption {
   selectMultiple?: boolean;
   static?: boolean;
   options?: { key: string | number; label: string | number }[];
+  dependencies?: { key: string; label: string }[];
 }
 
 interface ManageEntityProps {
@@ -50,7 +51,7 @@ export default function ManageEntity({
   const [search, setSearch] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [options, setOptions] = useState<{
-    [key: string]: { value: any; label: any }[];
+    [key: string]: { value: any; label: any; raw: any }[];
   }>({});
 
   useEffect(() => {
@@ -68,7 +69,9 @@ export default function ManageEntity({
     };
 
     const fetchDropdownOptions = async () => {
-      const newOptions: { [key: string]: { value: any; label: string }[] } = {};
+      const newOptions: {
+        [key: string]: { value: any; label: string; raw: any }[];
+      } = {};
 
       for (const input of inputOptions) {
         if (input.type === "select" && input.fetchEndpoint) {
@@ -81,6 +84,7 @@ export default function ManageEntity({
               label: input.selectLabel
                 ? input.selectLabel.map((key: string) => item[key]).join(" | ")
                 : item[input.fetchKey],
+              raw: item,
             }));
           } catch (error) {
             console.error(`Error fetching options for ${input.label}:`, error);
@@ -94,16 +98,39 @@ export default function ManageEntity({
     fetchDropdownOptions();
   }, [apiEndpoint, entityName, inputOptions, uniqueKey, isEditing]);
 
-  const handleChange = (
+  const handleChange = async (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
     >
   ) => {
     const { name, value, type } = e.target;
-    setFormData({
-      ...formData,
-      [name]: type === "date" ? moment(value).format("YYYY-MM-DD") : value, // Ensure correct date format
-    });
+
+    const newValue =
+      type === "date" ? moment(value).format("YYYY-MM-DD") : value;
+    let newFormData = { ...formData, [name]: newValue };
+
+    const input = inputOptions.find((input) => input.key === name);
+    console.log("input", input);
+    
+    if (!input) return;
+    if (input.dependencies?.length > 0) {
+      input.dependencies.forEach(async (dep) => {
+        newFormData = { ...newFormData, [dep.key]: "" };
+        console.log("newFormData[dep.key]", newFormData);
+        
+        try {
+          const response = await API.get(input.fetchEndpoint);
+          input.dependencies.forEach((dep) => {
+            newFormData[dep.key] = response.data[0][dep.label];
+          });
+        } catch (err) {
+          console.error(`Failed to fetch dependencies for ${input.label}`, err);
+        }
+      });
+    }
+    console.log("newFormData", newFormData);
+    
+    setFormData(newFormData);
   };
 
   const handleSubmit = async () => {
