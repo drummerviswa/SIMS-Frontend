@@ -116,7 +116,9 @@ export default function WeightageCard({ data }) {
 
   return hasValidSubsplit ? (
     <Link
-      to={`/faculty/marks/upload/${subCode}/${batchName}/${tenure}/${data.msid}`}
+      to={`/faculty/marks/upload/${subCode}/${batchName}/${tenure}/${
+        data.msid !== undefined ? data.msid : data.asid
+      }`}
     >
       {CardContent}
     </Link>

@@ -44,6 +44,7 @@ export default function SplitupTableWithModal({
   const [selectedMainSplitup, setSelectedMainSplitup] = useState(null);
   const [subCriteriaList, setSubCriteriaList] = useState([]);
   const [subSplitupList, setSubSplitupList] = useState([]);
+  const [isAssignment, setIsAssignment] = useState(false);
   const [subFormData, setSubFormData] = useState({
     subCriteria: "",
     subWeightage: "",
@@ -73,24 +74,48 @@ export default function SplitupTableWithModal({
   };
 
   const fetchSubCriterias = async (mainId: number) => {
-    try {
-      const res = await API.get(
-        `/faculty/subSplitup/${facultyId}/${subjectId}/${mainId}`
-      );
-      setSubCriteriaList(res.data);
-    } catch (err) {
-      console.error("Error fetching sub criterias:", err);
+    if (isAssignment) {
+      try {
+        const res = await API.get(
+          `/faculty/assignmentSubSplitup/${facultyId}/${subjectId}/${mainId}`
+        );
+        setSubCriteriaList(res.data);
+      } catch (err) {
+        console.error("Error fetching sub criterias:", err);
+      }
+      return;
+    } else {
+      try {
+        const res = await API.get(
+          `/faculty/subSplitup/${facultyId}/${subjectId}/${mainId}`
+        );
+        setSubCriteriaList(res.data);
+      } catch (err) {
+        console.error("Error fetching sub criterias:", err);
+      }
     }
   };
 
   const fetchSubSplitupList = async (mainId: number) => {
-    try {
-      const res = await API.get(
-        `/faculty/subSplitup/${facultyId}/${subjectId}/${mainId}`
-      );
-      setSubSplitupList(res.data);
-    } catch (err) {
-      console.error("Error fetching sub splitup list:", err);
+    if (isAssignment) {
+      try {
+        const res = await API.get(
+          `/faculty/assignmentSubSplitup/${facultyId}/${subjectId}/${mainId}`
+        );
+        setSubSplitupList(res.data);
+      } catch (err) {
+        console.error("Error fetching sub splitup list:", err);
+      }
+      return;
+    } else {
+      try {
+        const res = await API.get(
+          `/faculty/subSplitup/${facultyId}/${subjectId}/${mainId}`
+        );
+        setSubSplitupList(res.data);
+      } catch (err) {
+        console.error("Error fetching sub splitup list:", err);
+      }
     }
   };
 
@@ -166,7 +191,7 @@ export default function SplitupTableWithModal({
       faculty: facultyId,
       subject: subjectId,
     });
-    setEditingId(item.msid ?? null);
+    setEditingId(item.msid !== undefined ? item.msid : item.asid ?? null);
     setIsModalOpen(true);
   };
 
@@ -199,20 +224,46 @@ export default function SplitupTableWithModal({
   };
 
   const handleDeleteSub = async (id?: number) => {
-    if (!id) {
-      console.log("ID is undefined");
-      return;
-    }
-    try {
-      await API.delete(`/faculty/subSplitup/${facultyId}/${subjectId}/${id}`);
-      fetchSubCriterias(selectedMainSplitupId!);
-    } catch (err) {
-      console.error("Error deleting sub criterion:", err);
+    if (isAssignment) {
+      try {
+        await API.delete(
+          `/faculty/assignmentSubSplitup/${facultyId}/${subjectId}/${id}`
+        );
+        fetchSubCriterias(selectedMainSplitupId!);
+      } catch (err) {
+        console.error("Error deleting sub criterion:", err);
+      }
+    } else {
+      try {
+        await API.delete(`/faculty/subSplitup/${facultyId}/${subjectId}/${id}`);
+        fetchSubCriterias(selectedMainSplitupId!);
+      } catch (err) {
+        console.error("Error deleting sub criterion:", err);
+      }
     }
   };
 
   const handleAddSubCriteria = async () => {
-    if (!selectedMainSplitupId) return;
+    if (isAssignment) {
+      try {
+        await API.post(
+          `/faculty/assignmentSubSplitup/${facultyId}/${subjectId}`,
+          {
+            ...subFormData,
+            mainsplitup: selectedMainSplitupId,
+            subWeightage: Number(subFormData.subWeightage),
+            faculty: facultyId,
+            subject: subjectId,
+          }
+        );
+        setSubFormData({ subCriteria: "", subWeightage: "" });
+        fetchSubCriterias(selectedMainSplitupId);
+      } catch (err) {
+        console.error("Error adding sub criteria:", err);
+      }
+      console.log("Selected Main Splitup ID is undefined");
+      return;
+    }
     try {
       await API.post(`/faculty/subSplitup/${facultyId}/${subjectId}`, {
         ...subFormData,
@@ -237,6 +288,16 @@ export default function SplitupTableWithModal({
     setIsSubModalOpen(true);
   };
 
+  const handleOpenSubModelForAssignment = (asid: number) => {
+    setSelectedMainSplitupId(asid);
+    setIsAssignment(true);
+    const selected = splitupList.find((item) => item.asid === asid);
+    setSelectedMainSplitup(selected);
+    fetchSubSplitupList(asid);
+    fetchSubCriterias(asid);
+    setIsSubModalOpen(true);
+  };
+
   const resetForm = () => {
     setFormData({
       criteria: "",
@@ -247,6 +308,8 @@ export default function SplitupTableWithModal({
     });
     setEditingId(null);
   };
+  console.log("Sub Splitup List:", subSplitupList);
+
   return (
     <div className="w-full p-1 bg-white dark:bg-gray-800 rounded-lg">
       <div className="flex items-center justify-between mb-4">
@@ -280,7 +343,11 @@ export default function SplitupTableWithModal({
                     <td className="px-6 py-4">
                       <button
                         className="text-fuchsia-600 dark:text-fuchsia-400 hover:underline"
-                        onClick={() => handleOpenSubModal(item.msid)}
+                        onClick={() =>
+                          item.msid !== undefined
+                            ? handleOpenSubModal(item.msid)
+                            : handleOpenSubModelForAssignment(item.asid)
+                        }
                       >
                         {criteriaList.find(
                           (c) =>
@@ -312,7 +379,11 @@ export default function SplitupTableWithModal({
                       </button>
                       <button
                         className="text-red-600 dark:text-red-400 hover:underline"
-                        onClick={() => handleDelete(item.msid)}
+                        onClick={() =>
+                          item.msid !== undefined
+                            ? handleDelete(item.msid)
+                            : handleDelete(item.asid)
+                        }
                       >
                         Delete
                       </button>
@@ -331,11 +402,14 @@ export default function SplitupTableWithModal({
                     className="w-full rounded bg-gray-100 dark:bg-gray-700 dark:text-white"
                   >
                     <option value="">Select Criteria</option>
-                    {criteriaList.map((item) => item.criteriaName!=="Assessment" && (
-                      <option key={item.id} value={item.cid}>
-                        {item.criteriaName}
-                      </option>
-                    ))}
+                    {criteriaList.map(
+                      (item) =>
+                        item.criteriaName !== "Assessment" && (
+                          <option key={item.id} value={item.cid}>
+                            {item.criteriaName}
+                          </option>
+                        )
+                    )}
                   </select>
                 </td>
                 <td className="mx-auto px-1 py-4">
@@ -516,7 +590,13 @@ export default function SplitupTableWithModal({
                     <td className="px-6 py-4 flex gap-4">
                       <button
                         className="text-red-600 dark:text-red-400 hover:underline"
-                        onClick={() => handleDeleteSub(item.subsplitid)}
+                        onClick={() =>
+                          handleDeleteSub(
+                            item.subsplitid !== undefined
+                              ? item.subsplitid
+                              : item.assignsubid
+                          )
+                        }
                       >
                         Delete
                       </button>

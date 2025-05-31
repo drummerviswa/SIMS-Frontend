@@ -57,6 +57,7 @@ export default function ViewMarks() {
             <div className="flex flex-wrap gap-4">
               {group.map((sub, index) => (
                 <ViewSubCard
+                reg={sub.regName}
                   key={index}
                   acid={sub.acid}
                   subName={sub.subName}

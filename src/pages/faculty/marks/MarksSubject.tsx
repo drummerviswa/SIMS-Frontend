@@ -57,6 +57,7 @@ export default function MarksSubject() {
             <div className="flex flex-wrap gap-4">
               {group.map((sub, index) => (
                 <MarkCard
+                  reg={sub.regName}
                   key={index}
                   acid={sub.subject}
                   subName={sub.subName}

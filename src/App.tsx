@@ -194,11 +194,11 @@ export default function App() {
             />
             <Route path="/faculty/marks/viewall" element={<ViewMarks />} />
             <Route
-              path="/faculty/marks/view/choose/:subCode"
+              path="/faculty/marks/view/choose/:subCode/:batchName"
               element={<ViewMarksChoose />}
             />
             <Route
-              path="/faculty/marks/view/student/:subCode/:regNo"
+              path="/faculty/marks/view/student/:subCode/:batchName/:regNo"
               element={<ViewMarksByStudent />}
             />
             <Route

@@ -5,9 +5,10 @@ import { Modal } from "../../../components/ui/modal";
 
 export default function AdminProfile() {
   const [adminData, setAdminData] = useState({
+    aid: "",
     name: "",
     email: "",
-    profile_pic: null,
+    imageUrl: null,
   });
 
   const [showEditNameModal, setShowEditNameModal] = useState(false);
@@ -18,19 +19,28 @@ export default function AdminProfile() {
   const [newEmail, setNewEmail] = useState("");
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
-
-  const token = localStorage.getItem("token");
-
+  const adminCredentials = localStorage.getItem("admin");
+  const admin = JSON.parse(adminCredentials || "{}");
+  const token = localStorage.getItem("adminToken");
   const authHeader = {
     headers: {
-      Authorization: `Bearer ${localStorage.getItem("token")}`,
+      Authorization: `Bearer ${token}`,
     },
   };
-
   useEffect(() => {
-    API.get("/admin/auth/profile", authHeader)
+    if (!token) {
+      console.error("No token found in localStorage");
+      return;
+    }
+
+    API.get(`/admin/auth/profile/${admin.aid}`, authHeader)
       .then((res) => setAdminData(res.data))
-      .catch((err) => console.error("Failed to load admin data", err));
+      .catch((err) => {
+        console.error(
+          "Failed to load admin data",
+          err.response?.data || err.message
+        );
+      });
   }, []);
 
   const handlePhotoChange = async (e) => {
@@ -38,7 +48,7 @@ export default function AdminProfile() {
     if (!file) return;
 
     const formData = new FormData();
-    formData.append("profile_pic", file);
+    formData.append("imageUrl", file);
 
     try {
       const res = await API.put("/admin/auth/update-profile-pic", formData, {
@@ -49,7 +59,7 @@ export default function AdminProfile() {
       });
       setAdminData((prev) => ({
         ...prev,
-        profile_pic: res.data.imageUrl,
+        imageUrl: res.data.imageUrl,
       }));
     } catch (error) {
       console.error("Upload failed", error);
@@ -107,7 +117,7 @@ export default function AdminProfile() {
         <div className="bg-white p-6 rounded-xl shadow-md mb-8 border border-gray-300">
           <div className="flex items-center space-x-6">
             <img
-              src={adminData.profile_pic || defaultImage}
+              src={adminData.imageUrl || defaultImage}
               alt="Profile"
               onError={(e) => (e.currentTarget.src = defaultImage)}
               className="w-24 h-24 rounded-full object-cover border border-gray-300"
