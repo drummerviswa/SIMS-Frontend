@@ -1,10 +1,13 @@
 import ManageEntity from "../../../components/common/ManageEntity";
 
 export default function DeptManageStudents() {
+  const department = localStorage.getItem("department");
+  const departmentData = department ? JSON.parse(department) : null;
+  const departmentId = departmentData ? departmentData.deptid : null;
   return (
     <ManageEntity
       entityName="Students"
-      apiEndpoint={`/department/manage/student/department/${1}`}
+      apiEndpoint={`/department/manage/student/department/${departmentId}`}
       columns={[
         { key: "regNo", label: "Register No" },
         { key: "sName", label: "Name" },
@@ -31,7 +34,7 @@ export default function DeptManageStudents() {
           type: "select",
           fetchEndpoint: "/admin/manage/branch",
           selectMultiple: false,
-          selectLabel: ["bid", "branchName"],
+          selectLabel: ["bid", "branchName", "regName"],
           fetchKey: "bid",
         },
         {

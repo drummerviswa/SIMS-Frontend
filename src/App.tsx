@@ -52,21 +52,75 @@ import FacContactAdmin from "./pages/faculty/contact/FacContactAdmin";
 import FacContactDept from "./pages/faculty/contact/FacContactDept";
 import MarksSubject from "./pages/faculty/marks/MarksSubject";
 import ViewMarks from "./pages/faculty/marks/ViewMarks";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import Format from "./pages/faculty/marks/Format";
+import Regulation from "./pages/faculty/marks/Regulation";
+import ManageAssessComp from "./pages/admin/mange/ManageAssessComp";
+import Criteria from "./pages/faculty/marks/Criteria";
+import Marks from "./pages/faculty/marks/Marks";
+import MarkGrant from "./pages/faculty/marks/MarkGrant";
+import MarkSplit from "./pages/faculty/marks/MarkSplit";
+import ManageDegrees from "./pages/admin/mange/ManageDegree";
+import ManageSubjectDepartment from "./pages/admin/mange/ManageSubjectDepartment";
+import ViewMarksByStudent from "./pages/faculty/marks/ViewMarksByStudent";
+import ViewMarksByAssessment from "./pages/faculty/marks/ViewMarksByAssessment";
+import ViewMarksChoose from "./pages/faculty/marks/ViewMarksChoose";
+import ViewMarksStudentList from "./pages/faculty/marks/ViewMarksStudentList";
+import VerifyEmail from "./pages/admin/auth/VerifyEmail";
+import ViewAcademicSchedule from "./pages/department/academic/ViewAcademicSchedule";
 interface ChildLayout {
   element: React.ReactNode;
 }
 export default function App() {
+  useEffect(() => {
+    document.title = "SIMS | Student Internals Management System";
+  }, []);
+  const PublicRouteAdmin = ({ element }: ChildLayout) => {
+    const [isAuth, setIsAuth] = useState<boolean | null>(null);
+
+    useEffect(() => {
+      const token = localStorage.getItem("adminToken");
+      setIsAuth(!!token);
+    }, []);
+
+    if (isAuth === null) return <div>Loading...</div>;
+
+    return isAuth ? <Navigate to="/admin" /> : element;
+  };
   const ProtectedRouteAdmin = ({ element }: ChildLayout) => {
-    const [isAuth] = useState(true);
+    const [isAuth, setIsAuth] = useState<boolean | null>(null);
+
+    useEffect(() => {
+      const token = localStorage.getItem("adminToken");
+      setIsAuth(!!token);
+    }, []);
+
+    if (isAuth === null) return <div>Loading...</div>;
+
     return isAuth ? element : <Navigate to="/admin/login" />;
   };
   const ProtectedRouteFac = ({ element }: ChildLayout) => {
-    const [isAuth] = useState(true);
+    const [isAuth, setIsAuth] = useState<boolean | null>(null);
+
+    useEffect(() => {
+      const token = localStorage.getItem("facultyToken");
+      setIsAuth(!!token);
+    }, []);
+
+    if (isAuth === null) return <div>Loading...</div>;
     return isAuth ? element : <Navigate to="/faculty/login" />;
   };
+
+  // Fix: Department Protected Route
   const ProtectedRouteDept = ({ element }: ChildLayout) => {
-    const [isAuth] = useState(true);
+    const [isAuth, setIsAuth] = useState<boolean | null>(null);
+
+    useEffect(() => {
+      const token = localStorage.getItem("departmentToken");
+      setIsAuth(!!token);
+    }, []);
+
+    if (isAuth === null) return <div>Loading...</div>;
     return isAuth ? element : <Navigate to="/department/login" />;
   };
   return (
@@ -82,6 +136,10 @@ export default function App() {
               element={<ManageDepartment />}
             />
             <Route path="/admin/manage/faculty" element={<ManageFaculty />} />
+            <Route
+              path="/admin/manage/subdept"
+              element={<ManageSubjectDepartment />}
+            />
             <Route path="/admin/manage/student" element={<ManageStudents />} />
             <Route
               path="/admin/manage/regulation"
@@ -89,6 +147,10 @@ export default function App() {
             />
             <Route path="/admin/manage/branch" element={<ManageBranch />} />
             <Route path="/admin/manage/batch" element={<ManageBatch />} />
+            <Route
+              path="/admin/manage/assesscomp"
+              element={<ManageAssessComp />}
+            />
             <Route path="/admin/manage/degree" element={<ManageDegree />} />
             <Route path="/admin/manage/subject" element={<ManageSubject />} />
             <Route path="/admin/report" element={<AdminReports />} />
@@ -106,8 +168,18 @@ export default function App() {
             <Route path="/admin/schedule" element={<AdminAcademicSchedule />} />
             <Route path="/admin/profile" element={<AdminProfile />} />
           </Route>
-          <Route path="/admin/login" element={<AdminLogin />} />
-          <Route path="/admin/register" element={<AdminRegister />} />
+          <Route
+            path="/admin/login"
+            element={<PublicRouteAdmin element={<AdminLogin />} />}
+          />
+          <Route
+            path="/admin/register"
+            element={<PublicRouteAdmin element={<AdminRegister />} />}
+          />
+          <Route
+            path="/verify-email/:verificationCode"
+            element={<VerifyEmail />}
+          />
 
           {/* Faculty Dashboard */}
           <Route element={<ProtectedRouteFac element={<FacultyLayout />} />}>
@@ -116,19 +188,54 @@ export default function App() {
             <Route path="/faculty/view/subject" element={<FacViewSubjects />} />
             <Route path="/faculty/view/batch" element={<FacViewBatches />} />
             <Route path="/faculty/marks/all" element={<MarksSubject />} />
+            <Route path="/faculty/criteria" element={<Criteria />} />
             <Route
-              path="/faculty/marks/splitup/:subject/:batch"
+              path="/faculty/marks/splitup/:subCode/:acid/:batchName"
               element={<ManageSplitup />}
             />
             <Route path="/faculty/marks/viewall" element={<ViewMarks />} />
             <Route
-              path="/faculty/marks/view/:subject/:batch"
-              element={<ViewMarksSubject />}
+              path="/faculty/marks/view/choose/:subCode/:batchName"
+              element={<ViewMarksChoose />}
             />
             <Route
-              path="/faculty/marks/upload/:subject/:batch/:splitup"
+              path="/faculty/marks/view/student/:subCode/:batchName/:regNo"
+              element={<ViewMarksByStudent />}
+            />
+            <Route
+              path="/faculty/marks/view/student/:subCode"
+              element={<ViewMarksStudentList />}
+            />
+            <Route
+              path="/faculty/marks/view/assess/:subCode/:tenure"
+              element={<ViewMarksByAssessment />}
+            />
+            <Route
+              path="/faculty/marks/view/subject/:subCode"
+              element={<ViewMarksSubject />}
+            />
+            <Route path="/faculty/marks/upload" element={<Marks />} />
+            <Route
+              path="/faculty/marks/upload/:subCode/:batchName"
               element={<UploadMarks />}
             />
+            <Route
+              path="/faculty/marks/upload/:subCode/:batchName/:tenure"
+              element={<MarkGrant />}
+            />
+            <Route
+              path="/faculty/marks/upload/:subCode/:batchName/:tenure/:msid"
+              element={<MarkSplit />}
+            />
+            <Route
+              path="/faculty/marks/regulation/:regName"
+              element={<Format />}
+            />
+            <Route
+              path="/faculty/schedule"
+              element={<ProtectedRouteFac element={<ViewAcademicSchedule />} />}
+            />
+            <Route path="/faculty/marks/regulation" element={<Regulation />} />
             <Route path="/faculty/view/report" element={<FacReport />} />
             <Route path="/faculty/academic" element={<FacAcademicCal />} />
             <Route
@@ -139,10 +246,10 @@ export default function App() {
               path="/faculty/contact/department"
               element={<FacContactDept />}
             />
+            <Route path="/faculty/profile" element={<FacProfile />} />
             {/* <Route */}
           </Route>
           <Route path="/faculty/login" element={<FacLogin />} />
-          <Route path="/faculty/profile" element={<FacProfile />} />
 
           {/* Department Dashboard */}
           <Route
@@ -178,8 +285,14 @@ export default function App() {
             />
             <Route path="/department/report" element={<DeptReport />} />
             <Route path="/department/contactadmin" element={<ContactAdmin />} />
+            <Route path="/department/profile" element={<DepartmentProfile />} />
+            <Route
+              path="/department/schedule"
+              element={
+                <ProtectedRouteDept element={<ViewAcademicSchedule />} />
+              }
+            />
           </Route>
-          <Route path="/department/profile" element={<DepartmentProfile />} />
           <Route path="/department/login" element={<DepartmentLogin />} />
 
           {/* Main App Layout */}

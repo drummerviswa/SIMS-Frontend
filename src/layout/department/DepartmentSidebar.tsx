@@ -76,6 +76,10 @@ const navItems: NavItem[] = [
         path: "/department/calendar",
         name: "View Academic Calendar",
       },
+      {
+        path: "/department/schedule",
+        name: "View Academic Schedule",
+      },
     ],
   },
   {
@@ -307,7 +311,7 @@ const DepartmentSidebar: React.FC = () => {
         }`}
       >
         <Link to="/department" className="flex flex-col items-center gap-2">
-        {isExpanded || isHovered || isMobileOpen ? (
+          {isExpanded || isHovered || isMobileOpen ? (
             <>
               <img
                 className="dark:hidden"

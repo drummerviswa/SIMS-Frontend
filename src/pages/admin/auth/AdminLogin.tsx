@@ -1,98 +1,115 @@
+import { IoMdClose } from "react-icons/io";
+import API, { setAuthToken } from "../../../utils/API";
 import useForm from "../../admin/auth/useForm";
 import Validate from "../../admin/auth/Validate";
-
+import { Link, useNavigate } from "react-router";
 export default function AdminLogin() {
-  const { handleChange, value, handleSubmit, Errors } = useForm(Validate);
-  return (
-    <div>
-      <div>
-        <h1 className="text-3xl text-center mt-30 mb-15">Faculty Login</h1>
-        <form className="max-w-sm mx-auto flex flex-col justify-center  ">
-          {/* for username */}
+  const navigate = useNavigate();
 
-          {/* for mail */}
+  const submitCallback = (data) => {
+    setAuthToken(data.token,"admin");
+    localStorage.setItem("adminToken", data.token);
+    localStorage.setItem("admin", JSON.stringify(data.admin));
+    API.defaults.headers.common["Authorization"] = `Bearer ${data.token}`;
+    console.log("Login success:", data);
+    navigate("/admin", {
+      replace: true,
+    });
+  };
+
+  const endpoint = "/admin/auth/login";
+  const { handleChange, value, handleSubmit, isSubmitting, Errors } = useForm(
+    Validate,
+    submitCallback,
+    endpoint
+  );
+  return (
+    <div className="relative min-h-screen flex items-center justify-center overflow-hidden">
+      <div className="absolute top-0 left-0 w-full h-1/2 bg-blue-700 z-0" />
+      <div className="absolute bottom-0 left-0 w-full h-1/2 bg-white z-0" />
+
+      <div className="bg-white rounded-2xl shadow-lg flex w-[900px] max-w-full overflow-hidden z-10">
+        <button
+          onClick={() => navigate("/",{
+            replace: true,
+          })}
+          className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 text-xl font-bold"
+          aria-label="Close"
+        >
+          <IoMdClose size={50} />
+        </button>
+
+        <div className="w-1/2 p-10">
+          <h1 className="text-3xl font-semibold mb-8 text-center">
+            Admin Login
+          </h1>
+          {Errors.api && (
+            <p className="text-red-500 text-sm mb-4 text-center">
+              {Errors.api}
+            </p>
+          )}
           <div className="mb-5">
             <label
               htmlFor="email"
-              className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+              className="block mb-1 text-sm font-medium text-gray-700"
             >
-              Your email
+              Email
             </label>
             {Errors.email && (
-              <p className="block mb-2 text-sm font-medium text-red-500 dark:text-white">
-                {Errors.email}
-              </p>
+              <p className="text-red-500 text-xs mb-1">{Errors.email}</p>
             )}
             <input
               type="email"
               id="email"
-              className="shadow-xs bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-xs-light"
-              placeholder="email@gmail.com"
               name="email"
-              onChange={handleChange}
               value={value.email}
+              onChange={handleChange}
+              placeholder="Enter email"
+              className="w-full p-2 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-blue-500"
             />
           </div>
-
-          {/* for password */}
           <div className="mb-5">
             <label
               htmlFor="password"
-              className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+              className="block mb-1 text-sm font-medium text-gray-700"
             >
-              Your password
+              Password
             </label>
             {Errors.password && (
-              <p className="block mb-2 text-sm font-medium text-red-500 dark:text-white">
-                {Errors.password}
-              </p>
+              <p className="text-red-500 text-xs mb-1">{Errors.password}</p>
             )}
             <input
               type="password"
               id="password"
-              className="shadow-xs bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-xs-light"
               name="password"
               value={value.password}
               onChange={handleChange}
+              placeholder="Enter password"
+              className="w-full p-2 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-blue-500"
             />
           </div>
-
-          {/* for confirm password */}
-          <div className="mb-5">
-            <label
-              htmlFor="repeat-password"
-              className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-            >
-              Repeat password
-            </label>
-            {Errors.confirmpassword && (
-              <p className="block mb-2 text-sm font-medium text-red-500 dark:text-white">
-                {Errors.confirmpassword}
-              </p>
-            )}
-            <input
-              type="password"
-              id="repeat-password"
-              className="shadow-xs bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-xs-light"
-              name="confirmPassword"
-              value={value.confirmpassword}
-              onChange={handleChange}
-            />
-          </div>
-
-          {/* for button */}
-          <div className="flex items-center mb-5 justify-center gap-4 ">
-            <button
-              type="submit"
-              className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-              onClick={handleSubmit}
-            >
-              Register new account
-            </button>
-
-            <p>If you don't have an account ? Signup</p>
-          </div>
-        </form>
+          <button
+            type="submit"
+            onClick={handleSubmit}
+            disabled={isSubmitting}
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-md transition"
+          >
+            {isSubmitting ? "Logging in..." : "Login"}
+          </button>
+          <p className="text-sm text-center mt-4 text-gray-600">
+            Don't have an account?{" "}
+            <Link to={"/admin/register"} className="text-blue-500 hover:underline">
+              Sign up
+            </Link>
+          </p>
+        </div>
+        <div className="w-1/2 bg-gray-50 p-10 flex flex-col justify-center items-center text-center">
+          <img
+            src="../../../../public/SIMS_hero.svg"
+            alt="Illustration"
+            className="w-64 h-auto mb-6"
+          />
+        </div>
       </div>
     </div>
   );

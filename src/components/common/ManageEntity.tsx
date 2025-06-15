@@ -4,11 +4,14 @@ import { Modal } from "../ui/modal";
 import API from "../../utils/API";
 import moment from "moment";
 import { IoIosRefresh } from "react-icons/io";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 interface Column {
   key: string;
   label: string;
   fetchKey?: string;
+  render?: (value: any) => string | number;
 }
 interface Entity {
   [key: string]: any;
@@ -24,6 +27,7 @@ interface InputOption {
   selectMultiple?: boolean;
   static?: boolean;
   options?: { key: string | number; label: string | number }[];
+  dependencies?: { key: string; label: string }[];
 }
 
 interface ManageEntityProps {
@@ -49,7 +53,7 @@ export default function ManageEntity({
   const [search, setSearch] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [options, setOptions] = useState<{
-    [key: string]: { value: any; label: any }[];
+    [key: string]: { value: any; label: any; raw: any }[];
   }>({});
 
   useEffect(() => {
@@ -61,13 +65,16 @@ export default function ManageEntity({
         if (error?.response?.status === 404) {
           setEntities([]);
         } else {
+          toast.error(`Error fetching ${entityName.toLowerCase()}s`);
           console.error(`Error fetching ${entityName.toLowerCase()}s:`, error);
         }
       }
     };
 
     const fetchDropdownOptions = async () => {
-      const newOptions: { [key: string]: { value: any; label: string }[] } = {};
+      const newOptions: {
+        [key: string]: { value: any; label: string; raw: any }[];
+      } = {};
 
       for (const input of inputOptions) {
         if (input.type === "select" && input.fetchEndpoint) {
@@ -80,8 +87,10 @@ export default function ManageEntity({
               label: input.selectLabel
                 ? input.selectLabel.map((key: string) => item[key]).join(" | ")
                 : item[input.fetchKey],
+              raw: item,
             }));
           } catch (error) {
+            toast.error(`Error fetching options for ${input.label}`);
             console.error(`Error fetching options for ${input.label}:`, error);
           }
         }
@@ -93,23 +102,42 @@ export default function ManageEntity({
     fetchDropdownOptions();
   }, [apiEndpoint, entityName, inputOptions, uniqueKey, isEditing]);
 
-  const handleChange = (
+  const handleChange = async (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
     >
   ) => {
     const { name, value, type } = e.target;
-    setFormData({
-      ...formData,
-      [name]: type === "date" ? moment(value).format("YYYY-MM-DD") : value, // Ensure correct date format
-    });
+
+    const newValue =
+      type === "date" ? moment(value).format("YYYY-MM-DD") : value;
+    let newFormData = { ...formData, [name]: newValue };
+
+    const input = inputOptions.find((input) => input.key === name);
+    if (!input) return;
+    if (input.dependencies?.length > 0) {
+      input.dependencies.forEach(async (dep) => {
+        newFormData = { ...newFormData, [dep.key]: "" };
+
+        try {
+          const response = await API.get(input.fetchEndpoint);
+          input.dependencies.forEach((dep) => {
+            newFormData[dep.key] = response.data[0][dep.label];
+          });
+        } catch (err) {
+          toast.error(`Failed to fetch dependencies for ${input.label}`);
+          console.error(`Failed to fetch dependencies for ${input.label}`, err);
+        }
+      });
+    }
+
+    setFormData(newFormData);
   };
 
   const handleSubmit = async () => {
     try {
       const formattedData: Entity = { ...formData };
 
-      // Ensure all date fields are in the correct format before sending
       inputOptions.forEach((input) => {
         if (input.type === "date" && formattedData[input.key]) {
           formattedData[input.key] = moment(formattedData[input.key]).format(
@@ -120,15 +148,27 @@ export default function ManageEntity({
 
       if (isEditing) {
         await API.put(`${apiEndpoint}/${formData[uniqueKey]}`, formattedData);
+        toast.info(`${entityName} updated successfully`);
       } else {
         await API.post(apiEndpoint, formattedData);
+        toast.success(`${entityName} added successfully`);
       }
-      setIsModalOpen(false);
+
+      setIsModalOpen(false); // Close modal BEFORE refetching data
       setFormData(initialState);
       setIsEditing(false);
+
       const response = await API.get(apiEndpoint);
       setEntities(response.data);
     } catch (error) {
+      setIsModalOpen(false); // 👈 Ensure modal closes on error
+      toast.error(
+        ` ${
+          error.response?.data?.error ||
+          `Error ${isEditing ? "updating" : "adding"} ${entityName}` ||
+          error.response?.data?.message
+        }`
+      );
       console.error(
         `Error ${isEditing ? "updating" : "adding"} ${entityName}:`,
         error
@@ -142,7 +182,15 @@ export default function ManageEntity({
       setFormData(response.data);
       setIsEditing(true);
       setIsModalOpen(true);
+      toast.info(`${entityName} updated successfully`);
     } catch (error) {
+      toast.error(
+        ` ${
+          error.response?.data?.error ||
+          `Error fetching ${entityName} with ID ${id}` ||
+          error.response?.data?.message
+        }`
+      );
       console.error(`Error fetching ${entityName} with ID ${id}:`, error);
     }
   };
@@ -151,7 +199,12 @@ export default function ManageEntity({
     try {
       await API.delete(`${apiEndpoint}/${id}`);
       setEntities(entities.filter((entity) => entity[uniqueKey] !== id));
+      toast.error(`${entityName} deleted successfully`);
     } catch (error) {
+      toast.error(
+        `${error.response?.data?.error || `Error deleting ${entityName}`}` ||
+          error.response?.data?.message
+      );
       console.error(`Error deleting ${entityName} with ID ${id}:`, error);
     }
   };
@@ -161,10 +214,18 @@ export default function ManageEntity({
       String(value).toLowerCase().includes(search.toLowerCase())
     )
   );
-  console.log("formData", formData);
 
   return (
     <div className="dark:bg-gray-dark bg-white px-4 py-2 rounded-xl">
+      <ToastContainer
+        draggable
+        closeOnClick
+        position="top-right"
+        autoClose={3000}
+        newestOnTop
+        toastClassName="dark:bg-gray-800 dark:text-white shadow-lg !mt-16 !z-[99999]"
+      />
+
       <div className="flex justify-between items-center mb-4">
         <input
           type="text"
@@ -185,6 +246,7 @@ export default function ManageEntity({
           Add {entityName}
         </button>
       </div>
+
       <button
         type="button"
         onClick={async () => {
@@ -192,6 +254,7 @@ export default function ManageEntity({
             const response = await API.get(apiEndpoint);
             setEntities(response.data);
           } catch (error) {
+            toast.error(`Error fetching ${entityName.toLowerCase()}s`);
             console.error(
               `Error fetching ${entityName.toLowerCase()}s:`,
               error
@@ -200,7 +263,7 @@ export default function ManageEntity({
         }}
         className="text-white font-bold py-2 px-4 rounded"
       >
-        <IoIosRefresh />
+        <IoIosRefresh className="text-gray-600" />
       </button>
 
       <div className="relative overflow-x-auto shadow-md sm:rounded-lg no-scrollbar">
@@ -278,7 +341,7 @@ export default function ManageEntity({
                   !input.static ? (
                     <select
                       name={input?.key}
-                      className="block w-full p-2 rounded mb-3 dark:bg-gray-800 dark:text-white"
+                      className="block w-full p-2 rounded mb-3 dark:bg-gray-800 dark:text-white bg-gray-100 border outline-blue-500 focus:outline-blue-500"
                       value={formData?.[input?.key] ?? ""}
                       onChange={handleChange}
                     >
@@ -294,7 +357,7 @@ export default function ManageEntity({
                   ) : (
                     <select
                       name={input?.key}
-                      className="block w-full p-2 rounded mb-3 dark:bg-gray-800 dark:text-white"
+                      className="block w-full p-2 rounded mb-3 dark:bg-gray-800 dark:text-white bg-gray-100 border outline-blue-500 focus:outline-blue-500"
                       value={formData?.[input?.key] ?? ""}
                       onChange={handleChange}
                       multiple={input?.selectMultiple}
@@ -316,14 +379,14 @@ export default function ManageEntity({
                         : ""
                     }
                     onChange={handleChange}
-                    className="block w-full p-2 rounded mb-3 dark:bg-gray-800 dark:text-white"
+                    className="block w-full p-2 rounded mb-3 dark:bg-gray-800 dark:text-white bg-gray-100 border outline-blue-500 focus:outline-blue-500"
                   />
                 ) : input.type === "textarea" ? (
                   <textarea
                     name={input.key}
                     value={formData?.[input?.key] ?? ""}
                     onChange={handleChange}
-                    className="block w-full p-2 rounded mb-3 dark:bg-gray-800 dark:text-white"
+                    className="block w-full p-2 rounded mb-3 dark:bg-gray-800 dark:text-white bg-gray-100 border outline-blue-500 focus:outline-blue-500"
                   ></textarea>
                 ) : (
                   <input
@@ -331,7 +394,7 @@ export default function ManageEntity({
                     name={input.key}
                     value={formData?.[input?.key] ?? ""}
                     onChange={handleChange}
-                    className="block w-full p-2 rounded mb-3 dark:bg-gray-800 dark:text-white"
+                    className="block w-full p-2 rounded mb-3 dark:bg-gray-800 dark:text-white bg-gray-100 border outline-blue-500 focus:outline-blue-500"
                   />
                 )}
               </div>

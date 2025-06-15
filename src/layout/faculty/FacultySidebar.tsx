@@ -50,9 +50,18 @@ const navItems: NavItem[] = [
         path: "/faculty/marks/all",
       },
       {
+        name: " Upload Marks",
+        path: "/faculty/marks/upload",
+      },
+      {
         name: "View Marks",
         path: "/faculty/marks/viewall",
       },
+      {
+        name: "View Regulations",
+        path: "/faculty/marks/regulation",
+      },
+      { name: "Manage Criteria", path: "/faculty/criteria" },
     ],
   },
   {
@@ -62,6 +71,10 @@ const navItems: NavItem[] = [
       {
         path: "/faculty/academic",
         name: "View Academic Calendar",
+      },
+      {
+        path: "/faculty/schedule",
+        name: "View Academic Schedule",
       },
     ],
   },
@@ -298,7 +311,7 @@ const FacultySidebar: React.FC = () => {
         }`}
       >
         <Link to="/faculty" className="flex flex-col items-center gap-2">
-        {isExpanded || isHovered || isMobileOpen ? (
+          {isExpanded || isHovered || isMobileOpen ? (
             <>
               <img
                 className="dark:hidden"

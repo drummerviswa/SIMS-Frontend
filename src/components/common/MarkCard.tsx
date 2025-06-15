@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { Link } from "react-router";
 
 function getRandomHSLColor() {
   let hsl, rgb, luminance;
@@ -54,72 +55,84 @@ function getRelativeLuminance(r, g, b) {
 }
 
 export default function MarkCard({
+  acid,
+  reg,
   subName,
   subCode,
-  subType,
-  subHours,
-  internal,
-  external,
-  lecture,
-  tutorial,
-  practical,
-  credit,
+  type,
+  cperiod,
+  assess1,
+  assess2,
+  endsem,
+  l,
+  t,
+  p,
+  c,
   batchName,
+  semester,
 }) {
   const bgColor = getRandomHSLColor();
 
   return (
-    <motion.button
-      initial={{ opacity: 0, y: 30 }}
-      animate={{ opacity: 1, y: 0, animationDuration: "0.5s" }}
-      whileHover={{ scale: 1.05, boxShadow: "0 12px 24px rgba(0,0,0,0.3)" }}
-      whileTap={{ scale: 0.1, boxShadow: "0 4px 8px rgba(0,0,0,0.2)" }}
-      transition={{ type: "tween", stiffness: 250, damping: 18 }}
-      style={{ backgroundColor: bgColor }}
-      className="grid grid-rows-12 h-[150px] w-[300px] rounded-lg shadow-md p-4 overflow-hidden transition-all duration-300 text-white"
+    <Link
+      to={`/faculty/marks/splitup/${subCode}/${acid}/${batchName}`}
+      className="flex justify-center items-center"
     >
-      {/* Top content section */}
-      <div className="row-span-9 grid grid-cols-12 gap-2">
-        <div className="col-span-10 flex flex-col justify-center items-start">
-          <p className="font-semibold text-lg leading-none">{subCode}</p>
-          <p className="font-bold text-xl leading-tight">{subName}</p>
-          <div className="w-full flex justify-between items-start">
-            <p className="text-xs font-medium bg-white/20 px-2 py-0.5 rounded text-white">
-              {batchName}
-            </p>
-            <p className="text-xs font-medium bg-white/20 px-2 py-0.5 rounded text-white">
-              Semester {6}
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0, animationDuration: "0.5s" }}
+        whileHover={{ scale: 1.05, boxShadow: "0 12px 24px rgba(0,0,0,0.3)" }}
+        whileTap={{ scale: 0.1, boxShadow: "0 4px 8px rgba(0,0,0,0.2)" }}
+        transition={{ type: "tween", stiffness: 250, damping: 18 }}
+        style={{ backgroundColor: bgColor }}
+        className="grid grid-rows-12 min-h-[150px] min-w-48 max-h-[160px] max-w-[300px] rounded-lg shadow-md p-4 overflow-hidden transition-all duration-300 text-white"
+      >
+        {/* Top content section */}
+        <div className="row-span-9 grid grid-cols-12 gap-2">
+          <div className="col-span-10 flex flex-col justify-center items-start">
+            <p className="font-semibold text-lg leading-none">{subCode}</p>
+            <p className="font-bold text-xl leading-tight">{subName}</p>
+            <div className="w-full flex justify-between items-center m-2">
+              <p className="text-xs font-medium bg-white/20 px-2 py-0.5 rounded text-white">
+                {batchName}
+              </p>
+              <p className="text-xs font-medium bg-white/20 px-2 py-0.5 rounded text-white">
+                Semester {semester}
+              </p>
+              <p className="text-xs font-medium bg-white/20 px-2 py-0.5 rounded text-white">
+                {reg}
+              </p>
+            </div>
+          </div>
+          <div className="col-span-2 flex flex-col items-end justify-start font-bold tracking-widest">
+            <p className="text-xs leading-tight">LTPC</p>
+            <p className="text-sm">
+              {l}
+              {t}
+              {p}
+              {c}
             </p>
           </div>
         </div>
-        <div className="col-span-2 flex flex-col items-end justify-start font-bold tracking-widest">
-          <p className="text-xs leading-tight">LTPC</p>
-          <p className="text-sm">
-            {lecture}
-            {tutorial}
-            {practical}
-            {credit}
-          </p>
-        </div>
-      </div>
 
-      {/* Footer */}
-      <div className="row-span-3 grid grid-cols-4 items-center justify-center font-semibold text-xs">
-        <div className="col-span-2 flex flex-col items-start">
-          <p className="opacity-80">Type</p>
-          <p className="text-sm">{subType}</p>
+        {/* Footer */}
+        <div className="row-span-3 grid grid-cols-4 items-center justify-center font-semibold text-xs">
+          <div className="col-span-2 flex flex-col items-start">
+            <p className="opacity-80">Type</p>
+            <p className="text-sm capitalize">{type}</p>
+          </div>
+          <div className="col-span-1 flex flex-col items-start">
+            <p className="opacity-80">Hours</p>
+            <p className="text-sm">{cperiod}</p>
+          </div>
+          <div className="col-span-1 flex flex-col items-start">
+            <p className="opacity-80">Split</p>
+            <p className="text-sm">
+              {endsem}-{Number(assess1) + Number(assess2)}
+            </p>
+          </div>
         </div>
-        <div className="col-span-1 flex flex-col items-start">
-          <p className="opacity-80">Hours</p>
-          <p className="text-sm">{subHours}</p>
-        </div>
-        <div className="col-span-1 flex flex-col items-start">
-          <p className="opacity-80">Split</p>
-          <p className="text-sm">
-            {external}-{internal}
-          </p>
-        </div>
-      </div>
-    </motion.button>
+      </motion.div>
+    </Link>
   );
 }

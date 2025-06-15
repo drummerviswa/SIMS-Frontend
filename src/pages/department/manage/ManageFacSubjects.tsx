@@ -1,11 +1,14 @@
 import ManageEntity from "../../../components/common/ManageEntity";
 
 export default function ManageFacSubjects() {
+  const department = localStorage.getItem("department");
+  const departmentData = department ? JSON.parse(department) : null;
+  const departmentId = departmentData ? departmentData.deptid : null;
   return (
     <div className="max-w-[74rem] no-scrollbar">
       <ManageEntity
         entityName="Subject Mapping"
-        apiEndpoint={`/department/manage/subjectAssign/${1}`}
+        apiEndpoint={`/department/manage/subjectAssign/${departmentId}`}
         columns={[
           { key: "assignid", label: "Subject ID" },
           { key: "subName", label: "Subject Name" },
@@ -31,7 +34,7 @@ export default function ManageFacSubjects() {
             key: "faculty",
             label: "Faculty",
             type: "select",
-            fetchEndpoint: "/admin/manage/faculty",
+            fetchEndpoint: `/admin/manage/faculty/department/${departmentId}`,
             fetchKey: "facid",
             selectLabel: ["facid", "facName"],
           },
@@ -41,13 +44,19 @@ export default function ManageFacSubjects() {
             type: "select",
             fetchEndpoint: "/admin/manage/batch",
             fetchKey: "batchid",
-            selectLabel: ["batchid", "batchName"],
+            selectLabel: ["batchid", "batchName", "regName"],
+            dependencies: [
+              {
+                label: "regName",
+                key: "regulation",
+              },
+            ],
           },
           {
             key: "degree",
             label: "Degree",
             type: "select",
-            fetchEndpoint: "/admin/manage/degree",
+            fetchEndpoint: `/admin/manage/degree/department/${departmentId}`,
             fetchKey: "degid",
             selectLabel: ["degid", "degName"],
           },
@@ -55,9 +64,9 @@ export default function ManageFacSubjects() {
             key: "branch",
             label: "Branch",
             type: "select",
-            fetchEndpoint: "/admin/manage/branch",
+            fetchEndpoint: `/admin/manage/branch/department/${departmentId}`,
             fetchKey: "bid",
-            selectLabel: ["bid", "degName", "branchName"],
+            selectLabel: ["bid", "degSym", "degName", "branchName", "regName"],
           },
           {
             key: "semester",

@@ -16,9 +16,9 @@ export default function NotFound() {
             ERROR
           </h1>
 
-          <img src="/images/error/404.svg" alt="404" className="dark:hidden" />
+          <img src="/images/error/dino.svg" alt="404" className="dark:hidden" />
           <img
-            src="/images/error/404-dark.svg"
+            src="/images/error/dino.svg"
             alt="404"
             className="hidden dark:block"
           />

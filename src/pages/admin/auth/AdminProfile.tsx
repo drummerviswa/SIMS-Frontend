@@ -1,43 +1,251 @@
+import { useEffect, useState } from "react";
+import defaultImage from "./image.png";
+import API from "../../../utils/API";
+import { Modal } from "../../../components/ui/modal";
 
-import { useState, useEffect } from "react";
-import axios from "axios";
-import defaultImage from "./image.png"; // Import default image from the same folder
-
-export default function AdminForm() {
+export default function AdminProfile() {
   const [adminData, setAdminData] = useState({
-    name: "Default Name",
-    username: "default_username",
-    photo: defaultImage, // Set default image
+    aid: "",
+    name: "",
+    email: "",
+    imageUrl: null,
   });
 
+  const [showEditNameModal, setShowEditNameModal] = useState(false);
+  const [showEditEmailModal, setShowEditEmailModal] = useState(false);
+  const [showPasswordModal, setShowPasswordModal] = useState(false);
+
+  const [newName, setNewName] = useState("");
+  const [newEmail, setNewEmail] = useState("");
+  const [oldPassword, setOldPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const adminCredentials = localStorage.getItem("admin");
+  const admin = JSON.parse(adminCredentials || "{}");
+  const token = localStorage.getItem("adminToken");
+  const authHeader = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
   useEffect(() => {
-    axios.get("http://localhost:5000/api/admin")
-      .then(response => {
-        if (response.data && Object.keys(response.data).length > 0) {
-          setAdminData({
-            name: response.data.name || "Default Name",
-            username: response.data.username || "default_username",
-            photo: response.data.photo || defaultImage,
-          });
-        }
-      })
-      .catch(error => {
-        console.error("Error fetching admin data:", error);
+    if (!token) {
+      console.error("No token found in localStorage");
+      return;
+    }
+
+    API.get(`/admin/auth/profile/${admin.aid}`, authHeader)
+      .then((res) => setAdminData(res.data))
+      .catch((err) => {
+        console.error(
+          "Failed to load admin data",
+          err.response?.data || err.message
+        );
       });
   }, []);
 
+  const handlePhotoChange = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append("imageUrl", file);
+
+    try {
+      const res = await API.put("/admin/auth/update-profile-pic", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setAdminData((prev) => ({
+        ...prev,
+        imageUrl: res.data.imageUrl,
+      }));
+    } catch (error) {
+      console.error("Upload failed", error);
+    }
+  };
+
+  const handleSaveName = async () => {
+    try {
+      await API.put("/admin/auth/update-name", { name: newName }, authHeader);
+      setAdminData((prev) => ({ ...prev, name: newName }));
+      setShowEditNameModal(false);
+    } catch (error) {
+      console.error("Name update failed", error);
+    }
+  };
+
+  const handleSaveEmail = async () => {
+    try {
+      await API.put(
+        "/admin/auth/update-email",
+        { email: newEmail },
+        authHeader
+      );
+      setAdminData((prev) => ({ ...prev, email: newEmail }));
+      setShowEditEmailModal(false);
+    } catch (error) {
+      console.error("Email update failed", error);
+    }
+  };
+
+  const handlePasswordChange = async () => {
+    try {
+      await API.put(
+        "/admin/auth/change-password",
+        {
+          email: adminData.email,
+          oldPassword,
+          newPassword,
+        },
+        authHeader
+      );
+      setOldPassword("");
+      setNewPassword("");
+      setShowPasswordModal(false);
+    } catch (error) {
+      console.error("Password update failed", error);
+    }
+  };
+
   return (
-    <div className="max-w-md mx-auto p-4 border rounded-lg shadow-lg">
-      <h2 className="text-xl font-bold mb-4">Admin Profile</h2>
-      <div className="mt-4 p-4 border rounded shadow text-center">
-        <img
-          src={adminData.photo}
-          alt="Admin"
-          className="w-24 h-24 rounded-full mx-auto mb-2"
-          onError={(e) => (e.currentTarget.src = defaultImage)} // Fallback if image fails
-        />
-        <p><strong>Name:</strong> {adminData.name}</p>
-        <p><strong>Username:</strong> {adminData.username}</p>
+    <div className="min-h-screen bg-gray-100 p-10">
+      <div className="max-w-4xl mx-auto">
+        <h2 className="text-3xl font-semibold mb-8">Admin Profile</h2>
+
+        <div className="bg-white p-6 rounded-xl shadow-md mb-8 border border-gray-300">
+          <div className="flex items-center space-x-6">
+            <img
+              src={adminData.imageUrl || defaultImage}
+              alt="Profile"
+              onError={(e) => (e.currentTarget.src = defaultImage)}
+              className="w-24 h-24 rounded-full object-cover border border-gray-300"
+            />
+            <div className="space-y-1">
+              <h3 className="text-xl font-bold">{adminData.name}</h3>
+              <p className="text-gray-600">{adminData.email}</p>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handlePhotoChange}
+                className="mt-2 text-sm text-gray-700"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-white p-6 rounded-xl shadow-md border border-gray-300">
+          <h4 className="font-semibold text-lg mb-4">Account Info</h4>
+          <div className="grid grid-cols-1 gap-y-4 text-gray-700">
+            <div>
+              <span className="font-medium">Name:</span> {adminData.name}
+              <button
+                onClick={() => {
+                  setNewName(adminData.name);
+                  setShowEditNameModal(true);
+                }}
+                className="ml-4 text-blue-600 hover:underline text-sm"
+              >
+                Edit
+              </button>
+            </div>
+            <div>
+              <span className="font-medium">Email:</span> {adminData.email}
+              <button
+                onClick={() => {
+                  setNewEmail(adminData.email);
+                  setShowEditEmailModal(true);
+                }}
+                className="ml-4 text-blue-600 hover:underline text-sm"
+              >
+                Edit
+              </button>
+            </div>
+            <div>
+              <button
+                onClick={() => setShowPasswordModal(true)}
+                className="ml-2 text-red-500 hover:underline text-sm"
+              >
+                Change Password?
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <Modal
+          className="max-w-[500px] p-4"
+          isOpen={showEditNameModal}
+          onClose={() => setShowEditNameModal(false)}
+        >
+          <div className="space-y-4">
+            <h3 className="text-lg font-medium">Update Name</h3>
+            <input
+              type="text"
+              value={newName}
+              onChange={(e) => setNewName(e.target.value)}
+              className="border p-2 w-full rounded"
+            />
+            <button
+              onClick={handleSaveName}
+              className="bg-blue-600 text-white px-4 py-2 rounded"
+            >
+              Save
+            </button>
+          </div>
+        </Modal>
+
+        <Modal
+          className="max-w-[500px] p-4"
+          isOpen={showEditEmailModal}
+          onClose={() => setShowEditEmailModal(false)}
+        >
+          <div className="space-y-4">
+            <h3 className="text-lg font-medium">Update Email</h3>
+            <input
+              type="email"
+              value={newEmail}
+              onChange={(e) => setNewEmail(e.target.value)}
+              className="border p-2 w-full rounded"
+            />
+            <button
+              onClick={handleSaveEmail}
+              className="bg-blue-600 text-white px-4 py-2 rounded"
+            >
+              Save
+            </button>
+          </div>
+        </Modal>
+
+        <Modal
+          className="max-w-[500px] p-4"
+          isOpen={showPasswordModal}
+          onClose={() => setShowPasswordModal(false)}
+        >
+          <div className="space-y-4">
+            <h3 className="text-lg font-medium">Change Password</h3>
+            <input
+              type="password"
+              placeholder="Old Password"
+              value={oldPassword}
+              onChange={(e) => setOldPassword(e.target.value)}
+              className="border p-2 w-full rounded"
+            />
+            <input
+              type="password"
+              placeholder="New Password"
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+              className="border p-2 w-full rounded"
+            />
+            <button
+              onClick={handlePasswordChange}
+              className="bg-blue-600 text-white px-4 py-2 rounded"
+            >
+              Save
+            </button>
+          </div>
+        </Modal>
       </div>
     </div>
   );

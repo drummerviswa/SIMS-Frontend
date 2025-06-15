@@ -1,46 +1,110 @@
-import React, { useState } from 'react'
+import { useState } from "react";
+import API from "../../../utils/API";
 
-const useForm = (Validate) => {
+const useForm = (Validate, submitCallback, endpoint) => {
+  const [regvalue, setRegValue] = useState({
+    name: "",
+    email: "",
+    password: "",
+    confirmpassword: "",
+  });
+  const [value, setValue] = useState({
+    email: "",
+    password: "",
+  });
 
- const [value,setValue] = useState({
+  const [Errors, setErrors] = useState({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  username:"",
-  email:"",
-  password:"",
-  confirmpassword:"",
+  const handleChange = (e) => {
+    const { name, value } = e.target;
 
- })
+    setValue((prevValue) => ({
+      ...prevValue,
+      [name]: value,
+    }));
+  };
+  const handleRegisterChange = (e) => {
+    const { name, value } = e.target;
+    setRegValue((prevValue) => ({
+      ...prevValue,
+      [name]: value,
+    }));
+  };
 
- const [Errors,setErrors] = useState({})
+  const handleRegisterSubmit = async (e) => {
+    e.preventDefault();
+    const validationErrors = Validate(regvalue);
+    setErrors(validationErrors);
+    console.log("Validation Errors:", validationErrors);
+    console.log("Form Values:", regvalue);
+    // Check if there are no validation errors
+    if (Object.keys(validationErrors).length === 0) {
+      setIsSubmitting(true);
+      try {
+        const payload = {
+          name: regvalue.name,
+          email: regvalue.email,
+          password: regvalue.password,
+        };
 
-
- const handleChange = (e) => {
-   const {name,value} = e.target
-
-
-   setValue((prevValue)=>{
-    return{
-     ...prevValue,
-     [name]:value
+        const response = await API.post(endpoint, payload);
+        console.log("Submitting:", isSubmitting);
+        if (submitCallback) submitCallback(response.data);
+      } catch (error) {
+        console.error(error);
+        setErrors({ api: error.response?.data?.message || "Server error" });
+      } finally {
+        setIsSubmitting(false);
+      }
+    } else {
+      console.log("Validation Errors:", validationErrors);
+      setErrors(validationErrors);
+      console.log("Form Values:", regvalue);
     }
-   })
- }
+  };
 
- const handleSubmit = (e) => {
-  e.preventDefault()
-  setErrors(Validate(value))
- }
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const validationErrors = Validate(value);
+    setErrors(validationErrors);
+    console.log("Validation Errors:", validationErrors);
+    console.log("Form Values:", value);
 
- // setErrors(Validate(value))
+    if (Object.keys(validationErrors).length === 0) {
+      setIsSubmitting(true);
+      try {
+        const payload = {
+          email: value.email,
+          password: value.password,
+        };
 
- 
+        const response = await API.post(endpoint, payload);
+        console.log("Submitting:", isSubmitting);
+        if (submitCallback) submitCallback(response.data);
+      } catch (error) {
+        console.error(error);
+        setErrors({ api: error.response?.data?.message || "Server error" });
+      } finally {
+        setIsSubmitting(false);
+      }
+    } else {
+      console.log("Validation Errors:", validationErrors);
+      setErrors(validationErrors);
+      console.log("Form Values:", value);
+    }
+  };
 
- 
+  return {
+    handleChange,
+    handleRegisterChange,
+    handleRegisterSubmit,
+    value,
+    regvalue,
+    handleSubmit,
+    Errors,
+    isSubmitting,
+  };
+};
 
-
-  return {handleChange,value,handleSubmit,Errors}
-
-  
-}
-
-export default useForm
+export default useForm;

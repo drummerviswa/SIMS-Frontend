@@ -1,10 +1,13 @@
 import GrievanceEntity from "../../../components/common/GrievanceEntity";
 
 export default function ContactAdmin() {
+  const department = localStorage.getItem("department");
+  const departmentData = department ? JSON.parse(department) : null;
+  const departmentId = departmentData ? departmentData.deptid : null;
   return (
     <div>
       <GrievanceEntity
-        apiEndpoint={`/department/grievance/contactAdmin/${1}`}
+        apiEndpoint={`/department/grievance/contactAdmin/${departmentId}`}
         columns={[
           { key: "gid", label: "gid" },
           { key: "gMessage", label: "Message" },
@@ -14,7 +17,7 @@ export default function ContactAdmin() {
           gMessage: "",
           sender: "department",
           reciever: "admin",
-          department: 1,
+          department: departmentId,
           faculty: null,
         }}
         inputOptions={[

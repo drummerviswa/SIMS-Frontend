@@ -22,7 +22,7 @@ export default function ManageStudents() {
           type: "select",
           fetchEndpoint: "/admin/manage/degree",
           selectMultiple: false,
-          selectLabel: ["degid", "degName"],
+          selectLabel: ["degid", "degSym", "degName"],
           fetchKey: "degid",
         },
         {
@@ -31,7 +31,7 @@ export default function ManageStudents() {
           type: "select",
           fetchEndpoint: "/admin/manage/branch",
           selectMultiple: false,
-          selectLabel: ["bid", "branchName"],
+          selectLabel: ["bid", "degSym", "branchName", "regName"],
           fetchKey: "bid",
         },
         {

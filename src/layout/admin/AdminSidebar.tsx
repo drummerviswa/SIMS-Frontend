@@ -44,6 +44,14 @@ const navItems: NavItem[] = [
         path: "/admin/manage/branch",
       },
       {
+        name: "Department Subject Mapping",
+        path: "/admin/manage/subdept",
+      },
+      {
+        name: "Manage Assessment Components",
+        path: "/admin/manage/assesscomp",
+      },
+      {
         name: "Manage Regulation",
         path: "/admin/manage/regulation",
       },
