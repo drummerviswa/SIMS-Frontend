@@ -126,15 +126,23 @@ const DynamicMarkTable: React.FC<DynamicMarkTableProps> = ({
 
     setTableData(initialized);
     console.log("Initialized data:", initialized);
-    
   }, [data]);
 
   const columns = React.useMemo<ColumnDef<Person>[]>(() => {
     if (!data || !data[0]?.SubCriteriaBreakdown) return [];
-    
+
     const staticColumns: ColumnDef<Person>[] = [
       {
-        header: "Student Info",
+        accessorKey: "Student Marks",
+        sortingFn: "alphanumeric",
+        header: "Student Marks",
+        enableSorting: true,
+        enableHiding: false,
+        enableResizing: false,
+        enableColumnFilter: true,
+        enableGlobalFilter: true,
+        enablePinning: true,
+        enableMultiSort: true,
         columns: [
           {
             accessorKey: "regNo",
@@ -277,7 +285,7 @@ const DynamicMarkTable: React.FC<DynamicMarkTableProps> = ({
   });
 
   return (
-    <div className="relative overflow-x-auto p-4">
+    <div className="relative overflow-x-auto p-4 bg-white rounded-lg shadow-md dark:bg-gray-900">
       <div className="mb-4 flex gap-4">
         {!isUpdateMode && (
           <button

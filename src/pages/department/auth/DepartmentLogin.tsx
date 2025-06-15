@@ -8,7 +8,7 @@ export default function AdminLogin() {
   const navigate = useNavigate();
 
   const submitCallback = (data) => {
-    setAuthToken(data.token);
+    setAuthToken(data.token, "department");
     localStorage.setItem("departmentToken", data.token);
     localStorage.setItem("department", JSON.stringify(data.department));
     console.log("Login success:", data);

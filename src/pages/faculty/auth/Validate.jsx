@@ -4,8 +4,8 @@ const Validate = (values) => {
   if (typeof values.username === "string") {
     if (values.username.trim() === "") {
       errors.username = "Username is required";
-    } else if (values.username.length < 6) {
-      errors.username = "Username must be at least 6 characters";
+    } else if (values.username.length < 2) {
+      errors.username = "Username must be at least 2 characters";
     }
   }
 

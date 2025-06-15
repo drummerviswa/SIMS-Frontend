@@ -24,7 +24,7 @@ export default function AdminRegister() {
   return (
     <>
       <div>
-        <ToastContainer position="top-center" autoClose={1500} />
+        <ToastContainer draggable closeOnClick position="top-center" autoClose={1500} />
       </div>
       <div className="min-h-screen relative">
         {/* Background Split */}

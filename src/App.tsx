@@ -67,6 +67,7 @@ import ViewMarksByAssessment from "./pages/faculty/marks/ViewMarksByAssessment";
 import ViewMarksChoose from "./pages/faculty/marks/ViewMarksChoose";
 import ViewMarksStudentList from "./pages/faculty/marks/ViewMarksStudentList";
 import VerifyEmail from "./pages/admin/auth/VerifyEmail";
+import ViewAcademicSchedule from "./pages/department/academic/ViewAcademicSchedule";
 interface ChildLayout {
   element: React.ReactNode;
 }
@@ -230,6 +231,10 @@ export default function App() {
               path="/faculty/marks/regulation/:regName"
               element={<Format />}
             />
+            <Route
+              path="/faculty/schedule"
+              element={<ProtectedRouteFac element={<ViewAcademicSchedule />} />}
+            />
             <Route path="/faculty/marks/regulation" element={<Regulation />} />
             <Route path="/faculty/view/report" element={<FacReport />} />
             <Route path="/faculty/academic" element={<FacAcademicCal />} />
@@ -281,6 +286,12 @@ export default function App() {
             <Route path="/department/report" element={<DeptReport />} />
             <Route path="/department/contactadmin" element={<ContactAdmin />} />
             <Route path="/department/profile" element={<DepartmentProfile />} />
+            <Route
+              path="/department/schedule"
+              element={
+                <ProtectedRouteDept element={<ViewAcademicSchedule />} />
+              }
+            />
           </Route>
           <Route path="/department/login" element={<DepartmentLogin />} />
 

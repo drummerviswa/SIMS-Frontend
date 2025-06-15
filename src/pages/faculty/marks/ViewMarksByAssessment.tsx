@@ -1,34 +1,26 @@
-import { useParams } from "react-router";
-import ViewMarksTable from "../../../components/common/ViewMarksTable";
 import { useEffect, useState } from "react";
+import { useParams } from "react-router";
 import API from "../../../utils/API";
+import ViewMarksTable from "../../../components/common/ViewMarksTable";
+import ViewAssessmentMarksTable from "../../../components/common/ViewAssessmentMarksTable";
 
 export default function ViewMarksByAssessment() {
-  const [data, setData] = useState([]);
+  const [subjects, setSubjects] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [fetchError, setFetchError] = useState("");
+  const [markDetails, setMarkDetails] = useState([]);
+  const [currentSubject, setCurrentSubject] = useState(null);
 
-  const { subCode, batchName, tenure, msid } = useParams();
+  const facultyDetails = JSON.parse(localStorage.getItem("faculty"));
+  const facultyId = facultyDetails["facid"];
+  const { subCode, tenure } = useParams();
 
-  const facultyRaw = localStorage.getItem("faculty");
-  const facultyData = facultyRaw ? JSON.parse(facultyRaw) : null;
-  const facultyId = facultyData?.facid;
-
-  const [subid, setSubid] = useState(null);
-  const [batchid, setBatchid] = useState(null);
-  const [degid, setDegid] = useState(null);
-  const [bid, setBid] = useState(null);
-  const [regulation, setRegulation] = useState("");
-
+  // Fetch Subjects
   useEffect(() => {
-    const fetchRegulation = async () => {
+    const fetchSubjects = async () => {
       try {
-        const response = await API.get(
-          `/admin/manage/subject/subBatch/${subCode}/${batchName}`
-        );
-
-        setRegulation(response.data.regName);
-        console.log("Subjects fetched successfully:", response.data.regName);
+        const response = await API.get(`/faculty/assignedSub/${facultyId}`);
+        setSubjects(response.data);
+        console.log("Subjects fetched successfully:", response.data);
       } catch (error) {
         console.error("Error fetching subjects:", error);
       } finally {
@@ -36,145 +28,102 @@ export default function ViewMarksByAssessment() {
       }
     };
 
-    fetchRegulation();
-  }, []);
+    fetchSubjects();
+  }, [facultyId]);
 
-  // Fetch all required IDs
+  // Set currentSubject after subjects are loaded
   useEffect(() => {
-    const fetchIds = async () => {
-      try {
-        const subjectRes = await API.get(
-          `/admin/manage/subject/subCode/${subCode}`
-        );
-        const batchRes = await API.get(
-          `/admin/manage/batch/batchName/${batchName}`
-        );
-        const assignRes = await API.get(
-          `/faculty/assignedSub/facSub/${facultyId}/${subjectRes.data.subid}`
-        );
-
-        setSubid(subjectRes.data.subid);
-        setBatchid(batchRes.data.batchid);
-        setDegid(assignRes.data.degid);
-        setBid(assignRes.data.bid);
-      } catch (error) {
-        console.error("Error fetching identifiers:", error);
-        setFetchError("Failed to load data. Please try again.");
+    if (subjects.length > 0) {
+      const foundSubject = subjects.find(
+        (subject) => subject.subCode === subCode
+      );
+      if (foundSubject) {
+        setCurrentSubject(foundSubject);
       }
-    };
-
-    if (subCode && batchName && facultyId) {
-      fetchIds();
     }
-  }, [subCode, batchName, facultyId]);
+  }, [subjects, subCode]);
 
-  // Load marks data once all IDs are available
+  // Fetch Marks once currentSubject is set
   useEffect(() => {
-    const loadData = async () => {
-      if (subid && batchid && degid && bid) {
-        try {
-          if (tenure !== "assignment") {
-            const res = await API.get(
-              `/faculty/marks/${facultyId}/${subid}/${tenure}/${batchid}/${degid}/${bid}/${msid}`
-            );
+    const fetchMarks = async () => {
+      if (!currentSubject) return;
 
-            let enrichedData;
-
-            console.log("Students response:", res.data);
-            if (res.data.length === 0) {
-              // 📌 No marks exist yet → fetch student list separately
-              const studentsRes = await API.get(
-                `/faculty/marks/${facultyId}/${subid}/${tenure}/${batchid}/${degid}/${bid}/${msid}` // <-- This is just an example URL. Adjust it to your real "student list" API endpoint
+      try {
+        const { batch, degree, branch, subject } = currentSubject;
+        const response =
+          tenure !== "assignment"
+            ? await API.get(
+                `/faculty/marks/assessment/${facultyId}/${subject}/${tenure}/${batch}/${degree}/${branch}`
+              )
+            : await API.get(
+                `/faculty/marks/assignment/${facultyId}/${subject}/${batch}/${degree}/${branch}`
               );
-
-              enrichedData = studentsRes.data.map((student) => ({
-                regNo: student.regNo,
-                sName: student.sName,
-                criteriaName: "",
-                subject: student.subject,
-                mainCriteria: student.mainCriteria,
-                tenure: student.tenure,
-                MainWeightage: 0,
-                SubCriteriaBreakdown: [], // initially empty, you'll handle subcriteria inside DynamicMarkTable
-                total: 0,
-              }));
-            } else {
-              enrichedData = res.data.map((student) => ({
-                regNo: student.regNo,
-                sName: student.sName,
-                subject: student.subject,
-                mainCriteria: student.mainCriteria,
-                tenure: student.tenure,
-                criteriaName: student.criteriaName,
-                MainWeightage: student.mainWeightage,
-                SubCriteriaBreakdown: student.SubCriteriaBreakdown,
-              }));
-              console.log("Enriched data:", enrichedData);
-            }
-
-            setData(enrichedData);
-          } else {
-            const res = await API.get(
-              `/faculty/marks/other/${facultyId}/${subid}/${tenure}/${batchid}/${degid}/${bid}/${msid}` // <-- This is just an example URL. Adjust it to your real "student list" API endpoint
-            );
-
-            let enrichedData;
-
-            console.log("Students response:", res.data);
-            if (res.data.length === 0) {
-              // 📌 No marks exist yet → fetch student list separately
-              const studentsRes = await API.get(
-                `/faculty/marks/other/${facultyId}/${subid}/${tenure}/${batchid}/${degid}/${bid}/${msid}` // <-- This is just an example URL. Adjust it to your real "student list" API endpoint
-              );
-
-              enrichedData = studentsRes.data.map((student) => ({
-                regNo: student.regNo,
-                sName: student.sName,
-                criteriaName: "",
-                subject: student.subject,
-                mainCriteria: student.mainCriteria,
-                tenure: student.tenure,
-                MainWeightage: 0,
-                SubCriteriaBreakdown: [], // initially empty, you'll handle subcriteria inside DynamicMarkTable
-                total: 0,
-              }));
-            } else {
-              enrichedData = res.data.map((student) => ({
-                regNo: student.regNo,
-                sName: student.sName,
-                subject: student.subject,
-                mainCriteria: student.mainCriteria,
-                tenure: student.tenure,
-                criteriaName: student.criteriaName,
-                MainWeightage: student.mainWeightage,
-                SubCriteriaBreakdown: student.SubCriteriaBreakdown,
-              }));
-              console.log("Enriched data:", enrichedData);
-            }
-
-            setData(enrichedData);
-          }
-        } catch (error) {
-          console.error("Error loading marks:", error);
-          setFetchError("Failed to load marks.");
-        } finally {
-          setLoading(false);
-        }
+        setMarkDetails(response.data);
+        console.log("Marks fetched successfully:", response.data);
+      } catch (error) {
+        console.error("Error fetching marks:", error);
       }
     };
 
-    loadData();
-  }, [subid, batchid, degid, bid, tenure, facultyId, msid]);
+    fetchMarks();
+  }, [currentSubject, facultyId, subCode, tenure]);
+  console.log("Current Subject:", currentSubject);
 
-  if (loading) return <div>Loading student marks...</div>;
-  if (fetchError) return <div>{fetchError}</div>;
   return (
     <div className="flex-1 justify-center items-center">
       <div className="rounded-xl shadow-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] sm:p-6">
-        {/* <ViewMarksTable  /> */}
-        {subCode} - {tenure}
-        {/* Make a table for displaying the marks */}
-        <ViewMarksTable data={data} submitURL="" />
+        {subjects.length > 0 &&
+          subjects.map(
+            (subject, index) =>
+              subject.subCode === subCode && (
+                <div key={index}>
+                  <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-400">
+                    {subject.subName} - {subject.subCode}
+                  </h2>
+                  <h1 className="text-lg font-semibold text-gray-900 dark:text-gray-400">
+                    {tenure === "assess1"
+                      ? "Assessment 1"
+                      : tenure === "assignment"
+                      ? "Assignment"
+                      : "Assessment 2"}
+                  </h1>
+                  <span className="text-sm text-gray-500 dark:text-gray-400 flex flex-row gap-4">
+                    <h6>
+                      <em className="font-semibold underline text-gray-900 dark:text-gray-400">
+                        Batch:
+                      </em>{" "}
+                      {subject.batchName}
+                    </h6>
+                    <h3>
+                      <em className="font-semibold underline text-gray-900 dark:text-gray-400">
+                        Degree:
+                      </em>{" "}
+                      {subject.degSym}
+                    </h3>
+                    <h3>
+                      <em className="font-semibold underline text-gray-900 dark:text-gray-400">
+                        Semester:
+                      </em>{" "}
+                      {subject.semester}
+                    </h3>
+                    <h3>
+                      <em className="font-semibold underline text-gray-900 dark:text-gray-400">
+                        Regulation:
+                      </em>{" "}
+                      {subject.regName}
+                    </h3>
+                  </span>
+                  {/* Splitup */}
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-400 mt-4">
+                    Marks Splitup
+                  </h3>
+                  <div className="flex flex-col gap-2 ps-6">
+                    Total: {currentSubject && currentSubject[tenure]}
+                  </div>
+                  <ViewAssessmentMarksTable rawData={markDetails} />
+                </div>
+              )
+          )}
       </div>
     </div>
   );

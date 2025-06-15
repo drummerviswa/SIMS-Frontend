@@ -72,6 +72,10 @@ const navItems: NavItem[] = [
         path: "/faculty/academic",
         name: "View Academic Calendar",
       },
+      {
+        path: "/faculty/schedule",
+        name: "View Academic Schedule",
+      },
     ],
   },
   {

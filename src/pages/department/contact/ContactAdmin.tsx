@@ -17,7 +17,7 @@ export default function ContactAdmin() {
           gMessage: "",
           sender: "department",
           reciever: "admin",
-          department: 1,
+          department: departmentId,
           faculty: null,
         }}
         inputOptions={[

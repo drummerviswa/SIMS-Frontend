@@ -8,7 +8,7 @@ export default function FacLogin() {
   const navigate = useNavigate();
 
   const submitCallback = (data) => {
-    setAuthToken(data.token);
+    setAuthToken(data.token,"faculty");
     localStorage.setItem("facultyToken", data.token);
     localStorage.setItem("faculty", JSON.stringify(data.faculty));
     console.log("Login success:", data);

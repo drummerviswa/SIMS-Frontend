@@ -17,7 +17,9 @@ interface CalendarEvent extends EventInput {
 }
 
 const Calendar: React.FC = () => {
-  const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(null);
+  const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(
+    null
+  );
   const [eventTitle, setEventTitle] = useState("");
   const [eventStartDate, setEventStartDate] = useState("");
   const [eventEndDate, setEventEndDate] = useState("");
@@ -118,10 +120,22 @@ const Calendar: React.FC = () => {
     setSelectedEvent(null);
   };
 
+  // Detect dark mode using prefers-color-scheme
+  const isDark =
+    typeof window !== "undefined"
+      ? window.matchMedia &&
+        window.matchMedia("(prefers-color-scheme: dark)").matches
+      : false;
+
   return (
     <>
-      <PageMeta title="Academic Calendar" description="Manage academic events" />
-      <div className="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
+      <PageMeta
+        title="Academic Calendar"
+        description="Manage academic events"
+      />
+      <div
+        className={`rounded-2xl border bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-800`}
+      >
         <div className="custom-calendar">
           <FullCalendar
             ref={calendarRef}
@@ -136,20 +150,27 @@ const Calendar: React.FC = () => {
             selectable={true}
             select={handleDateSelect}
             eventClick={handleEventClick}
-            eventContent={renderEventContent}
+            eventContent={(info) => renderEventContent(info, isDark)}
+            themeSystem="standard"
           />
         </div>
 
-        <Modal isOpen={isOpen} onClose={closeModal} className="max-w-[700px] p-6 lg:p-10">
+        <Modal
+          isOpen={isOpen}
+          onClose={closeModal}
+          className="max-w-[700px] p-6 lg:p-10 dark:bg-gray-900 dark:text-gray-100"
+        >
           <div className="flex flex-col px-2 overflow-y-auto">
-            <h5 className="mb-2 text-xl font-semibold">{selectedEvent ? "Edit Event" : "Add Event"}</h5>
+            <h5 className="mb-2 text-xl font-semibold">
+              {selectedEvent ? "Edit Event" : "Add Event"}
+            </h5>
 
             <label className="block mt-4">Title</label>
             <input
               type="text"
               value={eventTitle}
               onChange={(e) => setEventTitle(e.target.value)}
-              className="input input-bordered w-full"
+              className="input border-2 rounded w-full dark:bg-gray-800 dark:text-gray-100"
             />
 
             <label className="block mt-4">Color</label>
@@ -173,7 +194,7 @@ const Calendar: React.FC = () => {
               type="date"
               value={eventStartDate}
               onChange={(e) => setEventStartDate(e.target.value)}
-              className="input input-bordered w-full"
+              className="input input-bordered w-full dark:bg-gray-800 dark:text-gray-100"
             />
 
             <label className="block mt-4">End Date</label>
@@ -181,19 +202,28 @@ const Calendar: React.FC = () => {
               type="date"
               value={eventEndDate}
               onChange={(e) => setEventEndDate(e.target.value)}
-              className="input input-bordered w-full"
+              className="input input-bordered w-full dark:bg-gray-800 dark:text-gray-100"
             />
 
             <div className="flex justify-end gap-3 mt-6">
               {selectedEvent && (
-                <button onClick={handleDeleteEvent} className="btn btn-error">
+                <button
+                  onClick={handleDeleteEvent}
+                  className="btn btn-error dark:btn-error"
+                >
                   Delete
                 </button>
               )}
-              <button onClick={handleAddOrUpdateEvent} className="btn btn-primary">
+              <button
+                onClick={handleAddOrUpdateEvent}
+                className="btn btn-primary dark:btn-primary"
+              >
                 {selectedEvent ? "Update" : "Add"}
               </button>
-              <button onClick={closeModal} className="btn btn-ghost">
+              <button
+                onClick={closeModal}
+                className="btn btn-ghost dark:btn-ghost"
+              >
                 Cancel
               </button>
             </div>
@@ -204,21 +234,50 @@ const Calendar: React.FC = () => {
   );
 };
 
-const colorMap: Record<string, { bg: string; text: string }> = {
-  danger: { bg: "bg-red-100", text: "text-red-800" },
-  success: { bg: "bg-green-100", text: "text-green-800" },
-  primary: { bg: "bg-blue-100", text: "text-blue-800" },
-  warning: { bg: "bg-yellow-100", text: "text-yellow-800" },
+// Add dark mode colors
+const colorMap: Record<
+  string,
+  { bg: string; text: string; darkBg: string; darkText: string }
+> = {
+  danger: {
+    bg: "bg-red-100",
+    text: "text-red-800",
+    darkBg: "dark:bg-red-900",
+    darkText: "dark:text-red-200",
+  },
+  success: {
+    bg: "bg-green-100",
+    text: "text-green-800",
+    darkBg: "dark:bg-green-900",
+    darkText: "dark:text-green-200",
+  },
+  primary: {
+    bg: "bg-blue-100",
+    text: "text-blue-800",
+    darkBg: "dark:bg-blue-900",
+    darkText: "dark:text-blue-200",
+  },
+  warning: {
+    bg: "bg-yellow-100",
+    text: "text-yellow-800",
+    darkBg: "dark:bg-yellow-900",
+    darkText: "dark:text-yellow-200",
+  },
 };
 
-
-const renderEventContent = (eventInfo: any) => {
+const renderEventContent = (eventInfo: any, isDark: boolean) => {
   const level = eventInfo.event.extendedProps.calendar?.toLowerCase();
-  const colors = colorMap[level] || { bg: "bg-gray-100", text: "text-gray-800" };
+  const colors = colorMap[level] || {
+    bg: "bg-gray-100",
+    text: "text-gray-800",
+    darkBg: "dark:bg-gray-800",
+    darkText: "dark:text-gray-200",
+  };
 
   return (
-    <div className={`p-1 rounded ${colors.bg} ${colors.text}`}>
-      {/* <strong>{eventInfo.timeText}</strong> */}
+    <div
+      className={`p-1 rounded ${colors.bg} ${colors.text} ${colors.darkBg} ${colors.darkText}`}
+    >
       <div>{eventInfo.event.title}</div>
     </div>
   );

@@ -15,6 +15,7 @@ export default function ViewBranches() {
           { key: "degName", label: "Degree" },
           { key: "degSym", label: "Degree Symbol" },
           { key: "branchName", label: "Branch Name" },
+          { key: "regName", label: "Regulation" },
         ]}
         initialState={{}}
       />

@@ -1,72 +1,123 @@
-import React, { useEffect, useState } from "react";
-import { useParams } from "react-router";
+import { useEffect, useState, useMemo } from "react";
 import API from "../../../utils/API";
-import ViewSubMark from "../../../components/common/ViewSubMark";
+import CombinedMarksTable from "../../../components/common/CombinedMarksTable";
+import { useParams } from "react-router";
+import TotalMarksTable from "../../../components/common/TotalMarksTable";
 
-export default function ViewMarksSubject() {
-  const [subid, setSubid] = useState<number | null>(null);
-  const [degid, setDegid] = useState<number | null>(null);
-  const [branchid, setBranchid] = useState<number | null>(null);
-  const [fetchError, setFetchError] = useState("");
-  const faculty = JSON.parse(localStorage.getItem("faculty") || "{}");
-  const { facid } = faculty;
+export default function ViewCombinedMarksBySubject() {
+  const [marks, setMarks] = useState([]);
+  const [combinedMarks, setCombinedMarks] = useState([]);
+  const [subjectInfo, setSubjectInfo] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  // Memoize faculty so it doesn't recreate on every render
+  const faculty = useMemo(() => {
+    try {
+      return JSON.parse(localStorage.getItem("faculty"));
+    } catch {
+      return null;
+    }
+  }, []);
+
   const { subCode } = useParams();
 
+  // Fetch assigned subject info for the faculty
   useEffect(() => {
-    const fetchIds = async () => {
+    if (!faculty) return;
+
+    let isMounted = true;
+    const fetchSubject = async () => {
       try {
-        const subjectRes = await API.get(
-          `/admin/manage/subject/subCode/${subCode}`
-        );
-        console.log("Subject Response:", subjectRes.data);
+        const res = await API.get(`/faculty/assignedSub/${faculty.facid}`);
+        if (!isMounted) return;
 
-        const assignRes = await API.get(
-          `/faculty/assignedSub/facSub/${facid}/${subjectRes.data.subid}`
-        );
-        console.log("Assigned Response:", assignRes.data);
-
-        setSubid(subjectRes.data.subid);
-        setDegid(assignRes.data.degid);
-        setBranchid(assignRes.data.branch);
-      } catch (error) {
-        console.error("Error fetching identifiers:", error);
-        setFetchError("Failed to load data. Please try again.");
+        const match = res.data.find((s) => s.subCode === subCode);
+        setSubjectInfo(match || null);
+      } catch (err) {
+        console.error("Error fetching subject:", err);
       }
     };
 
-    if (subCode && facid) {
-      fetchIds();
-    }
-  }, [subCode, facid]);
+    fetchSubject();
 
-  if (fetchError) return <div className="text-red-500">{fetchError}</div>;
+    return () => {
+      isMounted = false;
+    };
+  }, [subCode, faculty?.facid]);
 
-  if (!subid || !degid || !branchid) {
-    return (
-      <div className="text-yellow-600">
-        <p>Waiting for IDs...</p>
-        <p>subid: {subid}</p>
-        <p>degid: {degid}</p>
-        <p>branchid: {branchid}</p>
-      </div>
-    );
+  // Fetch combined marks when subjectInfo or faculty changes
+  useEffect(() => {
+    if (!subjectInfo || !faculty) return;
+
+    let isMounted = true;
+    setLoading(true);
+
+    const { degree, branch, batch, subject } = subjectInfo;
+
+    API.get(
+      `/faculty/marks/combined/${faculty.facid}/${subject}/${degree}/${branch}/${batch}`
+    )
+      .then((res) => {
+        if (!isMounted) return;
+        setCombinedMarks(res.data);
+      })
+      .catch((err) => console.error(err))
+      .finally(() => {
+        if (isMounted) setLoading(false);
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, [subjectInfo, faculty?.facid]);
+
+  // Fetch total marks when subjectInfo or faculty changes
+  useEffect(() => {
+    if (!subjectInfo || !faculty) return;
+
+    let isMounted = true;
+    setLoading(true);
+
+    const { degree, branch, batch, subject } = subjectInfo;
+
+    API.get(
+      `/faculty/marks/total/${faculty.facid}/${subject}/${degree}/${branch}/${batch}`
+    )
+      .then((res) => {
+        if (!isMounted) return;
+        setMarks(res.data);
+      })
+      .catch((err) => console.error(err))
+      .finally(() => {
+        if (isMounted) setLoading(false);
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, [subjectInfo, faculty?.facid]);
+
+  if (loading || !subjectInfo) {
+    return <div>Loading...</div>;
   }
 
   return (
-    <div>
-      <ViewSubMark
-        entityName="View Marks By Subject"
-        apiEndpoint={`/faculty/marks/${facid}/${subCode}/${degid}/${branchid}`}
-        columns={[
-          { label: "Reg No", key: "regNo" },
-          { label: "Name", key: "sName" },
-          { label: "Main Criteria", key: "criteriaName" },
-          { label: "Sub Criteria", key: "subCriteria" },
-          { label: "Marks", key: "enteredMark" },
-        ]}
-        initialState={{}}
-        uniqueKey="regNo"
-      />
+    <div className="flex-1 p-6">
+      <div className="bg-white dark:bg-gray-900 border dark:border-gray-700 rounded-xl shadow-lg p-6">
+        <h1 className="text-2xl font-bold text-gray-800 dark:text-white mb-2">
+          {subjectInfo.subName} ({subjectInfo.subCode})
+        </h1>
+        <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
+          <span>Batch: {subjectInfo.batchName} | </span>
+          <span>Degree: {subjectInfo.degSym} | </span>
+          <span>Sem: {subjectInfo.semester} | </span>
+          <span>Regulation: {subjectInfo.regName}</span>
+        </p>
+        <TotalMarksTable marks={marks} regulation={subjectInfo.regName} />
+
+        <CombinedMarksTable rawMarks={combinedMarks} regulation={subjectInfo.regName} />
+
+      </div>
     </div>
   );
 }

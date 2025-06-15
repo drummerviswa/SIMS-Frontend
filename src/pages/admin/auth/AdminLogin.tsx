@@ -7,7 +7,7 @@ export default function AdminLogin() {
   const navigate = useNavigate();
 
   const submitCallback = (data) => {
-    setAuthToken(data.token);
+    setAuthToken(data.token,"admin");
     localStorage.setItem("adminToken", data.token);
     localStorage.setItem("admin", JSON.stringify(data.admin));
     API.defaults.headers.common["Authorization"] = `Bearer ${data.token}`;

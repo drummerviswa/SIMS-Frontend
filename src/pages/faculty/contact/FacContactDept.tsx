@@ -17,8 +17,8 @@ export default function FacContactDept() {
           gMessage: "",
           sender: "faculty",
           reciever: "department",
-          department: null,
-          faculty: 1,
+          department: facultyData["primaryDept"],
+          faculty: facultyId,
         }}
         inputOptions={[
           {
