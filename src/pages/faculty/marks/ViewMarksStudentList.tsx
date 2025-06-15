@@ -6,7 +6,21 @@ import CombinedMarksTable from "../../../components/common/CombinedMarksTable";
 export default function ViewMarksStudentList() {
   const [students, setStudents] = useState([]);
   const [selectedStudent, setSelectedStudent] = useState(null);
-  const [studentMarks, setStudentMarks] = useState(null);
+  // Define a type for student marks
+  type StudentMark = {
+    tenure: string;
+    type?: string;
+    criteriaName: string;
+    mainWeightage: number;
+    StudentMarksBreakdown: {
+      subCriteria: string;
+      enteredMark?: number;
+      isLocked?: boolean;
+      subWeightage?: number;
+    }[];
+  };
+
+  const [studentMarks, setStudentMarks] = useState<StudentMark[] | null>(null);
   const [totalMarks, setTotalMarks] = useState(null);
   const [loading, setLoading] = useState(true);
   const [marksLoading, setMarksLoading] = useState(false);
@@ -124,149 +138,179 @@ export default function ViewMarksStudentList() {
       )}
 
       {studentMarks && selectedStudent && (
-  <div>
-    <h3 className="text-lg font-semibold mb-2">
-      Marks for {selectedStudent.sname} ({selectedStudent.regNo})
-    </h3>
+        <div>
+          <h3 className="text-lg font-semibold mb-2">
+            Marks for {selectedStudent.sname} ({selectedStudent.regNo})
+          </h3>
 
-    {Object.entries(
-      studentMarks.reduce((acc, markEntry) => {
-        // Group marks by tenure
-        if (!acc[markEntry.tenure]) acc[markEntry.tenure] = [];
-        acc[markEntry.tenure].push(markEntry);
-        return acc;
-      }, {})
-    ).map(([tenure, marksInTenure]) => {
-      // Group marks by type (assessment, assignment, etc.)
-      const marksByType = marksInTenure.reduce((typeAcc, mark) => {
-        const type = mark.type || "assessment";
-        if (!typeAcc[type]) typeAcc[type] = [];
-        typeAcc[type].push(mark);
-        return typeAcc;
-      }, {});
+          {Object.entries(
+            studentMarks.reduce((acc, markEntry) => {
+              // Group marks by tenure
+              if (!acc[markEntry.tenure]) acc[markEntry.tenure] = [];
+              acc[markEntry.tenure].push(markEntry);
+              return acc;
+            }, {})
+          ).map(([tenure, marksInTenure]) => {
+            // Group marks by type (assessment, assignment, etc.)
+            const marksArray = marksInTenure as StudentMark[];
+            const marksByType = marksArray.reduce<
+              Record<string, StudentMark[]>
+            >((typeAcc, mark) => {
+              const type = mark.type || "assessment";
+              if (!typeAcc[type]) typeAcc[type] = [];
+              typeAcc[type].push(mark);
+              return typeAcc;
+            }, {});
 
-      // Helper to group marks by criteriaName & mainWeightage, combining subcriteria
-      const groupByCriteria = (marks) => {
-        const map = new Map();
-        marks.forEach((m) => {
-          const key = `${m.criteriaName}__${m.mainWeightage}`;
-          if (!map.has(key)) {
-            map.set(key, { 
-              criteriaName: m.criteriaName, 
-              mainWeightage: m.mainWeightage, 
-              StudentMarksBreakdown: [] 
-            });
-          }
-          // Add all subcriteria for this mark object
-          map.get(key).StudentMarksBreakdown.push(...m.StudentMarksBreakdown);
-        });
+            // Helper to group marks by criteriaName & mainWeightage, combining subcriteria
+            const groupByCriteria = (marks) => {
+              const map = new Map();
+              marks.forEach((m) => {
+                const key = `${m.criteriaName}__${m.mainWeightage}`;
+                if (!map.has(key)) {
+                  map.set(key, {
+                    criteriaName: m.criteriaName,
+                    mainWeightage: m.mainWeightage,
+                    StudentMarksBreakdown: [],
+                  });
+                }
+                // Add all subcriteria for this mark object
+                map
+                  .get(key)
+                  .StudentMarksBreakdown.push(...m.StudentMarksBreakdown);
+              });
 
-        // Deduplicate subcriteria rows within each criteria (important!)
-        // We can use a key like `${subCriteria}__${enteredMark}__${isLocked}` to filter
-        for (const group of map.values()) {
-          const uniqueSubs = new Map();
-          group.StudentMarksBreakdown.forEach((detail) => {
-            const subKey = `${detail.subCriteria}__${detail.enteredMark}__${detail.isLocked}`;
-            if (!uniqueSubs.has(subKey)) uniqueSubs.set(subKey, detail);
-          });
-          group.StudentMarksBreakdown = Array.from(uniqueSubs.values());
-        }
+              // Deduplicate subcriteria rows within each criteria (important!)
+              // We can use a key like `${subCriteria}__${enteredMark}__${isLocked}` to filter
+              for (const group of map.values()) {
+                const uniqueSubs = new Map();
+                group.StudentMarksBreakdown.forEach((detail) => {
+                  const subKey = `${detail.subCriteria}__${detail.enteredMark}__${detail.isLocked}`;
+                  if (!uniqueSubs.has(subKey)) uniqueSubs.set(subKey, detail);
+                });
+                group.StudentMarksBreakdown = Array.from(uniqueSubs.values());
+              }
 
-        return Array.from(map.values());
-      };
+              return Array.from(map.values());
+            };
 
-      // Calculate subtotal (marks sum, criteria weightage once)
-      const calculateSubtotal = (group) => {
-        const marksObtained = group.StudentMarksBreakdown.reduce(
-          (sum, detail) => sum + (detail.enteredMark ?? 0),
-          0
-        );
-        const outOf = group.mainWeightage ?? 0;
-        return { marksObtained, outOf };
-      };
+            // Calculate subtotal (marks sum, criteria weightage once)
+            const calculateSubtotal = (group) => {
+              const marksObtained = group.StudentMarksBreakdown.reduce(
+                (sum, detail) => sum + (detail.enteredMark ?? 0),
+                0
+              );
+              const outOf = group.mainWeightage ?? 0;
+              return { marksObtained, outOf };
+            };
 
-      // Calculate grand total for the entire tenure (sum subtotals)
-      // but sum criteria weightage only once per unique criteria!
-      const grandTotal = Object.values(marksByType).reduce(
-        (acc, marks) => {
-          const grouped = groupByCriteria(marks);
-          grouped.forEach((group) => {
-            const subtotal = calculateSubtotal(group);
-            acc.marksObtained += subtotal.marksObtained;
-            acc.outOf += subtotal.outOf;
-          });
-          return acc;
-        },
-        { marksObtained: 0, outOf: 0 }
-      );
-
-      return (
-        <div key={tenure} className="mb-6">
-          <h4 className="text-md font-semibold mb-2 border-b pb-1 border-gray-300">
-            Tenure: {tenure}
-          </h4>
-
-          {Object.entries(marksByType).map(([type, marks]) => {
-            const groupedMarks = groupByCriteria(marks);
+            // Calculate grand total for the entire tenure (sum subtotals)
+            // but sum criteria weightage only once per unique criteria!
+            const grandTotal = Object.values(marksByType).reduce(
+              (acc: { marksObtained: number; outOf: number }, marks) => {
+                const grouped = groupByCriteria(marks);
+                grouped.forEach((group) => {
+                  const subtotal = calculateSubtotal(group);
+                  acc.marksObtained += subtotal.marksObtained;
+                  acc.outOf += subtotal.outOf;
+                });
+                return acc;
+              },
+              { marksObtained: 0, outOf: 0 }
+            );
 
             return (
-              <div key={type} className="mb-4">
-                <h5 className="font-semibold capitalize mb-1">{type}</h5>
+              <div key={tenure} className="mb-6">
+                <h4 className="text-md font-semibold mb-2 border-b pb-1 border-gray-300">
+                  Tenure: {tenure}
+                </h4>
 
-                {groupedMarks.map((group) => {
-                  const subtotal = calculateSubtotal(group);
+                {Object.entries(marksByType).map(([type, marks]) => {
+                  const groupedMarks = groupByCriteria(marks);
 
                   return (
-                    <div key={group.criteriaName + group.mainWeightage} className="mb-3">
-                      <table className="min-w-full table-auto border border-gray-300 text-sm">
-                        <thead className="bg-gray-100">
-                          <tr>
-                            <th className="px-3 py-1 text-left">Criteria</th>
-                            <th className="px-3 py-1 text-left">Weightage</th>
-                            <th className="px-3 py-1 text-left">Sub-Criteria</th>
-                            <th className="px-3 py-1 text-left">Mark</th>
-                            <th className="px-3 py-1 text-left">Locked</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {group.StudentMarksBreakdown.map((detail, idx) => (
-                            <tr key={idx} className="border-t border-gray-200">
-                              <td className="px-3 py-1">{group.criteriaName}</td>
-                              <td className="px-3 py-1">{group.mainWeightage}</td>
-                              <td className="px-3 py-1">{detail.subCriteria}</td>
-                              <td className="px-3 py-1">
-                                {detail.enteredMark ?? 0} / {detail.subWeightage ?? group.mainWeightage}
-                              </td>
-                              <td className="px-3 py-1">{detail.isLocked ? "Yes" : "No"}</td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                      <p className="mt-1 font-semibold text-right">
-                        Subtotal {group.criteriaName}:{" "}
-                        <span className="text-blue-600">
-                          {subtotal.marksObtained} / {subtotal.outOf}
-                        </span>
-                      </p>
+                    <div key={type} className="mb-4">
+                      <h5 className="font-semibold capitalize mb-1">{type}</h5>
+
+                      {groupedMarks.map((group) => {
+                        const subtotal = calculateSubtotal(group);
+
+                        return (
+                          <div
+                            key={group.criteriaName + group.mainWeightage}
+                            className="mb-3"
+                          >
+                            <table className="min-w-full table-auto border border-gray-300 text-sm">
+                              <thead className="bg-gray-100">
+                                <tr>
+                                  <th className="px-3 py-1 text-left">
+                                    Criteria
+                                  </th>
+                                  <th className="px-3 py-1 text-left">
+                                    Weightage
+                                  </th>
+                                  <th className="px-3 py-1 text-left">
+                                    Sub-Criteria
+                                  </th>
+                                  <th className="px-3 py-1 text-left">Mark</th>
+                                  <th className="px-3 py-1 text-left">
+                                    Locked
+                                  </th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {group.StudentMarksBreakdown.map(
+                                  (detail, idx) => (
+                                    <tr
+                                      key={idx}
+                                      className="border-t border-gray-200"
+                                    >
+                                      <td className="px-3 py-1">
+                                        {group.criteriaName}
+                                      </td>
+                                      <td className="px-3 py-1">
+                                        {group.mainWeightage}
+                                      </td>
+                                      <td className="px-3 py-1">
+                                        {detail.subCriteria}
+                                      </td>
+                                      <td className="px-3 py-1">
+                                        {detail.enteredMark ?? 0} /{" "}
+                                        {detail.subWeightage ??
+                                          group.mainWeightage}
+                                      </td>
+                                      <td className="px-3 py-1">
+                                        {detail.isLocked ? "Yes" : "No"}
+                                      </td>
+                                    </tr>
+                                  )
+                                )}
+                              </tbody>
+                            </table>
+                            <p className="mt-1 font-semibold text-right">
+                              Subtotal {group.criteriaName}:{" "}
+                              <span className="text-blue-600">
+                                {subtotal.marksObtained} / {subtotal.outOf}
+                              </span>
+                            </p>
+                          </div>
+                        );
+                      })}
                     </div>
                   );
                 })}
+
+                <p className="mt-2 font-bold text-right border-t pt-2 border-gray-300">
+                  Grand Total:{" "}
+                  <span className="text-green-700">
+                    {grandTotal.marksObtained} / {grandTotal.outOf}
+                  </span>
+                </p>
               </div>
             );
           })}
-
-          <p className="mt-2 font-bold text-right border-t pt-2 border-gray-300">
-            Grand Total:{" "}
-            <span className="text-green-700">
-              {grandTotal.marksObtained} / {grandTotal.outOf}
-            </span>
-          </p>
         </div>
-      );
-    })}
-  </div>
-)}
-
+      )}
     </div>
   );
 }
