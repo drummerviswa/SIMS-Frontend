@@ -61,6 +61,7 @@ import Marks from "./pages/faculty/marks/Marks";
 import MarkGrant from "./pages/faculty/marks/MarkGrant";
 import MarkSplit from "./pages/faculty/marks/MarkSplit";
 import ManageDegrees from "./pages/admin/mange/ManageDegree";
+import { Analytics } from "@vercel/analytics/next"
 import ManageSubjectDepartment from "./pages/admin/mange/ManageSubjectDepartment";
 import ViewMarksByStudent from "./pages/faculty/marks/ViewMarksByStudent";
 import ViewMarksByAssessment from "./pages/faculty/marks/ViewMarksByAssessment";
@@ -127,6 +128,7 @@ export default function App() {
     <>
       <Router>
         <ScrollToTop />
+        <Analytics/>
         <Routes>
           {/* Admin Dashboard */}
           <Route element={<ProtectedRouteAdmin element={<AdminLayout />} />}>
