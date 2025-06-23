@@ -1,5 +1,14 @@
 {
-  "rewrites": [
-    { "source": "/(.*)", "destination": "/dist/index.html" }
+  "routes": [
+    { "src": "/", "dest": "/" },
+    { "src": "/admin", "dest": "/admin" },
+    { "src": "/admin/login", "dest": "/admin/login" },
+    { "src": "/admin/register", "dest": "/admin/register" },
+    { "src": "/verify-email/:verificationCode", "dest": "/verify-email/:verificationCode" },
+    { "src": "/faculty", "dest": "/faculty" },
+    { "src": "/faculty/login", "dest": "/faculty/login" },
+    { "src": "/department", "dest": "/department" },
+    { "src": "/department/login", "dest": "/department/login" },
+    { "src": "/(.*)", "dest": "/index.html" }
   ]
 }
