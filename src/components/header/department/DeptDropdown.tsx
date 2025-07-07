@@ -23,7 +23,7 @@ export default function DeptDropdown() {
     });
   };
   const department = localStorage.getItem("department");
-  console.log(JSON.parse(department));
+  console.log(department ? JSON.parse(department).deptName : "Department");
   return (
     <div className="relative">
       <button
@@ -35,7 +35,7 @@ export default function DeptDropdown() {
         </span>
 
         <span className="block mr-1 font-medium text-theme-sm">
-          {JSON.parse(department)["deptName"]}
+          {department !== null && JSON.parse(department)["deptName"]}
         </span>
         <svg
           className={`stroke-gray-500 dark:stroke-gray-400 transition-transform duration-200 ${
@@ -64,10 +64,10 @@ export default function DeptDropdown() {
       >
         <div>
           <span className="block font-medium text-gray-700 text-theme-sm dark:text-gray-400">
-            {JSON.parse(department)["deptName"]}
+            {department ? JSON.parse(department).deptName : "Department"}
           </span>
           <span className="mt-0.5 block text-theme-xs text-gray-500 dark:text-gray-400">
-            {JSON.parse(department)["username"]}
+            {department ? JSON.parse(department).username : "Username"}
           </span>
         </div>
 

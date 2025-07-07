@@ -29,7 +29,7 @@ export default function ManageBranches() {
           label: "Degree",
           type: "select",
           fetchEndpoint: "/admin/manage/degree",
-          selectLabel: ["degid", "degName"],
+          selectLabel: ["degid", "degSym", "degName"],
           fetchKey: "degid",
         },
         {
