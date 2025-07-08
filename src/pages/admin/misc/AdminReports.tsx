@@ -1,13 +1,23 @@
+/* eslint-disable @typescript-eslint/no-unused-expressions */
 import React, { useEffect, useState, useCallback } from "react";
 import API from "../../../utils/API";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 import { utils, writeFile } from "xlsx";
 import {
-  LineChart, Line,
-  BarChart, Bar,
-  PieChart, Pie, Cell,
-  XAxis, YAxis, Tooltip, Legend, CartesianGrid, ResponsiveContainer
+  LineChart,
+  Line,
+  BarChart,
+  Bar,
+  PieChart,
+  Pie,
+  Cell,
+  XAxis,
+  YAxis,
+  Tooltip,
+  Legend,
+  CartesianGrid,
+  ResponsiveContainer,
 } from "recharts";
 
 // --- UPDATED TYPE DEFINITIONS ---
@@ -65,7 +75,11 @@ interface DepartmentData {
     passPercentage: number; // Added for new backend data
   }>;
   batchEnrollment: Array<{ batch: string; students: number }>; // Added for new backend data
-  performanceTrend: Array<{ semester: string; average: number; collegeAverage: number }>; // Added for new backend data
+  performanceTrend: Array<{
+    semester: string;
+    average: number;
+    collegeAverage: number;
+  }>; // Added for new backend data
 }
 
 interface FacultyData {
@@ -73,7 +87,11 @@ interface FacultyData {
   currentCourses: Array<{ subName: string; students: number; batch?: string }>; // Renamed for clarity, added batch
   evaluations: Array<{ subName: string; avgMark?: number; avgRating?: number }>; // avgMark now optional, avgRating added
   averageRating?: string; // Now a string to match backend's toFixed(2)
-  performanceTrend: Array<{ semester: string; avgRating: number; departmentAvg: number }>; // Added for new backend data
+  performanceTrend: Array<{
+    semester: string;
+    avgRating: number;
+    departmentAvg: number;
+  }>; // Added for new backend data
 }
 
 interface StudentCourse {
@@ -89,11 +107,22 @@ interface StudentCourse {
 interface StudentData {
   student: Student;
   currentSemester: StudentCourse[]; // Renamed for clarity, reflects current semester only
-  performanceTrend: Array<{ semester: string; average: number; batchAverage: number }>; // Added for new backend data
+  performanceTrend: Array<{
+    semester: string;
+    average: number;
+    batchAverage: number;
+  }>; // Added for new backend data
   gradeDistribution: Array<{ grade: string; count: number }>; // Added for new backend data
 }
 
-const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#A28DFF", "#FF6B6B"];
+const COLORS = [
+  "#0088FE",
+  "#00C49F",
+  "#FFBB28",
+  "#FF8042",
+  "#A28DFF",
+  "#FF6B6B",
+];
 
 const AdminReports: React.FC = () => {
   const [activeTab, setActiveTab] = useState<string>("overall");
@@ -105,10 +134,16 @@ const AdminReports: React.FC = () => {
   const [overallData, setOverallData] = useState<OverallData | null>(null);
   const [departments, setDepartments] = useState<Department[]>([]);
   const [selectedDeptId, setSelectedDeptId] = useState<string | null>(null);
-  const [departmentData, setDepartmentData] = useState<DepartmentData | null>(null);
-  const [selectedFacultyDept, setSelectedFacultyDept] = useState<string | null>(null);
+  const [departmentData, setDepartmentData] = useState<DepartmentData | null>(
+    null
+  );
+  const [selectedFacultyDept, setSelectedFacultyDept] = useState<string | null>(
+    null
+  );
   const [facultyList, setFacultyList] = useState<Faculty[]>([]);
-  const [selectedFacultyId, setSelectedFacultyId] = useState<string | null>(null);
+  const [selectedFacultyId, setSelectedFacultyId] = useState<string | null>(
+    null
+  );
   const [facultyData, setFacultyData] = useState<FacultyData | null>(null);
   const [studentReg, setStudentReg] = useState<string>("");
   const [studentData, setStudentData] = useState<StudentData | null>(null);
@@ -127,17 +162,26 @@ const AdminReports: React.FC = () => {
     setStudentError(null);
   }, []);
 
-  const navigateToTab = useCallback((tab: string) => {
-    setActiveTab(tab);
-    setBreadcrumbs([{ type: 'tab', id: tab, label: tab.charAt(0).toUpperCase() + tab.slice(1) }]);
-    resetNestedStates(); // Reset all specific selections when navigating to a new main tab
-  }, [resetNestedStates]);
+  const navigateToTab = useCallback(
+    (tab: string) => {
+      setActiveTab(tab);
+      setBreadcrumbs([
+        {
+          type: "tab",
+          id: tab,
+          label: tab.charAt(0).toUpperCase() + tab.slice(1),
+        },
+      ]);
+      resetNestedStates(); // Reset all specific selections when navigating to a new main tab
+    },
+    [resetNestedStates]
+  );
 
   const navigateToDept = useCallback((dept: Department) => {
-    setActiveTab('department');
+    setActiveTab("department");
     setBreadcrumbs([
-      { type: 'tab', id: 'department', label: 'Department' },
-      { type: 'department', id: dept.deptid, label: dept.deptName }
+      { type: "tab", id: "department", label: "Department" },
+      { type: "department", id: dept.deptid, label: dept.deptName },
     ]);
     setSelectedDeptId(dept.deptid);
     setDepartmentData(null); // Clear previous data
@@ -151,10 +195,10 @@ const AdminReports: React.FC = () => {
   }, []);
 
   const navigateToFacultyDept = useCallback((dept: Department) => {
-    setActiveTab('faculty');
+    setActiveTab("faculty");
     setBreadcrumbs([
-      { type: 'tab', id: 'faculty', label: 'Faculty' },
-      { type: 'facultyDept', id: dept.deptid, label: dept.deptName }
+      { type: "tab", id: "faculty", label: "Faculty" },
+      { type: "facultyDept", id: dept.deptid, label: dept.deptName },
     ]);
     setSelectedFacultyDept(dept.deptid);
     setFacultyList([]); // Clear previous faculty list
@@ -168,12 +212,14 @@ const AdminReports: React.FC = () => {
   }, []);
 
   const navigateToFaculty = useCallback((faculty: Faculty) => {
-    setActiveTab('faculty');
-    setBreadcrumbs(prev => {
-      const baseBreadcrumbs = prev.filter(crumb => crumb.type === 'tab' || crumb.type === 'facultyDept');
+    setActiveTab("faculty");
+    setBreadcrumbs((prev) => {
+      const baseBreadcrumbs = prev.filter(
+        (crumb) => crumb.type === "tab" || crumb.type === "facultyDept"
+      );
       return [
         ...baseBreadcrumbs,
-        { type: 'faculty', id: faculty.facid, label: faculty.facName }
+        { type: "faculty", id: faculty.facid, label: faculty.facName },
       ];
     });
     setSelectedFacultyId(faculty.facid);
@@ -185,49 +231,54 @@ const AdminReports: React.FC = () => {
     setStudentData(null);
   }, []);
 
-  const handleBreadcrumbClick = useCallback((crumb: Breadcrumb, index: number) => {
-    if (index === breadcrumbs.length - 1) return;
+  const handleBreadcrumbClick = useCallback(
+    (crumb: Breadcrumb, index: number) => {
+      if (index === breadcrumbs.length - 1) return;
 
-    const newBreadcrumbs = breadcrumbs.slice(0, index + 1);
-    setBreadcrumbs(newBreadcrumbs);
+      const newBreadcrumbs = breadcrumbs.slice(0, index + 1);
+      setBreadcrumbs(newBreadcrumbs);
 
-    if (crumb.type === 'tab') {
-      setActiveTab(crumb.id);
-      resetNestedStates();
-    } else if (crumb.type === 'department') {
-      setActiveTab('department');
-      setSelectedDeptId(crumb.id);
-      setSelectedFacultyDept(null);
-      setSelectedFacultyId(null);
-      setStudentReg("");
-      setStudentData(null);
-    } else if (crumb.type === 'facultyDept') {
-      setActiveTab('faculty');
-      setSelectedFacultyDept(crumb.id);
-      setSelectedFacultyId(null);
-      setStudentReg("");
-      setStudentData(null);
-      setSelectedDeptId(null);
-    } else if (crumb.type === 'faculty') {
-      setActiveTab('faculty');
-      setSelectedFacultyId(crumb.id);
-      const facultyDeptCrumb = newBreadcrumbs.find(b => b.type === 'facultyDept');
-      if (facultyDeptCrumb) {
-        setSelectedFacultyDept(facultyDeptCrumb.id);
-      } else {
+      if (crumb.type === "tab") {
+        setActiveTab(crumb.id);
+        resetNestedStates();
+      } else if (crumb.type === "department") {
+        setActiveTab("department");
+        setSelectedDeptId(crumb.id);
         setSelectedFacultyDept(null);
+        setSelectedFacultyId(null);
+        setStudentReg("");
+        setStudentData(null);
+      } else if (crumb.type === "facultyDept") {
+        setActiveTab("faculty");
+        setSelectedFacultyDept(crumb.id);
+        setSelectedFacultyId(null);
+        setStudentReg("");
+        setStudentData(null);
+        setSelectedDeptId(null);
+      } else if (crumb.type === "faculty") {
+        setActiveTab("faculty");
+        setSelectedFacultyId(crumb.id);
+        const facultyDeptCrumb = newBreadcrumbs.find(
+          (b) => b.type === "facultyDept"
+        );
+        if (facultyDeptCrumb) {
+          setSelectedFacultyDept(facultyDeptCrumb.id);
+        } else {
+          setSelectedFacultyDept(null);
+        }
+        setStudentReg("");
+        setStudentData(null);
+        setSelectedDeptId(null);
+      } else if (crumb.type === "student") {
+        setActiveTab("student");
+        setStudentReg(crumb.id);
+        setSelectedDeptId(null);
+        setSelectedFacultyDept(null);
+        setSelectedFacultyId(null);
       }
-      setStudentReg("");
-      setStudentData(null);
-      setSelectedDeptId(null);
-    } else if (crumb.type === 'student') {
-      setActiveTab('student');
-      setStudentReg(crumb.id);
-      setSelectedDeptId(null);
-      setSelectedFacultyDept(null);
-      setSelectedFacultyId(null);
-    }
-  }, [breadcrumbs, resetNestedStates]);
+    },
+    [breadcrumbs, resetNestedStates]
+  );
 
   const handleBack = useCallback(() => {
     if (breadcrumbs.length > 1) {
@@ -239,21 +290,28 @@ const AdminReports: React.FC = () => {
   }, [breadcrumbs, handleBreadcrumbClick, navigateToTab]);
 
   // Data fetching utility
-  const fetchData = useCallback(async <T,>(url: string, setter: React.Dispatch<React.SetStateAction<T | null>>, onError?: () => void) => {
-    setLoading(true);
-    setError(null);
-    try {
-      const res = await API.get<T>(url);
-      setter(res.data);
-    } catch (err) {
-      setError("Failed to fetch data.");
-      console.error(err);
-      setter(null); // Clear data on error
-      onError && onError(); // Execute custom error handler if provided
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+  const fetchData = useCallback(
+    async <T,>(
+      url: string,
+      setter: React.Dispatch<React.SetStateAction<T | null>>,
+      onError?: () => void
+    ) => {
+      setLoading(true);
+      setError(null);
+      try {
+        const res = await API.get<T>(url);
+        setter(res.data);
+      } catch (err) {
+        setError("Failed to fetch data.");
+        console.error(err);
+        setter(null); // Clear data on error
+        onError && onError(); // Execute custom error handler if provided
+      } finally {
+        setLoading(false);
+      }
+    },
+    []
+  );
 
   // UseEffects for data fetching based on activeTab and selected IDs
   useEffect(() => {
@@ -262,16 +320,28 @@ const AdminReports: React.FC = () => {
     } else if (activeTab === "department" && !selectedDeptId) {
       // Fetch list of departments only if not viewing a specific department
       fetchData<Department[]>("/reports/departmentlist", setDepartments); // Updated route
-    } else if (activeTab === "faculty" && !selectedFacultyDept && !selectedFacultyId) {
+    } else if (
+      activeTab === "faculty" &&
+      !selectedFacultyDept &&
+      !selectedFacultyId
+    ) {
       // Fetch list of departments for faculty selection only if not viewing specific dept/faculty
       fetchData<Department[]>("/reports/departmentlist", setDepartments); // Updated route
     }
-  }, [activeTab, selectedDeptId, selectedFacultyDept, selectedFacultyId, fetchData]);
-
+  }, [
+    activeTab,
+    selectedDeptId,
+    selectedFacultyDept,
+    selectedFacultyId,
+    fetchData,
+  ]);
 
   useEffect(() => {
     if (selectedDeptId) {
-      fetchData<DepartmentData>(`/reports/department/${selectedDeptId}`, setDepartmentData);
+      fetchData<DepartmentData>(
+        `/reports/department/${selectedDeptId}`,
+        setDepartmentData
+      );
     } else {
       setDepartmentData(null); // Clear data when no department is selected
     }
@@ -279,8 +349,11 @@ const AdminReports: React.FC = () => {
 
   useEffect(() => {
     // Only fetch faculty list if a department is selected AND we're in the faculty tab, but no specific faculty is selected
-    if (selectedFacultyDept && activeTab === 'faculty' && !selectedFacultyId) {
-      fetchData<Faculty[]>(`/admin/manage/faculty/department/${selectedFacultyDept}`, setFacultyList); // Assuming this route still works or adjust
+    if (selectedFacultyDept && activeTab === "faculty" && !selectedFacultyId) {
+      fetchData<Faculty[]>(
+        `/admin/manage/faculty/department/${selectedFacultyDept}`,
+        setFacultyList
+      ); // Assuming this route still works or adjust
     } else {
       setFacultyList([]); // Clear list when no department is selected for faculty
     }
@@ -288,53 +361,61 @@ const AdminReports: React.FC = () => {
 
   useEffect(() => {
     if (selectedFacultyId) {
-      fetchData<FacultyData>(`/reports/faculty/${selectedFacultyId}`, setFacultyData);
+      fetchData<FacultyData>(
+        `/reports/faculty/${selectedFacultyId}`,
+        setFacultyData
+      );
     } else {
       setFacultyData(null); // Clear data when no faculty is selected
     }
   }, [selectedFacultyId, fetchData]);
 
-  const fetchStudentByRegNo = useCallback(async (regNoToFetch?: string) => {
-    const reg = regNoToFetch || studentReg;
-    if (!/^\d{10}$/.test(reg)) {
-      setStudentError("Registration number must be 10 digits.");
-      setStudentData(null);
-      return;
-    }
+  const fetchStudentByRegNo = useCallback(
+    async (regNoToFetch?: string) => {
+      const reg = regNoToFetch || studentReg;
+      if (!/^\d{10}$/.test(reg)) {
+        setStudentError("Registration number must be 10 digits.");
+        setStudentData(null);
+        return;
+      }
 
-    setLoading(true);
-    setStudentError(null);
-    try {
-      const res = await API.get<StudentData>(`/reports/student/${reg}`);
-      setStudentData(res.data);
-      // Only update breadcrumbs if this function is called from the input, not a breadcrumb click
-      const isCalledFromInput = !regNoToFetch;
-      if (isCalledFromInput) {
-        setBreadcrumbs([
-          { type: 'tab', id: 'student', label: 'Student' },
-          { type: 'student', id: reg, label: res.data.student.sName }
-        ]);
-      }
-    } catch (err: any) { // Type the error as 'any' for simpler handling
-      if (err.response && err.response.status === 404) {
-          setStudentError("Student not found for the given registration number.");
-      } else {
+      setLoading(true);
+      setStudentError(null);
+      try {
+        const res = await API.get<StudentData>(`/reports/student/${reg}`);
+        setStudentData(res.data);
+        // Only update breadcrumbs if this function is called from the input, not a breadcrumb click
+        const isCalledFromInput = !regNoToFetch;
+        if (isCalledFromInput) {
+          setBreadcrumbs([
+            { type: "tab", id: "student", label: "Student" },
+            { type: "student", id: reg, label: res.data.student.sName },
+          ]);
+        }
+      } catch (err: any) {
+        // Type the error as 'any' for simpler handling
+        if (err.response && err.response.status === 404) {
+          setStudentError(
+            "Student not found for the given registration number."
+          );
+        } else {
           setStudentError("Failed to fetch student report. Please try again.");
+        }
+        setStudentData(null);
+      } finally {
+        setLoading(false);
       }
-      setStudentData(null);
-    } finally {
-      setLoading(false);
-    }
-  }, [studentReg]);
+    },
+    [studentReg]
+  );
 
   useEffect(() => {
-    if (activeTab === 'student' && !studentReg && studentData) {
+    if (activeTab === "student" && !studentReg && studentData) {
       // If on student tab, but studentReg is cleared, clear studentData
       setStudentData(null);
       setStudentError(null);
     }
   }, [studentReg, activeTab, studentData, studentError, fetchStudentByRegNo]);
-
 
   // UI Components (Remain unchanged in their core structure)
   interface CardButtonProps {
@@ -343,16 +424,22 @@ const AdminReports: React.FC = () => {
     active?: boolean;
   }
 
-  const CardButton: React.FC<CardButtonProps> = React.memo(({ label, onClick, active = false }) => (
-    <div
-      className={`bg-white dark:bg-gray-800 border hover:border-blue-500 hover:shadow-md cursor-pointer p-4 rounded text-center w-full md:w-64 transition-all ${
-        active ? "border-blue-500 shadow-md" : "border-gray-200 dark:border-gray-700"
-      }`}
-      onClick={onClick}
-    >
-      <h4 className="font-semibold text-gray-800 dark:text-gray-200">{label}</h4>
-    </div>
-  ));
+  const CardButton: React.FC<CardButtonProps> = React.memo(
+    ({ label, onClick, active = false }) => (
+      <div
+        className={`bg-white dark:bg-gray-800 border hover:border-blue-500 hover:shadow-md cursor-pointer p-4 rounded text-center w-full md:w-64 transition-all ${
+          active
+            ? "border-blue-500 shadow-md"
+            : "border-gray-200 dark:border-gray-700"
+        }`}
+        onClick={onClick}
+      >
+        <h4 className="font-semibold text-gray-800 dark:text-gray-200">
+          {label}
+        </h4>
+      </div>
+    )
+  );
 
   interface StatCardProps {
     title: string;
@@ -360,58 +447,79 @@ const AdminReports: React.FC = () => {
     icon?: React.ReactNode;
   }
 
-  const StatCard: React.FC<StatCardProps> = React.memo(({ title, value, icon = null }) => (
-    <div className="bg-white dark:bg-gray-800 p-4 rounded shadow text-center hover:shadow-md transition-shadow">
-      {icon && <div className="text-2xl mb-2">{icon}</div>}
-      <h3 className="text-lg font-medium text-gray-700 dark:text-gray-300">{title}</h3>
-      <p className="text-2xl font-bold text-blue-600 dark:text-blue-400">{value}</p>
-    </div>
-  ));
+  const StatCard: React.FC<StatCardProps> = React.memo(
+    ({ title, value, icon = null }) => (
+      <div className="bg-white dark:bg-gray-800 p-4 rounded shadow text-center hover:shadow-md transition-shadow">
+        {icon && <div className="text-2xl mb-2">{icon}</div>}
+        <h3 className="text-lg font-medium text-gray-700 dark:text-gray-300">
+          {title}
+        </h3>
+        <p className="text-2xl font-bold text-blue-600 dark:text-blue-400">
+          {value}
+        </p>
+      </div>
+    )
+  );
 
   interface ChartContainerProps {
     title: string;
     children: React.ReactNode;
     className?: string;
-    tooltipFormatter?: (value: any, name: string, props: any) => [string | number, string]; // Added for flexible tooltip formatting
+    tooltipFormatter?: (
+      value,
+      name: string,
+      props
+    ) => [string | number, string]; // Added for flexible tooltip formatting
   }
 
-  const ChartContainer: React.FC<ChartContainerProps> = React.memo(({ title, children, className = "", tooltipFormatter }) => (
-    <div className={`mb-8 ${className}`}>
-      <h3 className="text-lg font-semibold mb-2 text-gray-800 dark:text-gray-200">{title}</h3>
-      <div className="bg-white dark:bg-gray-800 shadow rounded p-4 hover:shadow-md transition-shadow">
-        <ResponsiveContainer width="100%" height={300}>
-          {children}
-          {tooltipFormatter && <Tooltip formatter={tooltipFormatter} />} {/* Apply formatter if provided */}
-        </ResponsiveContainer>
+  const ChartContainer: React.FC<ChartContainerProps> = React.memo(
+    ({ title, children, className = "", tooltipFormatter }) => (
+      <div className={`mb-8 ${className}`}>
+        <h3 className="text-lg font-semibold mb-2 text-gray-800 dark:text-gray-200">
+          {title}
+        </h3>
+        <div className="bg-white dark:bg-gray-800 shadow rounded p-4 hover:shadow-md transition-shadow">
+          <ResponsiveContainer width="100%" height={300}>
+            <>
+              {children}
+              {tooltipFormatter && (
+                <Tooltip formatter={tooltipFormatter} />
+              )}{" "}
+              {/* Apply formatter if provided */}
+            </>
+          </ResponsiveContainer>
+        </div>
       </div>
-    </div>
-  ));
+    )
+  );
 
   interface ExportButtonsProps {
-    data: any[];
+    data: [];
     filename: string;
     reportId: string;
     disabled?: boolean;
   }
 
-  const ExportButtons: React.FC<ExportButtonsProps> = React.memo(({ data, filename, reportId, disabled = false }) => (
-    <div className="flex gap-4 justify-end mb-6">
-      <button
-        onClick={() => downloadPDF(reportId)}
-        className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 disabled:bg-gray-400 transition-colors"
-        disabled={disabled}
-      >
-        Download PDF
-      </button>
-      <button
-        onClick={() => exportToExcel(data, filename)}
-        className="px-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600 disabled:bg-gray-400 transition-colors"
-        disabled={disabled}
-      >
-        Export Excel
-      </button>
-    </div>
-  ));
+  const ExportButtons: React.FC<ExportButtonsProps> = React.memo(
+    ({ data, filename, reportId, disabled = false }) => (
+      <div className="flex gap-4 justify-end mb-6">
+        <button
+          onClick={() => downloadPDF(reportId)}
+          className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 disabled:bg-gray-400 transition-colors"
+          disabled={disabled}
+        >
+          Download PDF
+        </button>
+        <button
+          onClick={() => exportToExcel(data, filename)}
+          className="px-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600 disabled:bg-gray-400 transition-colors"
+          disabled={disabled}
+        >
+          Export Excel
+        </button>
+      </div>
+    )
+  );
 
   // Utility functions (Remain unchanged)
   const downloadPDF = async (id: string) => {
@@ -428,7 +536,7 @@ const AdminReports: React.FC = () => {
     pdf.save(`${id}-report.pdf`);
   };
 
-  const exportToExcel = (data: any[], filename: string) => {
+  const exportToExcel = (data: [], filename: string) => {
     const ws = utils.json_to_sheet(data);
     const wb = utils.book_new();
     utils.book_append_sheet(wb, ws, "Report");
@@ -437,7 +545,9 @@ const AdminReports: React.FC = () => {
 
   return (
     <div className="p-6 max-w-screen-xl mx-auto dark:bg-gray-900 dark:text-white min-h-screen">
-      <h1 className="text-3xl font-bold mb-6 text-gray-800 dark:text-white">Admin Reports Dashboard</h1>
+      <h1 className="text-3xl font-bold mb-6 text-gray-800 dark:text-white">
+        Admin Reports Dashboard
+      </h1>
 
       {/* Breadcrumbs */}
       {breadcrumbs.length > 0 && (
@@ -445,12 +555,18 @@ const AdminReports: React.FC = () => {
           {breadcrumbs.map((crumb, index) => (
             <React.Fragment key={crumb.id}>
               <span
-                className={`cursor-pointer ${index === breadcrumbs.length - 1 ? 'font-bold text-blue-600 dark:text-blue-400' : 'text-gray-600 dark:text-gray-400 hover:underline'}`}
+                className={`cursor-pointer ${
+                  index === breadcrumbs.length - 1
+                    ? "font-bold text-blue-600 dark:text-blue-400"
+                    : "text-gray-600 dark:text-gray-400 hover:underline"
+                }`}
                 onClick={() => handleBreadcrumbClick(crumb, index)}
               >
                 {crumb.label}
               </span>
-              {index < breadcrumbs.length - 1 && <span className="mx-2 text-gray-400">/</span>}
+              {index < breadcrumbs.length - 1 && (
+                <span className="mx-2 text-gray-400">/</span>
+              )}
             </React.Fragment>
           ))}
           {breadcrumbs.length > 1 && (
@@ -479,35 +595,53 @@ const AdminReports: React.FC = () => {
       {error && (
         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-6">
           <span className="block sm:inline">{error}</span>
-          <button className="absolute top-0 right-0 px-4 py-3" onClick={() => setError(null)}>
+          <button
+            className="absolute top-0 right-0 px-4 py-3"
+            onClick={() => setError(null)}
+          >
             ×
           </button>
         </div>
       )}
 
       {/* Main Navigation Tabs */}
-      {!selectedDeptId && !selectedFacultyDept && !selectedFacultyId && !studentData && (
-        <div className="flex flex-wrap gap-4 mb-8">
-          {["overall", "department", "faculty", "student"].map((tab) => (
-            <CardButton
-              key={tab}
-              label={tab.charAt(0).toUpperCase() + tab.slice(1)}
-              onClick={() => navigateToTab(tab)}
-              active={activeTab === tab}
-            />
-          ))}
-        </div>
-      )}
+      {!selectedDeptId &&
+        !selectedFacultyDept &&
+        !selectedFacultyId &&
+        !studentData && (
+          <div className="flex flex-wrap gap-4 mb-8">
+            {["overall", "department", "faculty", "student"].map((tab) => (
+              <CardButton
+                key={tab}
+                label={tab.charAt(0).toUpperCase() + tab.slice(1)}
+                onClick={() => navigateToTab(tab)}
+                active={activeTab === tab}
+              />
+            ))}
+          </div>
+        )}
 
       {/* Render content based on activeTab and selected IDs */}
       {activeTab === "overall" && overallData && (
         <div id="overall-report">
           {/* Overall Report content */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-            <StatCard title="Total Students" value={overallData.totals.students} />
-            <StatCard title="Total Faculty" value={overallData.totals.faculty} />
-            <StatCard title="Total Departments" value={overallData.totals.departments} />
-            <StatCard title="Total Courses" value={overallData.totals.courses} />
+            <StatCard
+              title="Total Students"
+              value={overallData.totals.students}
+            />
+            <StatCard
+              title="Total Faculty"
+              value={overallData.totals.faculty}
+            />
+            <StatCard
+              title="Total Departments"
+              value={overallData.totals.departments}
+            />
+            <StatCard
+              title="Total Courses"
+              value={overallData.totals.courses}
+            />
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -520,10 +654,15 @@ const AdminReports: React.FC = () => {
                   cx="50%"
                   cy="50%"
                   outerRadius={100}
-                  label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
+                  label={({ name, percent }) =>
+                    `${name}: ${(percent * 100).toFixed(0)}%`
+                  }
                 >
                   {(overallData.studentsByDept || []).map((_, index) => (
-                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                    <Cell
+                      key={`cell-${index}`}
+                      fill={COLORS[index % COLORS.length]}
+                    />
                   ))}
                 </Pie>
                 <Tooltip formatter={(value) => [value, "Students"]} />
@@ -540,10 +679,15 @@ const AdminReports: React.FC = () => {
                   cx="50%"
                   cy="50%"
                   outerRadius={100}
-                  label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
+                  label={({ name, percent }) =>
+                    `${name}: ${(percent * 100).toFixed(0)}%`
+                  }
                 >
                   {(overallData.facultyByDept || []).map((_, index) => (
-                    <Cell key={`cell-${index}`} fill={COLORS[(index + 2) % COLORS.length]} />
+                    <Cell
+                      key={`cell-${index}`}
+                      fill={COLORS[(index + 2) % COLORS.length]}
+                    />
                   ))}
                 </Pie>
                 <Tooltip formatter={(value) => [value, "Faculty"]} />
@@ -558,7 +702,11 @@ const AdminReports: React.FC = () => {
               <XAxis dataKey="course" />
               <YAxis />
               <Legend />
-              <Bar dataKey="students" fill="#8884d8" name="Enrollments (Batches)" />
+              <Bar
+                dataKey="students"
+                fill="#8884d8"
+                name="Enrollments (Batches)"
+              />
             </BarChart>
           </ChartContainer>
 
@@ -568,15 +716,29 @@ const AdminReports: React.FC = () => {
               <XAxis dataKey="department" />
               <YAxis domain={[0, 100]} />
               <Legend />
-              <Line type="monotone" dataKey="average" stroke="#82ca9d" name="Average Score" />
+              <Line
+                type="monotone"
+                dataKey="average"
+                stroke="#82ca9d"
+                name="Average Score"
+              />
             </LineChart>
           </ChartContainer>
 
           <ExportButtons
             data={[
-              ...overallData.studentsByDept?.map(d => ({ "Department": d.department, "Students": d.count })) || [],
-              ...overallData.facultyByDept?.map(d => ({ "Department": d.department, "Faculty": d.count })) || [], // Export faculty data
-              ...overallData.courses?.map(c => ({ "Course": c.course, "Enrollments": c.students })) || []
+              ...(overallData.studentsByDept?.map((d) => ({
+                Department: d.department,
+                Students: d.count,
+              })) || []),
+              ...(overallData.facultyByDept?.map((d) => ({
+                Department: d.department,
+                Faculty: d.count,
+              })) || []), // Export faculty data
+              ...(overallData.courses?.map((c) => ({
+                Course: c.course,
+                Enrollments: c.students,
+              })) || []),
             ]}
             filename="overall_report"
             reportId="overall-report"
@@ -602,10 +764,22 @@ const AdminReports: React.FC = () => {
             <div id="department-report">
               {/* Department Report content */}
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-                <StatCard title="Department" value={departmentData?.department?.deptName} />
-                <StatCard title="Students" value={departmentData?.students?.length} />
-                <StatCard title="Faculty" value={departmentData?.faculty?.length} />
-                <StatCard title="Courses" value={departmentData?.courses?.length} />
+                <StatCard
+                  title="Department"
+                  value={departmentData?.department?.deptName}
+                />
+                <StatCard
+                  title="Students"
+                  value={departmentData?.students?.length}
+                />
+                <StatCard
+                  title="Faculty"
+                  value={departmentData?.faculty?.length}
+                />
+                <StatCard
+                  title="Courses"
+                  value={departmentData?.courses?.length}
+                />
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -614,8 +788,16 @@ const AdminReports: React.FC = () => {
                     <XAxis dataKey="subName" />
                     <YAxis domain={[0, 100]} />
                     <Legend />
-                    <Bar dataKey="averageMark" fill="#00C49F" name="Average Score" />
-                    <Bar dataKey="passPercentage" fill="#FFBB28" name="Pass Percentage" />
+                    <Bar
+                      dataKey="averageMark"
+                      fill="#00C49F"
+                      name="Average Score"
+                    />
+                    <Bar
+                      dataKey="passPercentage"
+                      fill="#FFBB28"
+                      name="Pass Percentage"
+                    />
                   </BarChart>
                 </ChartContainer>
 
@@ -635,24 +817,37 @@ const AdminReports: React.FC = () => {
                   <XAxis dataKey="semester" />
                   <YAxis domain={[0, 100]} />
                   <Legend />
-                  <Line type="monotone" dataKey="average" stroke="#FF8042" name="Department Average" />
-                  <Line type="monotone" dataKey="collegeAverage" stroke="#0088FE" name="College Average" />
+                  <Line
+                    type="monotone"
+                    dataKey="average"
+                    stroke="#FF8042"
+                    name="Department Average"
+                  />
+                  <Line
+                    type="monotone"
+                    dataKey="collegeAverage"
+                    stroke="#0088FE"
+                    name="College Average"
+                  />
                 </LineChart>
               </ChartContainer>
 
               <ExportButtons
                 data={[
-                  ...departmentData.performance?.map(p => ({
-                    "Subject": p.subName,
+                  ...(departmentData.performance?.map((p) => ({
+                    Subject: p.subName,
                     "Average Score": `${p.averageMark}%`,
-                    "Pass Percentage": `${p.passPercentage}%`
-                  })) || [],
-                  ...departmentData.batchEnrollment?.map(b => ({
-                    "Batch": b.batch,
-                    "Students": b.students
-                  })) || []
+                    "Pass Percentage": `${p.passPercentage}%`,
+                  })) || []),
+                  ...(departmentData.batchEnrollment?.map((b) => ({
+                    Batch: b.batch,
+                    Students: b.students,
+                  })) || []),
                 ]}
-                filename={`department_${departmentData?.department?.deptName.replace(/\s+/g, '_')}`}
+                filename={`department_${departmentData?.department?.deptName.replace(
+                  /\s+/g,
+                  "_"
+                )}`}
                 reportId="department-report"
               />
             </div>
@@ -690,10 +885,22 @@ const AdminReports: React.FC = () => {
             <div id="faculty-report">
               {/* Faculty Report content */}
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-                <StatCard title="Faculty" value={facultyData?.faculty?.facName} />
-                <StatCard title="Department" value={facultyData?.faculty?.deptName || 'N/A'} />
-                <StatCard title="Courses Teaching" value={facultyData?.currentCourses?.length} />
-                <StatCard title="Average Rating" value={`${facultyData?.averageRating || 'N/A'}/5`} />
+                <StatCard
+                  title="Faculty"
+                  value={facultyData?.faculty?.facName}
+                />
+                <StatCard
+                  title="Department"
+                  value={facultyData?.faculty?.deptName || "N/A"}
+                />
+                <StatCard
+                  title="Courses Teaching"
+                  value={facultyData?.currentCourses?.length}
+                />
+                <StatCard
+                  title="Average Rating"
+                  value={`${facultyData?.averageRating || "N/A"}/5`}
+                />
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -711,7 +918,11 @@ const AdminReports: React.FC = () => {
                     <XAxis dataKey="subName" />
                     <YAxis domain={[0, 5]} />
                     <Legend />
-                    <Bar dataKey="avgRating" fill="#FFBB28" name="Average Rating" />
+                    <Bar
+                      dataKey="avgRating"
+                      fill="#FFBB28"
+                      name="Average Rating"
+                    />
                   </BarChart>
                 </ChartContainer>
               </div>
@@ -722,25 +933,38 @@ const AdminReports: React.FC = () => {
                   <XAxis dataKey="semester" />
                   <YAxis domain={[0, 5]} />
                   <Legend />
-                  <Line type="monotone" dataKey="avgRating" stroke="#FF8042" name="Your Average Rating" />
-                  <Line type="monotone" dataKey="departmentAvg" stroke="#0088FE" name="Department Average Rating" />
+                  <Line
+                    type="monotone"
+                    dataKey="avgRating"
+                    stroke="#FF8042"
+                    name="Your Average Rating"
+                  />
+                  <Line
+                    type="monotone"
+                    dataKey="departmentAvg"
+                    stroke="#0088FE"
+                    name="Department Average Rating"
+                  />
                 </LineChart>
               </ChartContainer>
 
               <ExportButtons
                 data={[
-                  ...(facultyData.currentCourses?.map(c => ({
-                    "Course": c.subName,
-                    "Students": c.students,
-                    "Batch": c.batch || 'N/A'
+                  ...(facultyData.currentCourses?.map((c) => ({
+                    Course: c.subName,
+                    Students: c.students,
+                    Batch: c.batch || "N/A",
                   })) || []),
-                  ...(facultyData.evaluations?.map(e => ({
-                    "Course": e.subName,
-                    "Average Rating": e.avgRating || 'N/A',
-                    "Average Marks (Proxy)": e.avgMark || 'N/A' // Indicate if avgMark is just a proxy
-                  })) || [])
+                  ...(facultyData.evaluations?.map((e) => ({
+                    Course: e.subName,
+                    "Average Rating": e.avgRating || "N/A",
+                    "Average Marks (Proxy)": e.avgMark || "N/A", // Indicate if avgMark is just a proxy
+                  })) || []),
                 ]}
-                filename={`faculty_${facultyData.faculty.facName.replace(/\s+/g, '_')}`}
+                filename={`faculty_${facultyData.faculty.facName.replace(
+                  /\s+/g,
+                  "_"
+                )}`}
                 reportId="faculty-report"
               />
             </div>
@@ -754,7 +978,9 @@ const AdminReports: React.FC = () => {
           <div className="mb-6">
             <div className="flex flex-col md:flex-row gap-4 items-start md:items-end">
               <div>
-                <label className="block mb-2 font-semibold text-gray-700 dark:text-gray-300">Enter Register Number:</label>
+                <label className="block mb-2 font-semibold text-gray-700 dark:text-gray-300">
+                  Enter Register Number:
+                </label>
                 <input
                   type="text"
                   className="border p-2 rounded w-64 dark:bg-gray-800 dark:border-gray-700 dark:text-white"
@@ -770,7 +996,9 @@ const AdminReports: React.FC = () => {
               >
                 {loading ? "Fetching..." : "Fetch Report"}
               </button>
-              {studentError && <p className="text-red-600 mt-2 md:mt-0">{studentError}</p>}
+              {studentError && (
+                <p className="text-red-600 mt-2 md:mt-0">{studentError}</p>
+              )}
             </div>
           </div>
 
@@ -779,9 +1007,15 @@ const AdminReports: React.FC = () => {
               {/* Student Report content */}
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
                 <StatCard title="Name" value={studentData.student.sName} />
-                <StatCard title="Register No" value={studentData.student.regNo} />
+                <StatCard
+                  title="Register No"
+                  value={studentData.student.regNo}
+                />
                 <StatCard title="Batch" value={studentData.student.batchName} />
-                <StatCard title="CGPA" value={studentData.student.cgpa || 'N/A'} />
+                <StatCard
+                  title="CGPA"
+                  value={studentData.student.cgpa || "N/A"}
+                />
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-1 gap-6">
@@ -790,12 +1024,26 @@ const AdminReports: React.FC = () => {
                     <XAxis dataKey="subName" />
                     <YAxis domain={[0, 100]} />
                     <Legend />
-                    <Bar dataKey="assess1" stackId="a" fill="#8884d8" name="Assessment 1" />
-                    <Bar dataKey="assess2" stackId="a" fill="#82ca9d" name="Assessment 2" />
-                    <Bar dataKey="endsem" stackId="a" fill="#ffc658" name="End Sem" />
+                    <Bar
+                      dataKey="assess1"
+                      stackId="a"
+                      fill="#8884d8"
+                      name="Assessment 1"
+                    />
+                    <Bar
+                      dataKey="assess2"
+                      stackId="a"
+                      fill="#82ca9d"
+                      name="Assessment 2"
+                    />
+                    <Bar
+                      dataKey="endsem"
+                      stackId="a"
+                      fill="#ffc658"
+                      name="End Sem"
+                    />
                   </BarChart>
                 </ChartContainer>
-
               </div>
 
               <ChartContainer title="Performance Trend (Average Marks)">
@@ -804,8 +1052,18 @@ const AdminReports: React.FC = () => {
                   <XAxis dataKey="semester" />
                   <YAxis domain={[0, 100]} />
                   <Legend />
-                  <Line type="monotone" dataKey="average" stroke="#0088FE" name="Your Average" />
-                  <Line type="monotone" dataKey="batchAverage" stroke="#00C49F" name="Batch Average" />
+                  <Line
+                    type="monotone"
+                    dataKey="average"
+                    stroke="#0088FE"
+                    name="Your Average"
+                  />
+                  <Line
+                    type="monotone"
+                    dataKey="batchAverage"
+                    stroke="#00C49F"
+                    name="Batch Average"
+                  />
                 </LineChart>
               </ChartContainer>
 
@@ -818,10 +1076,15 @@ const AdminReports: React.FC = () => {
                     cx="50%"
                     cy="50%"
                     outerRadius={100}
-                    label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
+                    label={({ name, percent }) =>
+                      `${name}: ${(percent * 100).toFixed(0)}%`
+                    }
                   >
                     {(studentData.gradeDistribution || []).map((_, index) => (
-                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                      <Cell
+                        key={`cell-${index}`}
+                        fill={COLORS[index % COLORS.length]}
+                      />
                     ))}
                   </Pie>
                   <Tooltip formatter={(value) => [value, "Courses"]} />
@@ -831,19 +1094,19 @@ const AdminReports: React.FC = () => {
 
               <ExportButtons
                 data={[
-                  ...(studentData.currentSemester?.map(s => ({
-                    "Subject": s.subName,
+                  ...(studentData.currentSemester?.map((s) => ({
+                    Subject: s.subName,
                     "Assessment 1": s.assess1,
                     "Assessment 2": s.assess2,
                     "End Semester": s.endsem,
                     "Total Marks": s.total,
-                    "Grade": s.grade
+                    Grade: s.grade,
                   })) || []),
-                  ...(studentData.performanceTrend?.map(p => ({
-                    "Semester": p.semester,
+                  ...(studentData.performanceTrend?.map((p) => ({
+                    Semester: p.semester,
                     "Your Average": p.average,
-                    "Batch Average": p.batchAverage
-                  })) || [])
+                    "Batch Average": p.batchAverage,
+                  })) || []),
                 ]}
                 filename={`student_${studentData.student.regNo}`}
                 reportId="student-report"

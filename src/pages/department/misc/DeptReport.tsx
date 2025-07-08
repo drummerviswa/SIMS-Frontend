@@ -206,7 +206,7 @@ export default function DeptReport() {
       setError("Failed to fetch data.");
       console.error(err);
       setter(null);
-      onErrorCallback && onErrorCallback();
+      onErrorCallback();
     } finally {
       setLoading(false);
     }
