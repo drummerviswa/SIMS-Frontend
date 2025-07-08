@@ -49,7 +49,7 @@ interface ChartContainerProps {
   title: string;
   children: React.ReactNode;
   className?: string;
-  tooltipFormatter?: (value: any, name: string, props: any) => [string | number, string];
+  tooltipFormatter?: (value, name, props) => [string | number, string];
 }
 
 const ChartContainer: React.FC<ChartContainerProps> = React.memo(({ title, children, className = "", tooltipFormatter }) => (
@@ -57,15 +57,17 @@ const ChartContainer: React.FC<ChartContainerProps> = React.memo(({ title, child
     <h3 className="text-lg font-semibold mb-2 text-gray-800 dark:text-gray-200">{title}</h3>
     <div className="bg-white dark:bg-gray-800 shadow rounded p-4 hover:shadow-md transition-shadow">
       <ResponsiveContainer width="100%" height={300}>
+        <>
         {children}
         {tooltipFormatter && <Tooltip formatter={tooltipFormatter} />}
+        </>
       </ResponsiveContainer>
     </div>
   </div>
 ));
 
 interface ExportButtonsProps {
-  data: any[];
+  data: [];
   filename: string;
   reportId: string;
   disabled?: boolean;
@@ -105,7 +107,7 @@ const downloadPDF = async (id: string) => {
   pdf.save(`${id}-report.pdf`);
 };
 
-const exportToExcel = (data: any[], filename: string) => {
+const exportToExcel = (data: [], filename: string) => {
   const ws = utils.json_to_sheet(data);
   const wb = utils.book_new();
   utils.book_append_sheet(wb, ws, "Report");
@@ -200,11 +202,11 @@ export default function FacReport() {
     try {
       const res = await API.get<T>(url);
       setter(res.data);
-    } catch (err: any) {
+    } catch (err) {
       setError("Failed to fetch data.");
       console.error(err);
       setter(null);
-      onErrorCallback && onErrorCallback();
+      onErrorCallback();
     } finally {
       setLoading(false);
     }
