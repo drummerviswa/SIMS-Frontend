@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 import React, { useEffect, useState, useCallback } from "react";
 import API from "../../../utils/API";
@@ -494,7 +495,7 @@ const AdminReports: React.FC = () => {
   );
 
   interface ExportButtonsProps {
-    data: [];
+    data: any[];
     filename: string;
     reportId: string;
     disabled?: boolean;
@@ -536,7 +537,7 @@ const AdminReports: React.FC = () => {
     pdf.save(`${id}-report.pdf`);
   };
 
-  const exportToExcel = (data: [], filename: string) => {
+  const exportToExcel = (data: any[], filename: string) => {
     const ws = utils.json_to_sheet(data);
     const wb = utils.book_new();
     utils.book_append_sheet(wb, ws, "Report");

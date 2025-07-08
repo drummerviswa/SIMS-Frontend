@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState, useCallback } from "react";
 import API from "../../utils/API";
 import jsPDF from "jspdf";
@@ -67,7 +68,7 @@ const ChartContainer: React.FC<ChartContainerProps> = React.memo(({ title, child
 ));
 
 interface ExportButtonsProps {
-  data: [];
+  data: any[];
   filename: string;
   reportId: string;
   disabled?: boolean;
@@ -107,7 +108,7 @@ const downloadPDF = async (id: string) => {
   pdf.save(`${id}-report.pdf`);
 };
 
-const exportToExcel = (data: [], filename: string) => {
+const exportToExcel = (data: any[], filename: string) => {
   const ws = utils.json_to_sheet(data);
   const wb = utils.book_new();
   utils.book_append_sheet(wb, ws, "Report");
