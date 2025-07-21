@@ -67,10 +67,12 @@ Built using:
 
 | Home Page | Admin Dashboard | Mark Entry |
 |-----------|------------------|-------------|
-| ![home](screenshots/home.png) | ![admin](screenshots/admin-dashboard.png) | ![marks](screenshots/mark-entry.png) |
+| ![home]<img width="915" height="415" alt="image" src="https://github.com/user-attachments/assets/ddd045f6-0da0-42a0-b69d-a3bb9c12a4f2" />
+ | ![admin]<img width="951" height="460" alt="image" src="https://github.com/user-attachments/assets/cb743562-930f-41ae-a3a5-80053d9b9954" />
+ | ![department]<img width="930" height="450" alt="image" src="https://github.com/user-attachments/assets/f2a12625-91d8-4d72-a4ab-e409764d3dcd" />
+ | ![faculty]<img width="915" height="443" alt="image" src="https://github.com/user-attachments/assets/8ac92c12-79c6-4795-97bc-499e69efcc0d" />
 
-> *(Update image paths as per your `screenshots/` folder in the repo)*
-
+ |
 ---
 
 ## 🧪 Modules
